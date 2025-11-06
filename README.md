@@ -22,29 +22,7 @@ This project aims to simplify library operations by providing:
 - Borrow/return tracking  
 - Configurable persistence layer (H2 for testing, MySQL for production)
 
----
 
-## 📁 Folder Structure
-
-Library-Management-System/
-│
-├── src/main/java/com/example/ # Main source code
-│ ├── controller/ # REST Controllers
-│ ├── model/ # Entity classes
-│ ├── service/ # Service layer
-│ ├── repository/ # Data access layer
-│ └── ...
-│
-├── adminmodule/ # Admin-related controllers/configurations
-├── adminServices/ # Business logic for admin operations
-│
-├── src/main/resources/
-│ ├── application.properties # Database & app configuration
-│
-├── pom.xml # Maven dependencies
-└── README.md
-
----
 
 ## ⚙️ Prerequisites
 
@@ -59,14 +37,14 @@ Make sure you have installed:
 ## 🏁 Quick Start (Maven)
 
 
-# 1️⃣ Clone the repository
+# 1️ Clone the repository
 git clone https://github.com/OmmPrakash-tech/Library-Management-System.git
 
-# 2️⃣ Navigate into the project
+# 2️ Navigate into the project
 cd Library-Management-System
 
-# 3️⃣ Build the project
+# 3️ Build the project
 mvn clean package
 
-# 4️⃣ Run the application
+# 4️ Run the application
 mvn spring-boot:run
