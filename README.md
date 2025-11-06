@@ -8,7 +8,7 @@ It provides **RESTful APIs** to handle books, users, and admin activities effici
 ## 🚀 Tech Stack
 
 - **Backend:** Java 11+, Spring Boot  
-- **Database:** MySQL / H2 (for testing)  
+- **Database:** MySQL 
 - **Build Tool:** Maven  
 - **API Style:** RESTful Services  
 
