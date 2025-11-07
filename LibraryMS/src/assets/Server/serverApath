@@ -1,2 +1,0 @@
-cd C:\Users\ideapad\Desktop\Angular\LibraryMS\src\assets\Server
-json-server -p 5001 serverA.json
