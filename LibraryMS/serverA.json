@@ -1,0 +1,178 @@
+{
+  "books": [
+    {
+      "btitle": "Uncle Bun",
+      "bcatag": "Adventure",
+      "bstatus": "Old",
+      "bcopies": 0,
+      "bisbn": "KSD15L12",
+      "byear": 2014,
+      "bauthor": "Jomhel Dulla",
+      "bpub": "Pada PB",
+      "pubname": "Chicham Pd",
+      "bdate": "2022-03-24",
+      "id": "3"
+    },
+    {
+      "btitle": "Before Me",
+      "bcatag": "Drama",
+      "bstatus": "New",
+      "bcopies": 10,
+      "bisbn": "KSD15L14",
+      "byear": 2003,
+      "bauthor": "Jerimy Kirk Eriman",
+      "bpub": "DM Publications",
+      "pubname": "Ranv Kumar",
+      "bdate": "2022-03-02",
+      "id": "4"
+    },
+    {
+      "btitle": "Forensic",
+      "bcatag": "Drama",
+      "bstatus": "New",
+      "bcopies": 1,
+      "bisbn": "LKD457",
+      "byear": 2009,
+      "bauthor": "Given Bariacto",
+      "bpub": "Next Day",
+      "pubname": "Neil",
+      "bdate": "2022-03-12",
+      "id": "5"
+    },
+    {
+      "btitle": "No One Near Me",
+      "bcatag": "Romance",
+      "bstatus": "Damaged",
+      "bcopies": 16,
+      "bisbn": "YDS787",
+      "byear": 1997,
+      "bauthor": "Daniel Bandiola",
+      "bpub": "PDM PB",
+      "pubname": "Jeff Vis",
+      "bdate": "2022-03-28",
+      "id": "6"
+    },
+    {
+      "btitle": "Monjitheroo",
+      "bcatag": "Romance",
+      "bstatus": "Old",
+      "bcopies": 36,
+      "bisbn": "TKM45MK",
+      "byear": 2016,
+      "bauthor": "Ryan Manaay",
+      "bpub": "CD Publications",
+      "pubname": "CD Balaji",
+      "bdate": "2022-03-12",
+      "id": "7"
+    },
+    {
+      "btitle": "Maging Sino Ka Man",
+      "bcatag": "Drama",
+      "bstatus": "New",
+      "bcopies": 6,
+      "bisbn": "TBKER12",
+      "byear": 2019,
+      "bauthor": "Melvin",
+      "bpub": "Kerala Pub",
+      "pubname": "Paul Niar",
+      "bdate": "2022-04-16",
+      "id": "8"
+    },
+    {
+      "btitle": "Computer Programming",
+      "bcatag": "Satire",
+      "bstatus": "New",
+      "bcopies": 13,
+      "bisbn": "THKER65",
+      "byear": 2020,
+      "bauthor": "Jude reyes suares",
+      "bpub": "Thayoli Brothers",
+      "pubname": "Thayooli",
+      "bdate": "2022-04-08",
+      "id": "9"
+    },
+    {
+      "btitle": "Stairway to Heaven",
+      "bcatag": "Drama",
+      "bstatus": "New",
+      "bcopies": 41,
+      "bisbn": "CH26KER2",
+      "byear": 2016,
+      "bauthor": "Grace Patulada",
+      "bpub": "Thayoli Brothers",
+      "pubname": "Chembatty",
+      "bdate": "2022-04-14",
+      "id": "10"
+    }
+  ],
+  "members": [
+    {
+      "uname": "carenbautista",
+      "uadmid": 232123,
+      "umail": "caren@gmail.com",
+      "udep": "ECE",
+      "upassword": "caren123",
+      "ustatus": 0,
+      "urecstatus": 1,
+      "urecj": "[{\"btitle\":\"Mundhiya Kazhcha\",\"bcatag\":\"Drama\",\"bstatus\":\"New\",\"bcopies\":7,\"bisbn\":\"TBKER12\",\"byear\":2019,\"bauthor\":\"Melvin\",\"bpub\":\"Kerala Pub\",\"pubname\":\"Thayoli Brothers\",\"bdate\":\"2020-04-16\",\"id\":8},{\"btitle\":\"Before Me\",\"bcatag\":\"Drama\",\"bstatus\":\"New\",\"bcopies\":12,\"bisbn\":\"KSD15L14\",\"byear\":2003,\"bauthor\":\"Rini Mariya\",\"bpub\":\"DM Publications\",\"pubname\":\"Ranv Kumar\",\"bdate\":\"2020-03-02\",\"id\":4}]",
+      "ureqj": "[]",
+      "id": "5"
+    },
+    {
+      "uname": "elijahgalero",
+      "uadmid": 23654,
+      "umail": "elijah@gmail.com",
+      "udep": "CSE",
+      "upassword": "elijah123",
+      "ustatus": 1,
+      "urecstatus": 1,
+      "urecj": "[{\"btitle\":\"No One Near Me\",\"bcatag\":\"Romance\",\"bstatus\":\"Damaged\",\"bcopies\":17,\"bisbn\":\"YDS787\",\"byear\":1997,\"bauthor\":\"Robert Carlo\",\"bpub\":\"PDM PB\",\"pubname\":\"Jeff Vis\",\"bdate\":\"2020-03-28\",\"id\":6}]",
+      "ureqj": "[{\"btitle\":\"Before Me\",\"bcatag\":\"Drama\",\"bstatus\":\"New\",\"bcopies\":11,\"bisbn\":\"KSD15L14\",\"byear\":2003,\"bauthor\":\"Rini Mariya\",\"bpub\":\"DM Publications\",\"pubname\":\"Ranv Kumar\",\"bdate\":\"2020-03-02\",\"id\":4},{\"btitle\":\"Uncle Bun\",\"bcatag\":\"Adventure\",\"bstatus\":\"Old\",\"bcopies\":3,\"bisbn\":\"KSD15L12\",\"byear\":2014,\"bauthor\":\"Rajith Sir\",\"bpub\":\"Pada PB\",\"pubname\":\"Chicham Pd\",\"bdate\":\"2020-03-24\",\"id\":3}]",
+      "id": "6"
+    },
+    {
+      "uname": "princelycezar",
+      "uadmid": 20366,
+      "umail": "prince@gmail.com",
+      "udep": "IT",
+      "upassword": "prince123",
+      "ustatus": 0,
+      "urecstatus": 0,
+      "urecj": "[]",
+      "ureqj": "[]",
+      "id": "7"
+    },
+    {
+      "id": "790d",
+      "uname": "Omm Prakash  Debata ",
+      "uadmid": 230301120381,
+      "umail": "ommprakashdebata6@gmail.com",
+      "udep": "CSE",
+      "upassword": "Omm12345",
+      "ustatus": 0,
+      "urecstatus": 0,
+      "urecj": "[]",
+      "ureqj": "[]"
+    }
+  ],
+  "admins": [
+    {
+      "id": "1",
+      "amail": "admin@gmail.com",
+      "apassword": "admin12345",
+      "aname": "Adones Evangelista"
+    },
+    {
+      "id": "2",
+      "amail": "arnulfo@gmail.com",
+      "apassword": "arnulfo123",
+      "aname": "Arnulfo Rebollosa"
+    },
+    {
+      "id" : "3",
+      "amail" : "ommprakashdebata6@gmail.com",
+      "aname" : "Omm Prakash Debata",
+      "apassword" : "Omm123456"
+    }
+  ]
+}
