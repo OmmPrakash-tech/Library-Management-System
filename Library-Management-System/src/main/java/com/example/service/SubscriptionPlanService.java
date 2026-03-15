@@ -2,6 +2,7 @@ package com.example.service;
 
 import java.util.List;
 
+import com.example.model.SubscriptionPlan;
 import com.example.payload.dto.SubscriptionPlanDTO;
 
 public interface SubscriptionPlanService {
@@ -14,5 +15,7 @@ public interface SubscriptionPlanService {
 void deleteSubscriptionPlan(Long planId);
 
 List<SubscriptionPlanDTO> getAllSubscriptionPlan();
+
+SubscriptionPlan getBySubscriptionPlanCode(String subscriptionPlanCode) throws Exception;
 
 }

@@ -36,6 +36,10 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     public GenreDTO createGenre(GenreDTO genreDTO) {
 
+        if (genreRepository.existsByCodeIgnoreCase(genreDTO.getCode())) {
+            throw new GenreException("Genre code already exists");
+        }
+
         Genre genre = genreMapper.toEntity(genreDTO);
 
         Genre savedGenre = genreRepository.save(genre);
@@ -100,7 +104,14 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public Page<GenreDTO> searchGenres(String searchTerm, Pageable pageable) {
 
-        Page<Genre> genrePage = genreRepository.findAll(pageable);
+        Page<Genre> genrePage;
+
+        if (searchTerm == null || searchTerm.isBlank()) {
+            genrePage = genreRepository.findAll(pageable);
+        } else {
+            genrePage =
+                    genreRepository.findByNameContainingIgnoreCase(searchTerm, pageable);
+        }
 
         return genrePage.map(genreMapper::toDTO);
     }
@@ -121,5 +132,35 @@ public class GenreServiceImpl implements GenreService {
         }
 
         return genre.getSubGenres().size();
+    }
+
+    @Override
+    public GenreDTO getGenreByCode(String code) {
+
+        Genre genre = genreRepository.findByCodeIgnoreCase(code)
+                .orElseThrow(() -> new GenreException("Genre not found with code: " + code));
+
+        return genreMapper.toDTO(genre);
+    }
+
+    @Override
+    public List<GenreDTO> getSubGenres(Long parentGenreId) {
+
+        Genre parent = genreRepository.findById(parentGenreId)
+                .orElseThrow(() -> new GenreException("Parent genre not found"));
+
+        List<Genre> subGenres =
+                genreRepository.findByParentGenreIdAndActiveTrueOrderByDisplayOrderAsc(parent.getId());
+
+        return genreMapper.toDTOList(subGenres);
+    }
+
+    @Override
+    public List<GenreDTO> getGenreTree() {
+
+        List<Genre> rootGenres =
+                genreRepository.findByParentGenreIsNullAndActiveTrueOrderByDisplayOrderAsc();
+
+        return genreMapper.toDTOList(rootGenres);
     }
 }

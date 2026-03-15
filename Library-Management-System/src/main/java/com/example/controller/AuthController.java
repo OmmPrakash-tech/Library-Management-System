@@ -1,7 +1,10 @@
 package com.example.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.exception.UserException;
 import com.example.payload.dto.UserDTO;
@@ -40,7 +43,7 @@ public class AuthController {
     ) {
 
         AuthResponse res =
-                authService.login(req.getUsername(), req.getPassword());
+                authService.login(req.getEmail(), req.getPassword());
 
         return ResponseEntity.ok(res);
     }

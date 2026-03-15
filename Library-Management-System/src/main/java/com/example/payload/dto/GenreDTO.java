@@ -3,21 +3,24 @@ package com.example.payload.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GenreDTO {
 
     private Long id;
@@ -41,14 +44,13 @@ public class GenreDTO {
     private Boolean active = true;
 
     private Long parentGenreId;
-
     private String parentGenreName;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<GenreDTO> subGenres;
 
     private Long bookCount;
 
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
 }

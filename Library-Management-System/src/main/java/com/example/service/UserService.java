@@ -7,11 +7,10 @@ import com.example.payload.dto.UserDTO;
 
 public interface UserService {
 
-    
+    public User getCurrentUser();
 
-        public User getCurrentUser();
-        public List<UserDTO> getAllUsers();
-    
-    
+    public List<UserDTO> getAllUsers();
+
+    User findById(Long id) throws RuntimeException;
 
 }

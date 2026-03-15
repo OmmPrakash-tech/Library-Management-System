@@ -83,10 +83,12 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(createdUser);
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(
-                savedUser.getEmail(),
-                savedUser.getPassword()
-        );
+      Authentication auth = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(
+                req.getEmail(),
+                req.getPassword()
+        )
+);
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 

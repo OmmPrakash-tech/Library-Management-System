@@ -47,6 +47,13 @@ public List<UserDTO> getAllUsers() {
 }
 
 
+  @Override
+public User findById(Long id) {
+    return userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with given id"));
+}
+
+
 
 
 

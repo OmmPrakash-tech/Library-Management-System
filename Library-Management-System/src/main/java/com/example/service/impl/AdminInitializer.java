@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.example.domain.AuthProvider;
 import com.example.domain.UserRole;
 import com.example.model.User;
 import com.example.repository.UserRepository;
@@ -32,8 +33,9 @@ public class AdminInitializer implements CommandLineRunner {
             User adminUser = User.builder()
                     .email(adminEmail)
                     .password(passwordEncoder.encode(adminPassword))
-                    .fullName("Code With Zosh")
+                    .fullName("Omm Prakash Debata")
                     .role(UserRole.ROLE_ADMIN)
+                    .authProvider(AuthProvider.LOCAL)   // ✅ FIX
                     .build();
 
             userRepository.save(adminUser);

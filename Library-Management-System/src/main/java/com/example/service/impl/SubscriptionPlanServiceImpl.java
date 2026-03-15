@@ -76,4 +76,16 @@ plan.setUpdatedBy(currentUser.getFullName());
                 .map(planMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    
+   @Override
+public SubscriptionPlan getBySubscriptionPlanCode(String subscriptionPlanCode) throws Exception {
+    SubscriptionPlan plan = planRepository.findByPlanCode(subscriptionPlanCode);
+    if (plan == null) {
+        throw new Exception("Plan not found with code: " + subscriptionPlanCode);
+    }
+    return plan;
+}
+
+
 }

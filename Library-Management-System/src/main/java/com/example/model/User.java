@@ -15,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -41,21 +43,27 @@ public class User {
     @Column(unique = true, nullable = false, length = 255)
     private String email;
 
+    @Column(length = 150)
     private String fullName;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
 
     @Column(length = 255)
     private String password;
 
+    @Column(length = 20)
     private String phone;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private AuthProvider authProvider = AuthProvider.LOCAL;
 
+    @Column(unique = true)
     private String googleId;
 
+    @Column(length = 500)
     private String profileImage;
 
     private LocalDateTime lastLogin;
