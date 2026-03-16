@@ -1,0 +1,121 @@
+.demo-section{
+  padding: 100px 60px;
+  background: #e6f2f3;
+}
+
+.demo-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+}
+
+/* FORM */
+
+.demo-form{
+  width: 450px;
+}
+
+.demo-form h2{
+  font-size: 34px;
+  margin-bottom: 30px;
+}
+
+.demo-form span{
+  color: #0ea5a4;
+}
+
+.demo-form input,
+.demo-form select{
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+
+  border-radius: 8px;
+  border: 1px solid #ddd;
+
+  font-size: 14px;
+}
+
+.form-row{
+  display: flex;
+  gap: 15px;
+}
+
+.checkbox{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.checkbox input{
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkbox a{
+  color: #0ea5a4;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.book-btn{
+  padding: 12px 26px;
+  border-radius: 8px;
+
+  border: none;
+
+  background: #1e3a8a;
+  color: white;
+
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* IMAGE */
+
+.demo-image{
+  position: relative;
+}
+
+.demo-image img{
+  width: 420px;
+  border-radius: 50%;
+}
+
+/* FLOATING CARD */
+
+.contact-card{
+  position: absolute;
+  bottom: 40px;
+  left: -40px;
+
+  background: white;
+  padding: 20px 25px;
+
+  border-radius: 12px;
+
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+
+  animation: jumpCard 2s ease-in-out infinite;
+}
+
+@keyframes jumpCard {
+
+  0%{
+    transform: translateY(0);
+  }
+
+  50%{
+    transform: translateY(-12px);
+  }
+
+  100%{
+    transform: translateY(0);
+  }
+
+}

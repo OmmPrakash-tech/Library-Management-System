@@ -1,0 +1,49 @@
+.footer{
+  background:#000;
+  color:white;
+  padding:60px 0 20px 0;
+}
+
+.footer-container{
+  width:80%;
+  margin:auto;
+
+  display:flex;
+  justify-content:space-between;
+}
+
+.footer-brand h2{
+  font-size:28px;
+}
+
+.footer-links h3{
+  margin-bottom:15px;
+}
+
+.footer-links ul{
+  list-style:none;
+  padding:0;
+}
+
+.footer-links li{
+  margin-bottom:10px;
+  color:#ccc;
+  cursor:pointer;
+}
+
+.footer-links li:hover{
+  color:white;
+}
+
+.social-icons span{
+  font-size:22px;
+  margin-right:10px;
+  cursor:pointer;
+}
+
+.footer-bottom{
+  text-align:center;
+  margin-top:40px;
+  color:#aaa;
+  font-size:14px;
+}

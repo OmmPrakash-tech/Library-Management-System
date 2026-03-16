@@ -1,0 +1,50 @@
+<section class="testimonial-section">
+
+  <h2 class="testimonial-title">
+    What Our Happy Customers Say’s
+  </h2>
+
+  <div class="slider-wrapper">
+
+    <!-- LEFT ARROW -->
+    <button class="arrow left" (click)="prev()">
+      ❮
+    </button>
+
+    <div class="slider">
+
+      <div class="slider-track"
+           [style.transform]="'translateX(-' + currentIndex * 360 + 'px)'">
+
+        <div class="testimonial-card"
+             *ngFor="let t of testimonials">
+
+          <p class="review">
+            "{{t.text}}"
+          </p>
+
+          <div class="user">
+
+            <img src="/image1.png">
+
+            <div>
+              <h4>{{t.name}}</h4>
+              <span>{{t.role}}</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT ARROW -->
+    <button class="arrow right" (click)="next()">
+      ❯
+    </button>
+
+  </div>
+
+</section>

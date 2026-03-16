@@ -1,0 +1,30 @@
+<section class="pricing-section">
+
+  <div class="pricing-header">
+    <span class="subtitle">Library Plans & Pricing</span>
+    <h2>Choose the Best Plan for You</h2>
+  </div>
+
+  <div class="pricing-container">
+
+    <div class="pricing-card" *ngFor="let plan of plans">
+
+      <h3>{{plan.name}}</h3>
+
+      <div class="price">
+        {{plan.price}} <span>/month</span>
+      </div>
+
+      <button class="buy-btn">Buy Now</button>
+
+      <ul>
+        <li *ngFor="let f of plan.features">
+          ✔ {{f}}
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</section>
