@@ -1,182 +1,116 @@
 package com.example.service.gateway;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.example.domain.PaymentType;
 import com.example.model.Payment;
-import com.example.model.SubscriptionPlan;
-import com.example.model.User;
-import com.example.payload.response.PaymentLinkResponse;
-import com.example.service.SubscriptionPlanService;
-import com.razorpay.PaymentLink;
+import com.example.payload.response.RazorpayOrderResponse;
+import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class RazorpayService {
 
-    private final SubscriptionPlanService subscriptionPlanService;
-
-    @Value("${razorpay.key.id:}")
+    @Value("${razorpay.key.id}")
     private String razorpayKeyId;
 
-    @Value("${razorpay.key.secret:}")
+    @Value("${razorpay.key.secret}")
     private String razorpayKeySecret;
 
-    @Value("${razorpay.callback.base-url:http://localhost:5173}")
-    private String callbackBaseUrl;
+    private RazorpayClient razorpayClient;
 
-    public PaymentLinkResponse createPaymentLink(User user, Payment payment) {
+    // ✅ Initialize once
+    @jakarta.annotation.PostConstruct
+    public void init() throws RazorpayException {
+        this.razorpayClient = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+    }
+
+    // 🔥 CREATE ORDER (CORE METHOD)
+    public RazorpayOrderResponse createOrder(Payment payment) {
 
         try {
+            log.info("Creating Razorpay order for paymentId={}", payment.getId());
 
-            RazorpayClient razorpayClient =
-                    new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+            JSONObject options = new JSONObject();
 
-            Long amountInPaisa = payment.getAmount() * 100;
+            // ⚠️ Razorpay uses paisa
+            options.put("amount", payment.getAmount() * 100);
+            options.put("currency", "INR");
 
-            JSONObject paymentLinkRequest = new JSONObject();
-            paymentLinkRequest.put("amount", amountInPaisa);
-            paymentLinkRequest.put("currency", "INR");
-            paymentLinkRequest.put("description", payment.getDescription());
+            // receipt helps tracking
+            options.put("receipt", payment.getTransactionId());
 
-            // Customer Details
-            JSONObject customer = new JSONObject();
-            customer.put("name", user.getFullName());
-            customer.put("email", user.getEmail());
-
-            if (user.getPhone() != null) {
-                customer.put("contact", user.getPhone());
-            }
-
-            paymentLinkRequest.put("customer", customer);
-
-            // Notification settings
-            JSONObject notify = new JSONObject();
-            notify.put("email", true);
-            notify.put("sms", user.getPhone() != null);
-
-            paymentLinkRequest.put("notify", notify);
-            paymentLinkRequest.put("reminder_enable", true);
-
-            // Callback URL
-            String successUrl =
-                    callbackBaseUrl + "/payment-success/" + payment.getId();
-
-            paymentLinkRequest.put("callback_url", successUrl);
-            paymentLinkRequest.put("callback_method", "get");
-
-            // Notes (metadata)
+            // optional metadata
             JSONObject notes = new JSONObject();
-            notes.put("user_id", user.getId());
             notes.put("payment_id", payment.getId());
+            options.put("notes", notes);
 
-            if (payment.getPaymentType() == PaymentType.MEMBERSHIP) {
+Order order = razorpayClient.orders.create(options);
 
-                if (payment.getSubscription() != null) {
-                    notes.put("subscription_id", payment.getSubscription().getId());
-                    notes.put("plan", payment.getSubscription().getPlan().getPlanCode());
-                }
+String orderId = order.get("id");
 
-                notes.put("type", PaymentType.MEMBERSHIP.toString());
+Object amountObj = order.get("amount");
+Long amount = ((Number) amountObj).longValue(); // ✅ BEST WAY
 
-            } else if (payment.getPaymentType() == PaymentType.FINE) {
+return new RazorpayOrderResponse(
+        orderId,
+        amount,
+        order.get("currency")
+);
 
-                // If you implement fine system later
-                // notes.put("fine_id", payment.getFine().getId());
-
-                notes.put("type", PaymentType.FINE.toString());
-            }
-
-            paymentLinkRequest.put("notes", notes);
-
-            PaymentLink paymentLink =
-                    razorpayClient.paymentLink.create(paymentLinkRequest);
-
-            PaymentLinkResponse response = new PaymentLinkResponse();
-            response.setPayment_link_id(paymentLink.get("id"));
-            response.setPayment_link_url(paymentLink.get("short_url"));
-
-            return response;
-
-        } catch (RazorpayException e) {
-            log.error("Error creating Razorpay payment link", e);
-            throw new RuntimeException("Error creating Razorpay payment link", e);
-        }
+        } 
+        catch (Exception e) {
+    log.error("Razorpay error message: {}", e.getMessage());
+    e.printStackTrace();   // 👈 MUST ADD
+    throw new RuntimeException("Error creating Razorpay order", e);
+}
     }
 
-    public JSONObject fetchPaymentDetails(String paymentId) {
+    // 🔐 SIGNATURE VERIFICATION
+    public boolean verifySignature(String orderId, String paymentId, String signature) {
 
         try {
+            String payload = orderId + "|" + paymentId;
 
-            RazorpayClient razorpay =
-                    new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+            String generatedSignature = hmacSHA256(payload, razorpayKeySecret);
 
-            com.razorpay.Payment payment =
-                    razorpay.payments.fetch(paymentId);
-
-            return payment.toJson();
-
-        } catch (RazorpayException e) {
-
-            log.error("Failed to fetch payment details for payment ID {}", paymentId, e);
-            throw new RuntimeException(
-                    "Failed to fetch payment details for payment ID: " + paymentId, e);
-        }
-    }
-
-    public boolean isValidPayment(String paymentId) {
-
-        try {
-
-            JSONObject paymentDetails = fetchPaymentDetails(paymentId);
-
-            String status = paymentDetails.optString("status");
-
-            if (!"captured".equalsIgnoreCase(status)) {
-                log.warn("Payment not captured. Current status: {}", status);
-                return false;
-            }
-
-            long amount = paymentDetails.optLong("amount");
-            long amountInRupees = amount / 100;
-
-            JSONObject notes = paymentDetails.getJSONObject("notes");
-            String paymentType = notes.optString("type");
-
-            if (paymentType.equals(PaymentType.MEMBERSHIP.toString())) {
-
-                String planCode = notes.optString("plan");
-
-                SubscriptionPlan subscriptionPlan =
-                        subscriptionPlanService.getBySubscriptionPlanCode(planCode);
-
-                return amountInRupees == subscriptionPlan.getPrice();
-            }
-
-            else if (paymentType.equals(PaymentType.FINE.toString())) {
-
-                // Example placeholder for fine validation
-                // Long fineId = notes.getLong("fine_id");
-                // Fine fine = fineService.getFineById(fineId);
-                // return amountInRupees == fine.getAmount();
-
-                return true;
-            }
-
-            return false;
+            return generatedSignature.equals(signature);
 
         } catch (Exception e) {
-
-            log.error("Payment validation failed", e);
+            log.error("Signature verification failed", e);
             return false;
         }
+    }
+
+    // 🔧 HMAC SHA256
+    private String hmacSHA256(String data, String secret) throws Exception {
+        Mac mac = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+        mac.init(secretKey);
+
+        byte[] hash = mac.doFinal(data.getBytes());
+
+        return bytesToHex(hash);
+    }
+
+    // 🔧 HEX CONVERSION
+    private String bytesToHex(byte[] hash) {
+        StringBuilder hex = new StringBuilder(2 * hash.length);
+
+        for (byte b : hash) {
+            String hexChar = Integer.toHexString(0xff & b);
+            if (hexChar.length() == 1) hex.append('0');
+            hex.append(hexChar);
+        }
+
+        return hex.toString();
     }
 }

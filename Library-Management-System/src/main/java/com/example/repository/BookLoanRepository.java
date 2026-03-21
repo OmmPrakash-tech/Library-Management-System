@@ -2,6 +2,7 @@ package com.example.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,37 +18,30 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
 
     Page<BookLoan> findByUserId(Long userId, Pageable pageable);
 
+    List<BookLoan> findByBookId(Long bookId);
+
     Page<BookLoan> findByStatusAndUser(BookLoanStatus status, User user, Pageable pageable);
 
     Page<BookLoan> findByStatus(BookLoanStatus status, Pageable pageable);
 
     Page<BookLoan> findByBookId(Long bookId, Pageable pageable);
 
-    List<BookLoan> findByBookId(Long bookId);
-
-    @Query("SELECT CASE WHEN COUNT(bl) > 0 THEN true ELSE false END FROM BookLoan bl " +
-           "WHERE bl.user.id = :userId AND bl.book.id = :bookId " +
-           "AND (bl.status = 'CHECKED_OUT' OR bl.status = 'OVERDUE')")
-    boolean hasActiveCheckout(
-            @Param("userId") Long userId,
-            @Param("bookId") Long bookId
+    boolean existsByUserIdAndBookIdAndStatusIn(
+            Long userId,
+            Long bookId,
+            List<BookLoanStatus> statuses
     );
 
     @Query("SELECT COUNT(bl) FROM BookLoan bl WHERE bl.user.id = :userId " +
-           "AND (bl.status = 'CHECKED_OUT' OR bl.status = 'OVERDUE')")
+           "AND bl.status IN ('CHECKED_OUT', 'OVERDUE')")
     long countActiveBookLoansByUser(@Param("userId") Long userId);
-
-    // ❗ FIXED (your query was wrong)
-    @Query("SELECT COUNT(bl) FROM BookLoan bl WHERE bl.user.id = :userId " +
-           "AND bl.status = 'OVERDUE'")
-    long countOverdueActiveLoansByUser(@Param("userId") Long userId);
 
     @Query("SELECT COUNT(bl) FROM BookLoan bl WHERE bl.user.id = :userId " +
            "AND bl.status = 'OVERDUE'")
     long countOverdueBookLoansByUser(@Param("userId") Long userId);
 
     @Query("SELECT bl FROM BookLoan bl WHERE bl.dueDate < :currentDate " +
-           "AND (bl.status = 'CHECKED_OUT' OR bl.status = 'OVERDUE')")
+           "AND bl.status IN ('CHECKED_OUT', 'OVERDUE')")
     Page<BookLoan> findOverdueBookLoans(
             @Param("currentDate") LocalDate currentDate,
             Pageable pageable
@@ -60,9 +54,8 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
             Pageable pageable
     );
 
-    boolean existsByUserIdAndBookIdAndStatus(
-            Long userId,
-            Long bookId,
-            BookLoanStatus status
-    );
+    @Query("SELECT bl FROM BookLoan bl " +
+           "JOIN FETCH bl.user JOIN FETCH bl.book " +
+           "WHERE bl.id = :id")
+    Optional<BookLoan> findByIdWithUserAndBook(@Param("id") Long id);
 }

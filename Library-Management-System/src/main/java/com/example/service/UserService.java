@@ -13,4 +13,9 @@ public interface UserService {
 
     User findById(Long id) throws RuntimeException;
 
+
+    void deleteUser(Long id);
+
+    UserDTO updateUser(Long id, UserDTO userDTO);
+
 }

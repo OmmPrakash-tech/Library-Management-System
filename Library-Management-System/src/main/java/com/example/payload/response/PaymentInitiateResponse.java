@@ -7,30 +7,26 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class PaymentInitiateResponse {
 
-
     private Long paymentId;
 
-private PaymentGateway gateway;
+    private PaymentGateway gateway;
 
-private String transactionId;
+    private String razorpayOrderId;
 
-private String razorpayOrderId;
+    private String key;        // 🔥 REQUIRED for Razorpay
+    private String currency;   // e.g. INR
 
-private Long amount;
+    private Long amount;
 
-private String description;
+    private String description;
 
-private String checkoutUrl;
+    private String message;
 
-private String message;
-
-private Boolean success;
-
+    private Boolean success;
 }

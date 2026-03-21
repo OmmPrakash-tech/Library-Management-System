@@ -1,0 +1,108 @@
+<section class="admin-dashboard">
+
+  <!-- NAVBAR -->
+
+  <header class="navbar">
+
+    <div class="logo">
+      📚 Library Admin
+    </div>
+
+    <nav>
+
+      <a>Dashboard</a>
+      <a>Books</a>
+      <a>Users</a>
+      <a>Subscriptions</a>
+
+    </nav>
+
+    <button class="logout">
+      Logout
+    </button>
+
+  </header>
+
+
+  <!-- HERO SECTION -->
+
+  <section class="hero">
+
+    <h1>Welcome Admin</h1>
+
+    <p>
+      Manage your entire library system from this dashboard.
+    </p>
+
+  </section>
+
+
+  <!-- STATS -->
+
+  <section class="stats">
+
+    <div class="card" *ngFor="let stat of stats">
+
+      <div class="icon">
+        {{stat.icon}}
+      </div>
+
+      <h3>{{stat.title}}</h3>
+
+      <p>{{stat.value}}</p>
+
+    </div>
+
+  </section>
+
+
+  <!-- QUICK ACTIONS -->
+
+  <section class="actions">
+
+    <h2>Quick Actions</h2>
+
+    <div class="action-grid">
+
+      <div class="action-card">
+        ➕ Add New Book
+      </div>
+
+      <div class="action-card">
+        👤 Manage Users
+      </div>
+
+      <div class="action-card">
+        💳 Manage Subscriptions
+      </div>
+
+      <div class="action-card">
+        📊 View Reports
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- RECENT ACTIVITY -->
+
+  <section class="activity">
+
+    <h2>Recent Activity</h2>
+
+    <ul>
+
+      <li>John Watson registered a new account</li>
+
+      <li>New book "Clean Code" added</li>
+
+      <li>Subscription upgraded by user Sarah</li>
+
+      <li>Book returned by Michael</li>
+
+    </ul>
+
+  </section>
+
+</section>

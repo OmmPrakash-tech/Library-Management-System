@@ -2,22 +2,11 @@ package com.example.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.domain.BookLoanStatus;
-//import com.example.exception.BookException;
-//import com.example.exception.UserException;
 import com.example.payload.dto.BookLoanDTO;
-import com.example.payload.request.BookLoanSearchRequest;
-import com.example.payload.request.CheckinRequest;
-import com.example.payload.request.CheckoutRequest;
-import com.example.payload.request.RenewalRequest;
+import com.example.payload.request.*;
 import com.example.payload.response.ApiResponse;
 import com.example.payload.response.PageResponse;
 import com.example.service.BookLoanService;
@@ -25,83 +14,94 @@ import com.example.service.BookLoanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins="http://localhost:4200")
 @RequestMapping("/api/book-loans")
 public class BookLoanController {
 
     private final BookLoanService bookLoanService;
 
-@PostMapping("/checkout")
-public ResponseEntity<?> checkoutBook(
-        @Valid @RequestBody CheckoutRequest checkoutRequest) throws Exception {
 
-    BookLoanDTO bookLoan = bookLoanService.checkoutBook(checkoutRequest);
+    @PostMapping("/checkout")
+public ResponseEntity<BookLoanDTO> checkoutBook(
+        @Valid @RequestBody CheckoutRequest request) {
 
-    return new ResponseEntity<>(bookLoan, HttpStatus.CREATED);
-}
+    // get user from service (JWT/session)
+    Long userId = null; // will be fetched internally
 
-@PostMapping("/checkout/user/{userId}")
-public ResponseEntity<?> checkoutBookForUser(
-        @PathVariable Long userId,
-        @Valid @RequestBody CheckoutRequest checkoutRequest) {
-
-    BookLoanDTO bookLoan = bookLoanService.checkoutBookForUser(userId, checkoutRequest);
-
-    return new ResponseEntity<>(bookLoan, HttpStatus.CREATED);
-}
-
-@PostMapping("/checkin")
-public ResponseEntity<?> checkin(
-        @Valid @RequestBody CheckinRequest checkinRequest) throws Exception {
-
-    BookLoanDTO bookLoan = bookLoanService
-            .checkinBook(checkinRequest);
-
-    return new ResponseEntity<>(bookLoan, HttpStatus.CREATED);
-}
-
-@PostMapping("/renew")
-public ResponseEntity<?> renew(
-        @Valid @RequestBody RenewalRequest renewalRequest) throws Exception {
-
-    BookLoanDTO bookLoan = bookLoanService
-            .renewCheckout(renewalRequest);
-
-    return new ResponseEntity<>(bookLoan, HttpStatus.OK);
-}
-
-@GetMapping("/my")
-public ResponseEntity<?> getMyBookLoans(
-        @RequestParam(required = false) BookLoanStatus status,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "20") int size) throws Exception {
-
-    PageResponse<BookLoanDTO> bookLoans = bookLoanService
-            .getMyBookLoans(status, page, size);
-
-    return ResponseEntity.ok(bookLoans);
-}
-
-@PostMapping("/search")
-public ResponseEntity<?> getAllBookLoans(
-        @RequestBody BookLoanSearchRequest searchRequest) throws Exception {
-
-    PageResponse<BookLoanDTO> bookLoans = bookLoanService
-            .getBookLoans(searchRequest);
-
-    return ResponseEntity.ok(bookLoans);
-}
-
-@PostMapping("/admin/update-overdue")
-public ResponseEntity<?> updateOverdueBookLoans() {
-
-    int updateCount = bookLoanService.updateOverdueBookLoan();
-
-    return ResponseEntity.ok(
-            new ApiResponse("Overdue book loans are updated", true)
+    BookLoanDTO response = bookLoanService.checkoutBook(
+            userId,
+            request
     );
+
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
 }
 
+    // ================= CHECKOUT =================
+    @PostMapping("/checkout/user/{userId}")
+    public ResponseEntity<BookLoanDTO> checkoutBook(
+            @PathVariable Long userId,
+            @Valid @RequestBody CheckoutRequest request) {
+
+        BookLoanDTO response = bookLoanService.checkoutBook(userId, request);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // ================= CHECKIN =================
+    @PostMapping("/checkin")
+    public ResponseEntity<BookLoanDTO> checkIn(
+            @Valid @RequestBody CheckinRequest request) {
+
+        BookLoanDTO response = bookLoanService.checkInBook(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ================= RENEW =================
+    @PostMapping("/renew")
+    public ResponseEntity<BookLoanDTO> renew(
+            @Valid @RequestBody RenewalRequest request) {
+
+        BookLoanDTO response = bookLoanService.renewCheckout(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ================= USER LOANS =================
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<PageResponse<BookLoanDTO>> getUserLoans(
+            @PathVariable Long userId,
+            @RequestParam(required = false) BookLoanStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        PageResponse<BookLoanDTO> response =
+                bookLoanService.getUserBookLoans(userId, status, page, size);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ================= SEARCH =================
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<BookLoanDTO>> search(
+            @RequestBody BookLoanSearchRequest request) {
+
+        PageResponse<BookLoanDTO> response =
+                bookLoanService.getBookLoans(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ================= OVERDUE UPDATE =================
+    @PostMapping("/admin/update-overdue")
+    public ResponseEntity<ApiResponse> updateOverdue() {
+
+        int count = bookLoanService.markOverdueLoans();
+
+        return ResponseEntity.ok(
+                new ApiResponse("Updated " + count + " overdue loans", true)
+        );
+    }
 }

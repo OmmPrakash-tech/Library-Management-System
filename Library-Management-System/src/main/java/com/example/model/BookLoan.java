@@ -15,11 +15,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "book_loan")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,69 +38,67 @@ import lombok.Setter;
 public class BookLoan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(nullable = false)
-@ManyToOne
-private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-@JoinColumn(nullable = false)
-@ManyToOne
-private Book book;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 
-private BookLoanType type;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private BookLoanType type;
 
-@Enumerated(EnumType.STRING)
-@Column(nullable = false, length = 20)
-private BookLoanStatus status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private BookLoanStatus status;
 
+    @Column(nullable = false)
+    private LocalDate checkoutDate;
 
+    private LocalDate dueDate;
 
- @Column(nullable = false)
-private LocalDate checkoutDate;
+    private LocalDate returnDate;
 
-private LocalDate dueDate;
+    @Column(nullable = false)
+    private Integer renewalCount = 0;
 
-@Column(nullable = false)
-private LocalDate returnDate;
+    @Column(nullable = false)
+    private Integer maxRenewals = 2;
 
-@Column(nullable = false)
-private Integer renewalCount = 0;
+    @Column(length = 500)
+    private String notes;
 
-@Column(nullable = false)
-private Integer maxRenewals = 2;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-// fine todo
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
-@Column(length= 500)
-private String notes;
+    public boolean isActive() {
+        return status == BookLoanStatus.CHECKED_OUT
+                || status == BookLoanStatus.OVERDUE;
+    }
 
-@Column(nullable = false)
-private Boolean isOverdue = false;
+    public boolean isOverdue() {
+        return dueDate != null && LocalDate.now().isAfter(dueDate);
+    }
 
-@Column(nullable = false)
-private Integer overdueDays = 0;
+    public int getOverdueDays() {
+        if (dueDate == null || !isOverdue()) return 0;
+        return (int) java.time.temporal.ChronoUnit.DAYS
+                .between(dueDate, LocalDate.now());
+    }
 
-@Column(nullable = false, updatable = false)
-@CreationTimestamp
-private LocalDateTime createdAt;
-
-@Column(nullable = false)
-@UpdateTimestamp
-private LocalDateTime updatedAt;
-
-public boolean isActive() {
-    return status == BookLoanStatus.CHECKED_OUT
-            || status == BookLoanStatus.OVERDUE;
-}
-
-public boolean canRenew() {
-    return status == BookLoanStatus.CHECKED_OUT
-            && !isOverdue
-            && renewalCount < maxRenewals;
-}
-
-
-
+    public boolean canRenew() {
+        return status == BookLoanStatus.CHECKED_OUT
+                && !isOverdue()
+                && renewalCount < maxRenewals;
+    }
 }

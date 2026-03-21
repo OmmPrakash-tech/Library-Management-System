@@ -1,0 +1,47 @@
+<section class="feature-section">
+
+  <p class="feature-subtitle">
+    Features of Our Library Automation Software
+  </p>
+
+  <h2 class="feature-title">
+    Why Choose Our Library Management Tool?
+  </h2>
+
+  <div class="feature-grid">
+
+    <div class="feature-card"
+     *ngFor="let f of features"
+     (click)="openFeature(f.route)">
+
+      <div class="icon">
+        {{f.icon}}
+      </div>
+
+      <h3>{{f.title}}</h3>
+
+      <p>
+        {{f.desc}}
+      </p>
+
+      <div class="corner-shape"></div>
+
+    </div>
+
+  </div>
+
+  <!-- CTA SECTION -->
+
+  <div class="feature-cta">
+
+    <p>
+      Make library management effortless and efficient
+    </p>
+
+    <button class="cta-btn" (click)="goToDemo()">
+      Get Started Today!
+    </button>
+
+  </div>
+
+</section>

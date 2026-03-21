@@ -4,8 +4,6 @@ import com.example.domain.PaymentGateway;
 import com.example.domain.PaymentType;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,32 +16,20 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PaymentInitiateRequest {
 
-    @NotNull(message = "User ID is mandatory")
-private Long userId;
+    private Long bookLoanId;
 
-private Long bookLoanId; // Required only for FINE payments
+    @NotNull
+    private PaymentType paymentType;
 
-@NotNull(message = "Payment type is mandatory")
-private PaymentType paymentType;
+    @NotNull
+    private PaymentGateway gateway;
 
-@NotNull(message = "Payment gateway is mandatory")
-private PaymentGateway gateway; // RAZORPAY or STRIPE
+    private String description;
 
-@NotNull(message = "Amount is mandatory")
-@Positive(message = "Amount must be positive")
-private Long amount;
+    private Long fineId;
 
-@Size(max = 500, message = "Description must not exceed 500 characters")
-private String description;
+    private Long subscriptionId;
 
-private Long fineId;
-private Long subscriptionId;
-
-// Return URLs for payment gateway redirects
-@Size(max = 500, message = "Success URL must not exceed 500 characters")
-private String successUrl;
-
-@Size(max = 500, message = "Cancel URL must not exceed 500 characters")
-private String cancelUrl;
-
+    private String successUrl;
+    private String cancelUrl;
 }

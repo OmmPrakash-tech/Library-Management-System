@@ -1,0 +1,123 @@
+/* Background for section */
+.container {
+  text-align: center;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, #e0f7fa, #e1bee7, #fff3e0);
+  min-height: 100vh;
+}
+
+/* Title */
+.title {
+  font-size: 48px;
+  border: 2px solid #4caf50;
+  display: inline-block;
+  padding: 10px 25px;
+  margin-bottom: 50px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+/* Card container */
+.card-container {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+/* Card base */
+.card {
+  width: 250px;
+  min-height: 380px;   /* 👈 increase height */
+  border-radius: 25px;
+  padding: 30px 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 👈 spreads content nicely */
+
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  color: white;
+
+  background-size: cover;
+  background-position: center;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+/* Hover effect */
+.card:hover {
+  transform: translateY(-10px) scale(1.03);
+}
+
+/* Dark overlay */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 25px;
+}
+
+/* Content above overlay */
+.card * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Headings */
+.card h3 {
+  background: rgba(255, 255, 255, 0.15);  /* transparent glass */
+  backdrop-filter: blur(8px);             /* blur effect */
+  -webkit-backdrop-filter: blur(8px);
+
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 20px;
+
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Text */
+.card p {
+  flex-grow: 1;   /* 👈 pushes button to bottom */
+  font-size: 14px;
+  margin: 15px 0;
+}
+
+/* Button */
+button {
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* Button hover */
+button:hover {
+  background: #2e7d32;
+}
+
+/* Background images for each card */
+.card:nth-child(1) {
+  background-image: url('/bookimage.png');
+}
+
+.card:nth-child(2) {
+  background-image: url('/subscribeimage.png');
+}
+
+.card:nth-child(3) {
+  background-image: url('/wishlistimage.png');
+}
+
+.card:nth-child(4) {
+  background-image: url('/loanimage.png');
+}

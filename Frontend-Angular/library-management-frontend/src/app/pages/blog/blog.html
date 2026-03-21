@@ -1,0 +1,36 @@
+<section class="blog-hero">
+
+  <h1>Library Insights & Articles</h1>
+  <p>Learn tips, ideas and strategies to manage your library better.</p>
+
+</section>
+
+
+<section class="blog-section">
+
+  <h2>Latest Articles</h2>
+
+  <div class="blog-grid">
+
+    <div class="blog-card"
+         *ngFor="let blog of blogs">
+
+      <img [src]="blog.image">
+
+      <div class="blog-content">
+
+        <h3>{{blog.title}}</h3>
+
+        <p>{{blog.desc}}</p>
+
+        <button class="read-btn">
+          Read More →
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

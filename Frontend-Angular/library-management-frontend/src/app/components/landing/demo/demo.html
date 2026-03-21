@@ -1,0 +1,109 @@
+<section class="demo-section">
+
+  <div class="demo-container">
+
+    <!-- LEFT SIDE FORM -->
+
+    <div class="demo-form">
+
+      <h2>
+        Would you like to <br>
+        <span>Schedule a free Demo?</span>
+      </h2>
+
+      <!-- NAME -->
+      <input 
+        type="text"
+        placeholder="Full Name"
+        [(ngModel)]="name"
+        name="name"
+      >
+
+      <!-- EMAIL -->
+      <input 
+        type="email"
+        placeholder="Email ID"
+        [(ngModel)]="email"
+        name="email"
+      >
+
+      <div class="form-row">
+
+        <!-- MOBILE -->
+        <input 
+          type="text"
+          placeholder="Mobile Number"
+          [(ngModel)]="mobile"
+          name="mobile"
+        >
+
+        <!-- DATE -->
+        <input 
+          type="date"
+          [(ngModel)]="date"
+          name="date"
+        >
+
+      </div>
+
+      <!-- TIME SLOT -->
+
+      <select 
+        [(ngModel)]="slot"
+        name="slot"
+      >
+        <option value="">Select Preferred Time Slot</option>
+        <option>10:00 AM</option>
+        <option>12:00 PM</option>
+        <option>3:00 PM</option>
+        <option>6:00 PM</option>
+      </select>
+
+
+      <!-- TERMS -->
+
+      <label class="checkbox">
+
+        <input type="checkbox">
+
+        <span>
+          I agree to the
+          <a href="#">Terms and Conditions</a>
+        </span>
+
+      </label>
+
+
+      <!-- BUTTON -->
+
+      <button 
+        class="book-btn"
+        (click)="bookDemo()"
+      >
+        Book My Slot
+      </button>
+
+    </div>
+
+
+
+    <!-- RIGHT SIDE IMAGE -->
+
+    <div class="demo-image">
+
+      <img src="/image2.png" alt="demo image">
+
+      <div class="contact-card">
+
+        <h4>We Are Here to Assist you</h4>
+
+        <p>📞 Call : 91-8114479678</p>
+        <p>✉ Mail : info@libraro.in</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

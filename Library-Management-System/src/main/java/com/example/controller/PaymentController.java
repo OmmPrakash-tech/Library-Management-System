@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,47 +23,64 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@CrossOrigin(origins="http://localhost:4200")
 @RequiredArgsConstructor
 @RequestMapping("/api/payments")
 public class PaymentController {
 
     private final PaymentService paymentService;
 
-@PostMapping("/verify")
-public ResponseEntity<?> verifyPayment(
-        @Valid @RequestBody PaymentVerifyRequest request) {
-    try {
+    // 🔐 VERIFY PAYMENT
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyPayment(
+            @Valid @RequestBody PaymentVerifyRequest request) {
 
-        PaymentDTO payment = paymentService.verifyPayment(request);
+        try {
 
-        return ResponseEntity.ok(payment);
+            PaymentDTO payment = paymentService.verifyPayment(request);
 
-    } catch (Exception e) {
+            return ResponseEntity.ok(payment);
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse(e.getMessage(), false));
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(e.getMessage(), false));
+        }
     }
-}
 
-@GetMapping
-public ResponseEntity<?> getAllPayments(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "DESC") String sortDir) {
+    // 👤 USER PAYMENTS
+    @GetMapping("/me")
+    public ResponseEntity<?> getUserPayments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-    Sort sort = sortDir.equalsIgnoreCase("DESC")
-            ? Sort.by(sortBy).descending()
-            : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(
+                page, size, Sort.by("createdAt").descending());
 
-    Pageable pageable = PageRequest.of(page, size, sort);
+        Page<PaymentDTO> payments =
+                paymentService.getUserPayments(pageable);
 
-    Page<PaymentDTO> payments = paymentService.getAllPayments(pageable);
+        return ResponseEntity.ok(payments);
+    }
 
-    return ResponseEntity.ok(payments);
-}
+    // 🛠 ADMIN PAYMENTS
+    @GetMapping("/admin")
+    public ResponseEntity<?> getAllPayments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDir) {
 
+        Sort sort = sortDir.equalsIgnoreCase("DESC")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
 
+        Pageable pageable = PageRequest.of(page, size, sort);
 
+        Page<PaymentDTO> payments =
+                paymentService.getAllPayments(pageable);
+
+        return ResponseEntity.ok(payments);
+    }
 }

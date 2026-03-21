@@ -1,0 +1,65 @@
+<section class="library-hero">
+
+  <h1>Find the Best Libraries Near You</h1>
+
+  <div class="search-box">
+
+    <select [(ngModel)]="selectedCity">
+
+      <option value="">Select City</option>
+      <option value="Kota">Kota</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Mumbai">Mumbai</option>
+
+    </select>
+
+    <button (click)="searchLibraries()">
+      Search
+    </button>
+
+  </div>
+
+</section>
+
+
+<section class="library-list">
+
+  <h2>Featured & Popular Libraries</h2>
+
+  <div class="library-grid">
+
+    <div class="library-card"
+         *ngFor="let lib of filteredLibraries">
+
+      <h3>{{lib.name}}</h3>
+
+      <p class="address">{{lib.address}}</p>
+
+      ⭐ ⭐ ⭐ ⭐ ⭐
+
+      <div class="library-info">
+
+        <div>
+          <small>Available Seats</small>
+          <p class="seats">{{lib.seats}}</p>
+        </div>
+
+        <div>
+          <small>Library Type</small>
+          <p>{{lib.type}}</p>
+        </div>
+
+      </div>
+
+      <button class="details-btn">
+        View Details →
+      </button>
+
+      <!-- Circular Library Image -->
+      <img src="/image4.png" class="library-img">
+
+    </div>
+
+  </div>
+
+</section>

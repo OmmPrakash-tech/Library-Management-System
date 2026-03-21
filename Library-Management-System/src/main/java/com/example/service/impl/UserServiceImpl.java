@@ -53,9 +53,45 @@ public User findById(Long id) {
             .orElseThrow(() -> new RuntimeException("User not found with given id"));
 }
 
+@Override
+public void deleteUser(Long id) {
 
+    User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with given id"));
 
+    userRepository.delete(user);
+}
 
+@Override
+public UserDTO updateUser(Long id, UserDTO userDTO) {
+
+    // 1. Fetch existing user
+    User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with given id"));
+
+    // 2. Update fields (only allowed ones)
+    user.setFullName(userDTO.getFullName());
+    user.setPhone(userDTO.getPhone());
+
+    // Optional updates (only if provided)
+    if (userDTO.getEmail() != null) {
+        user.setEmail(userDTO.getEmail());
+    }
+
+    if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+        user.setPassword(userDTO.getPassword()); // (later you can encode it 🔐)
+    }
+
+    if (userDTO.getRole() != null) {
+        user.setRole(userDTO.getRole());
+    }
+
+    // 3. Save updated user
+    User updatedUser = userRepository.save(user);
+
+    // 4. Convert to DTO and return
+    return userMapper.toDTO(updatedUser);
+}
 
 
 }

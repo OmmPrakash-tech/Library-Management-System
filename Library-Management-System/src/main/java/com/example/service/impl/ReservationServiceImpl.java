@@ -66,11 +66,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationDTO createReservationForUser(ReservationRequest reservationRequest, Long userId) {
 
-        boolean alreadyHasLoan = bookLoanRepository.existsByUserIdAndBookIdAndStatus(
-                userId,
-                reservationRequest.getBookId(),
-                BookLoanStatus.CHECKED_OUT
-        );
+boolean alreadyHasLoan = bookLoanRepository.existsByUserIdAndBookIdAndStatusIn(
+        userId,
+        reservationRequest.getBookId(),
+        List.of(BookLoanStatus.CHECKED_OUT)
+);
 
         if (alreadyHasLoan) {
             throw new RuntimeException("You already have loan on this book");
@@ -160,7 +160,10 @@ public class ReservationServiceImpl implements ReservationService {
         request.setBookId(reservation.getBook().getId());
         request.setNotes("Assign Booked by Admin");
 
-        bookLoanService.checkoutBookForUser(reservation.getUser().getId(), request);
+        bookLoanService.checkoutBook(
+        reservation.getUser().getId(),
+        request
+);
 
         return reservationMapper.toDTO(savedReservation);
     }

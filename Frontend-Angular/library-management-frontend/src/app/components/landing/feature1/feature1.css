@@ -1,0 +1,34 @@
+.feature1-section{
+  padding:80px 60px;
+  text-align:center;
+  background:#f7f9fb;
+}
+
+.subtitle{
+  color:#1aa3a8;
+  font-size:14px;
+}
+
+.feature1-section h2{
+  font-size:32px;
+  margin:10px 0 40px;
+}
+
+.feature1-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:30px;
+}
+
+.feature1-card{
+  background:white;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
+
+.feature1-card img{
+  width:100%;
+  margin-top:15px;
+  border-radius:10px;
+}

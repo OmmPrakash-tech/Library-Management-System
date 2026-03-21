@@ -1,0 +1,54 @@
+.pricing-section{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.view-btn{
+  margin-top:20px;
+  padding:12px 24px;
+  border:none;
+  background:#2c3e80;
+  color:white;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.plans{
+  margin-top:50px;
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  flex-wrap:wrap;
+}
+
+.plan-card{
+  background:white;
+  width:260px;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.plan-card h2{
+  color:#2c3e80;
+}
+
+.plan-card ul{
+  list-style:none;
+  padding:0;
+  margin:20px 0;
+}
+
+.plan-card li{
+  margin:8px 0;
+}
+
+.plan-card button{
+  padding:10px 18px;
+  border:none;
+  background:#19a7ce;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}

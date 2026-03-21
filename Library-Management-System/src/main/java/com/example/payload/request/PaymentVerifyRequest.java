@@ -1,5 +1,6 @@
 package com.example.payload.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,10 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentVerifyRequest {
 
-    private String razorpayPaymentId;
-   
+    @NotNull(message = "Payment ID is required")
+    private Long paymentId;
 
-    // Stripe specific fields
+    // Razorpay fields
+    private String razorpayPaymentId;
+    private String razorpayOrderId;
+    private String razorpaySignature;
+
+    // Stripe fields
     private String stripePaymentIntentId;
     private String stripePaymentIntentStatus;
 }

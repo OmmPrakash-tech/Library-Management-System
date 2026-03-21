@@ -1,0 +1,32 @@
+<div class="book-container">
+
+  <h1 class="title">📚 Available Books</h1>
+
+  <!-- 🔍 SEARCH -->
+  <div class="search-box">
+    <input [(ngModel)]="searchText" placeholder="Search books..." />
+    <button (click)="searchBooks()">Search</button>
+    <button (click)="loadBooks()">Reset</button>
+  </div>
+
+  <div class="book-grid">
+
+    <div class="book-card" *ngFor="let book of books">
+
+      <img [src]="book.image || 'https://picsum.photos/300/200'" />
+
+      <div class="book-info">
+        <h3>{{ book.title }}</h3>
+        <p class="author">by {{ book.author }}</p>
+
+        <div class="actions">
+          <button (click)="borrowBook(book)">Borrow</button>
+          <button (click)="addToWishlist(book)">Wishlist</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

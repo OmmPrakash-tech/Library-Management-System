@@ -1,0 +1,63 @@
+<div class="profile-container">
+
+  <!-- Top Right Button -->
+  <div class="top-bar">
+    <button class="edit-btn" (click)="enableEdit()">Edit Profile</button>
+  </div>
+
+  <!-- Profile Image -->
+  <div class="profile-image">
+    <img [src]="imageUrl" alt="Profile Image" />
+
+    <!-- USER INFO VIEW MODE -->
+    <div *ngIf="!isEditMode">
+      <h3 class="username">{{ userName }}</h3>
+      <p class="email">{{ email }}</p>
+    </div>
+
+    <!-- EDIT MODE -->
+    <div *ngIf="isEditMode" class="edit-section">
+      <input [(ngModel)]="userName" placeholder="Enter name" />
+      <input [(ngModel)]="email" placeholder="Enter email" />
+      <button class="save-btn" (click)="saveProfile()">Save</button>
+    </div>
+
+    <!-- Add Image Button -->
+    <button class="add-btn" (click)="openModal()">+</button>
+  </div>
+
+  <!-- Hidden File Input -->
+  <input type="file" #fileInput (change)="onFileSelected($event)" hidden />
+
+  <!-- Modal -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+
+      <h3>Select Profile Image</h3>
+
+      <button (click)="fileInput.click()">Upload from System</button>
+
+      <div class="url-section">
+        <input type="text" [(ngModel)]="imageLink" placeholder="Paste image URL" />
+        <button (click)="useImageLink()">Use</button>
+      </div>
+
+      <div class="avatar-section">
+        <img src="/avatar1.png" (click)="selectAvatar('/avatar1.png')" />
+        <img src="/avatar2.png" (click)="selectAvatar('/avatar2.png')" />
+        <img src="/avatar3.png" (click)="selectAvatar('/avatar3.png')" />
+      </div>
+
+      <button class="close-btn" (click)="closeModal()">Close</button>
+
+    </div>
+  </div>
+
+  <!-- Bottom Box -->
+  <div class="profile-box">
+    <button class="visit-btn" (click)="loadProfile()">
+      Visit your profile
+    </button>
+  </div>
+
+</div>

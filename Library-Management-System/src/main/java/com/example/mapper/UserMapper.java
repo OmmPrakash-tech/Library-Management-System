@@ -1,6 +1,5 @@
 package com.example.mapper;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -20,20 +19,19 @@ public class UserMapper {
             return null;
         }
 
-        UserDTO userDTO = new UserDTO();
+        UserDTO dto = new UserDTO();
 
-        userDTO.setId(user.getId());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setFullName(user.getFullName());
-        userDTO.setPhone(user.getPhone());
-        userDTO.setLastLogin(user.getLastLogin());
-        userDTO.setRole(user.getRole());
+        dto.setId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setFullName(user.getFullName());
+        dto.setPhone(user.getPhone());
+        dto.setLastLogin(user.getLastLogin());
+        dto.setRole(user.getRole());
 
-        return userDTO;
+        return dto;
     }
 
     public List<UserDTO> toDTOList(List<User> users) {
-
         if (users == null) {
             return Collections.emptyList();
         }
@@ -44,7 +42,6 @@ public class UserMapper {
     }
 
     public Set<UserDTO> toDTOSet(Set<User> users) {
-
         if (users == null) {
             return Collections.emptySet();
         }
@@ -54,21 +51,20 @@ public class UserMapper {
                 .collect(Collectors.toSet());
     }
 
-    public User toEntity(UserDTO userDTO) {
+    public User toEntity(UserDTO dto) {
 
-        if (userDTO == null) {
+        if (dto == null) {
             return null;
         }
 
         User user = new User();
 
-        user.setId(userDTO.getId());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setCreatedAt(LocalDateTime.now());
-        user.setPhone(userDTO.getPhone());
-        user.setFullName(userDTO.getFullName());
-        user.setRole(userDTO.getRole());
+        user.setId(dto.getId());
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+        user.setPhone(dto.getPhone());
+        user.setFullName(dto.getFullName());
+        user.setRole(dto.getRole());
 
         return user;
     }

@@ -3,6 +3,7 @@ package com.example.payload.dto;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -22,11 +23,14 @@ public class BookReviewDTO {
     private Long userId;
 
     private String userName;
+    private String userEmail;
 
     @NotNull(message = "Book ID is mandatory")
     private Long bookId;
 
     private String bookTitle;
+    private String bookAuthor;
+    private String bookIsbn;
 
     @NotNull(message = "Rating is mandatory")
     @Min(value = 1, message = "Rating must be at least 1")
@@ -41,8 +45,10 @@ public class BookReviewDTO {
     private String title;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
 }

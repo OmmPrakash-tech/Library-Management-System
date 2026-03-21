@@ -15,7 +15,7 @@ public class SubscriptionDTO {
 
     private Long id;
 
-    @NotNull(message = "User ID is mandatory")
+
     private Long userId;
 
     private String userName;

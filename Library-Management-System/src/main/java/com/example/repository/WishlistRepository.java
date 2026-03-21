@@ -14,3 +14,7 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
     boolean existsByUserIdAndBookId(Long userId, Long bookId);
 }
+                // Example placeholder for fine validation
+                // Long fineId = notes.getLong("fine_id");
+                // Fine fine = fineService.getFineById(fineId);
+                // return amountInRupees == fine.getAmount();

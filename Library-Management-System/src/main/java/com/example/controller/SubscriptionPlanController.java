@@ -3,6 +3,7 @@ package com.example.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/api/subscription-plans")
 @RestController
+@CrossOrigin(origins="http://localhost:4200")
 @RequiredArgsConstructor
 public class SubscriptionPlanController {
 
@@ -33,18 +35,18 @@ public ResponseEntity<?> getAllSubscriptionPlans() {
     return ResponseEntity.ok(plans);
 }
 
-@PostMapping("/admin/create")
-public ResponseEntity<?> createSubscriptionPlan(
+@PostMapping("/admin")
+public ResponseEntity<SubscriptionPlanDTO> createSubscriptionPlan(
         @Valid @RequestBody SubscriptionPlanDTO subscriptionPlanDTO
 ) throws Exception {
 
     SubscriptionPlanDTO plans = subscriptionPlanService.createSubscriptionPlan(subscriptionPlanDTO);
 
-    return ResponseEntity.ok(plans);
+return ResponseEntity.status(201).body(plans);
 }
 
 @PutMapping("/admin/{id}")
-public ResponseEntity<?> updateSubscriptionPlan(
+public ResponseEntity<SubscriptionPlanDTO> updateSubscriptionPlan(
         @Valid @RequestBody SubscriptionPlanDTO subscriptionPlanDTO,
         @PathVariable Long id
 ) throws Exception {

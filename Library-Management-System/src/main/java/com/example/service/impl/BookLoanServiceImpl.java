@@ -1,16 +1,13 @@
 package com.example.service.impl;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.BookLoanStatus;
 import com.example.domain.BookLoanType;
@@ -21,10 +18,7 @@ import com.example.model.BookLoan;
 import com.example.model.User;
 import com.example.payload.dto.BookLoanDTO;
 import com.example.payload.dto.SubscriptionDTO;
-import com.example.payload.request.BookLoanSearchRequest;
-import com.example.payload.request.CheckinRequest;
-import com.example.payload.request.CheckoutRequest;
-import com.example.payload.request.RenewalRequest;
+import com.example.payload.request.*;
 import com.example.payload.response.PageResponse;
 import com.example.repository.BookLoanRepository;
 import com.example.repository.BookRepository;
@@ -42,280 +36,201 @@ public class BookLoanServiceImpl implements BookLoanService {
     private final UserService userService;
     private final BookRepository bookRepository;
     private final SubscriptionService subscriptionService;
-    private final BookLoanMapper bookLoanMapper;
+    private final BookLoanMapper mapper;
 
+    // ================= CHECKOUT =================
     @Override
-    public BookLoanDTO checkoutBook(CheckoutRequest checkoutRequest) {
-        User user = userService.getCurrentUser();
-        return checkoutBookForUser(user.getId(), checkoutRequest);
-    }
+    @Transactional
+    public BookLoanDTO checkoutBook(Long userId, CheckoutRequest request) {
 
-    @Override
-    public BookLoanDTO checkoutBookForUser(Long userId, CheckoutRequest checkoutRequest) {
-
-        // 1. validate user exist
         User user = userService.findById(userId);
 
-        // 2. validate user has active subscription
-        SubscriptionDTO subscription = subscriptionService
-                .getUsersActiveSubscription(user.getId());
+        SubscriptionDTO subscription = subscriptionService.getUsersActiveSubscription();
 
-        // 3. validate book exists and is available
-        Book book = bookRepository.findById(checkoutRequest.getBookId())
-                .orElseThrow(() -> new BookException("Book not found with id " + checkoutRequest.getBookId()));
-
-        if (!book.getActive()) {
-            throw new BookException("Book is not active");
+        if (request.getCheckoutDays() <= 0) {
+            throw new BookException("Invalid checkout days");
         }
 
-        if (book.getAvailableCopies() <= 0) {
-            throw new BookException("Book is not available");
-        }
+        Book book = bookRepository.findById(request.getBookId())
+                .orElseThrow(() -> new BookException("Book not found"));
 
-        // 4. check if user already has this book
-        if (bookLoanRepository.hasActiveCheckout(userId, book.getId())) {
-            throw new BookException("Book already has active checkout");
-        }
+        if (!book.getActive()) throw new BookException("Book inactive");
+        if (book.getAvailableCopies() <= 0) throw new BookException("Not available");
 
-        // 5. check user's active checkout limit
-        long activeCheckouts = bookLoanRepository.countActiveBookLoansByUser(userId);
-        int maxBooksAllowed = subscription.getMaxBooksAllowed();
+        boolean exists = bookLoanRepository.existsByUserIdAndBookIdAndStatusIn(
+                userId,
+                book.getId(),
+                List.of(BookLoanStatus.CHECKED_OUT, BookLoanStatus.OVERDUE)
+        );
 
-        if (activeCheckouts >= maxBooksAllowed) {
-            throw new BookException("You have reached your maximum number of books allowed");
-        }
+        if (exists) throw new BookException("Already borrowed");
 
-        // 6. check overdue books
-        long overdueCount = bookLoanRepository.countOverdueBookLoansByUser(userId);
+        long active = bookLoanRepository.countActiveBookLoansByUser(userId);
+        if (active >= subscription.getMaxBooksAllowed())
+            throw new BookException("Limit reached");
 
-        if (overdueCount > 0) {
-            throw new BookException("First return old overdue book!");
-        }
+        long overdue = bookLoanRepository.countOverdueBookLoansByUser(userId);
+        if (overdue > 0)
+            throw new BookException("Return overdue books first");
 
-        // 7. create book loan
-        BookLoan bookLoan = BookLoan.builder()
+        BookLoan loan = BookLoan.builder()
                 .user(user)
                 .book(book)
                 .type(BookLoanType.CHECKOUT)
                 .status(BookLoanStatus.CHECKED_OUT)
                 .checkoutDate(LocalDate.now())
-                .dueDate(LocalDate.now().plusDays(checkoutRequest.getCheckoutDays()))
+                .dueDate(LocalDate.now().plusDays(request.getCheckoutDays()))
                 .renewalCount(0)
                 .maxRenewals(2)
-                .notes(checkoutRequest.getNotes())
-                .isOverdue(false)
-                .overdueDays(0)
+                .notes(request.getNotes())
                 .build();
 
-        // update available copies
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         bookRepository.save(book);
 
-        // save loan
-        BookLoan savedBookLoan = bookLoanRepository.save(bookLoan);
-
-        return bookLoanMapper.toDTO(savedBookLoan);
+        return mapper.toDTO(bookLoanRepository.save(loan));
     }
 
+    // ================= CHECKIN =================
     @Override
-    public BookLoanDTO checkinBook(CheckinRequest checkinRequest) {
+    @Transactional
+    public BookLoanDTO checkInBook(CheckinRequest request) {
 
-        BookLoan bookLoan = bookLoanRepository
-                .findById(checkinRequest.getBookLoanId())
-                .orElseThrow(() -> new BookException("Book loan not found"));
+        BookLoan loan = bookLoanRepository.findById(request.getBookLoanId())
+                .orElseThrow(() -> new BookException("Loan not found"));
 
-        if (!bookLoan.isActive()) {
-            throw new BookException("Book loan is not active");
-        }
+        if (!loan.isActive()) throw new BookException("Not active");
 
-        bookLoan.setReturnDate(LocalDate.now());
+        loan.setReturnDate(LocalDate.now());
 
-        BookLoanStatus condition = checkinRequest.getCondition();
-        if (condition == null) {
-            condition = BookLoanStatus.RETURNED;
-        }
+        BookLoanStatus status = request.getCondition() != null
+                ? request.getCondition()
+                : BookLoanStatus.RETURNED;
 
-        bookLoan.setStatus(condition);
+        loan.setStatus(status);
+        loan.setNotes("Returned");
 
-        bookLoan.setOverdueDays(0);
-        bookLoan.setIsOverdue(false);
-        bookLoan.setNotes("Book returned by user");
-
-        if (condition != BookLoanStatus.LOST) {
-            Book book = bookLoan.getBook();
+        if (status != BookLoanStatus.LOST) {
+            Book book = loan.getBook();
             book.setAvailableCopies(book.getAvailableCopies() + 1);
             bookRepository.save(book);
         }
 
-        BookLoan savedBookLoan = bookLoanRepository.save(bookLoan);
-
-        return bookLoanMapper.toDTO(savedBookLoan);
+        return mapper.toDTO(bookLoanRepository.save(loan));
     }
 
+    // ================= RENEW =================
     @Override
-    public BookLoanDTO renewCheckout(RenewalRequest renewalRequest) {
+    @Transactional
+    public BookLoanDTO renewCheckout(RenewalRequest request) {
 
-        BookLoan bookLoan = bookLoanRepository
-                .findById(renewalRequest.getBookLoanId())
-                .orElseThrow(() -> new BookException("Book loan not found"));
+        BookLoan loan = bookLoanRepository.findById(request.getBookLoanId())
+                .orElseThrow(() -> new BookException("Loan not found"));
 
-        if (!bookLoan.canRenew()) {
-            throw new BookException("Book cannot be renewed");
-        }
+        if (!loan.canRenew()) throw new BookException("Cannot renew");
 
-        bookLoan.setDueDate(
-                bookLoan.getDueDate()
-                        .plusDays(renewalRequest.getExtensionDays())
-        );
+        loan.setDueDate(loan.getDueDate().plusDays(request.getExtensionDays()));
+        loan.setRenewalCount(loan.getRenewalCount() + 1);
+        loan.setNotes("Renewed");
 
-        bookLoan.setRenewalCount(bookLoan.getRenewalCount() + 1);
-        bookLoan.setNotes("Book renewed by user");
-
-        BookLoan savedBookLoan = bookLoanRepository.save(bookLoan);
-
-        return bookLoanMapper.toDTO(savedBookLoan);
+        return mapper.toDTO(bookLoanRepository.save(loan));
     }
 
-    public PageResponse<BookLoanDTO> getMyBookLoans(BookLoanStatus status, int page, int size) {
+    // ================= USER LOANS =================
+    @Override
+    public PageResponse<BookLoanDTO> getUserBookLoans(Long userId, BookLoanStatus status, int page, int size) {
 
-        User currentUser = userService.getCurrentUser();
-        Page<BookLoan> bookLoanPage;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-        if (status != null) {
+        Page<BookLoan> result = (status != null)
+                ? bookLoanRepository.findByStatusAndUser(status, userService.findById(userId), pageable)
+                : bookLoanRepository.findByUserId(userId, pageable);
 
-            Pageable pageable = PageRequest.of(page, size, Sort.by("dueDate").ascending());
+        return convert(result);
+    }
 
-            bookLoanPage = bookLoanRepository.findByStatusAndUser(
-                    status, currentUser, pageable
-            );
+    // ================= SEARCH =================
+    @Override
+    public PageResponse<BookLoanDTO> getBookLoans(BookLoanSearchRequest req) {
 
+        Pageable pageable = createPageable(req);
+
+        Page<BookLoan> page;
+
+        if (Boolean.TRUE.equals(req.getOverdueOnly())) {
+            page = bookLoanRepository.findOverdueBookLoans(LocalDate.now(), pageable);
+        } else if (req.getUserId() != null) {
+            page = bookLoanRepository.findByUserId(req.getUserId(), pageable);
+        } else if (req.getBookId() != null) {
+            page = bookLoanRepository.findByBookId(req.getBookId(), pageable);
+        } else if (req.getStatus() != null) {
+            page = bookLoanRepository.findByStatus(req.getStatus(), pageable);
         } else {
-
-            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-
-            bookLoanPage = bookLoanRepository.findByUserId(
-                    currentUser.getId(), pageable
-            );
+            page = bookLoanRepository.findAll(pageable);
         }
 
-        return convertToPageResponse(bookLoanPage);
+        return convert(page);
     }
 
+    // ================= OVERDUE =================
     @Override
-public PageResponse<BookLoanDTO> getBookLoans(BookLoanSearchRequest searchRequest) throws BookException {
+    @Transactional
+    public int markOverdueLoans() {
 
-    // Build pageable with sorting, size, etc.
-    Pageable pageable = createPageable(
-            searchRequest.getPage(),
-            searchRequest.getSize(),
-            searchRequest.getSortBy(),
-            searchRequest.getSortDirection()
-    );
+        int updated = 0;
+        int page = 0;
 
-    Page<BookLoan> bookLoanPage;
+        Page<BookLoan> result;
 
-    // Apply filtering logic dynamically
-    if (Boolean.TRUE.equals(searchRequest.getOverdueOnly())) {
-        // Fetch overdue loans
-        bookLoanPage = bookLoanRepository.findOverdueBookLoans(LocalDate.now(), pageable);
+        do {
+            Pageable pageable = PageRequest.of(page, 500);
+            result = bookLoanRepository.findOverdueBookLoans(LocalDate.now(), pageable);
 
-    } else if (searchRequest.getUserId() != null) {
-        // Fetch loans by specific user
-        bookLoanPage = bookLoanRepository.findByUserId(searchRequest.getUserId(), pageable);
+            for (BookLoan loan : result.getContent()) {
 
-    } else if (searchRequest.getBookId() != null) {
-        // Fetch loans by specific book
-        bookLoanPage = bookLoanRepository.findByBookId(searchRequest.getBookId(), pageable);
+                if (loan.getStatus() == BookLoanStatus.CHECKED_OUT) {
+                    loan.setStatus(BookLoanStatus.OVERDUE);
+                }
 
-    } else if (searchRequest.getStatus() != null) {
-        // Fetch loans by loan status
-        bookLoanPage = bookLoanRepository.findByStatus(searchRequest.getStatus(), pageable);
+                // computed, not stored
+                int overdueDays = calculateOverdueDate(loan.getDueDate(), LocalDate.now());
 
-    } else if (searchRequest.getStartDate() != null && searchRequest.getEndDate() != null) {
-        // Fetch loans within date range
-        bookLoanPage = bookLoanRepository.findBookLoansByDateRange(
-                searchRequest.getStartDate(),
-                searchRequest.getEndDate(),
-                pageable
-        );
+                updated++;
+            }
 
-    } else {
-        // Default: return all loans
-        bookLoanPage = bookLoanRepository.findAll(pageable);
+            page++;
+
+        } while (!result.isLast());
+
+        return updated;
     }
 
-    // Convert entities to DTOs and wrap in response object
-    return convertToPageResponse(bookLoanPage);
-}
+    // ================= HELPERS =================
+    private Pageable createPageable(BookLoanSearchRequest req) {
 
- @Override
-public int updateOverdueBookLoan() {
+        Sort sort = req.getSortDirection().equalsIgnoreCase("ASC")
+                ? Sort.by(req.getSortBy()).ascending()
+                : Sort.by(req.getSortBy()).descending();
 
-    Pageable pageable = PageRequest.of(0, 1000); // Process in batches
-
-    Page<BookLoan> overduePage = bookLoanRepository
-            .findOverdueBookLoans(LocalDate.now(), pageable);
-
-    int updateCount = 0;
-
-    for (BookLoan bookLoan : overduePage.getContent()) {
-
-        if (bookLoan.getStatus() == BookLoanStatus.CHECKED_OUT) {
-            bookLoan.setStatus(BookLoanStatus.OVERDUE);
-            bookLoan.setIsOverdue(true);
-        }
-
-        // Calculate overdue days
-        int overdueDays = calculateOverdueDate(bookLoan.getDueDate(), LocalDate.now());
-        bookLoan.setOverdueDays(overdueDays);
-
-        // // Calculate fine
-        // BigDecimal fine = fineCalculationService.calculateOverdueFine(bookLoan);
-
-        bookLoanRepository.save(bookLoan);
-        updateCount++;
+        return PageRequest.of(req.getPage(), Math.min(req.getSize(), 100), sort);
     }
 
-    return updateCount;
-}
-
-    private Pageable createPageable(int page, int size, String sortBy, String sortDirection) {
-
-        size = Math.min(size, 100);
-        size = Math.max(size, 1);
-
-        Sort sort = sortDirection.equalsIgnoreCase("ASC")
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        return PageRequest.of(page, size, sort);
-    }
-
-    private PageResponse<BookLoanDTO> convertToPageResponse(Page<BookLoan> bookLoanPage) {
-
-        List<BookLoanDTO> bookLoanDTOs = bookLoanPage.getContent()
-                .stream()
-                .map(bookLoanMapper::toDTO)
-                .collect(Collectors.toList());
+    private PageResponse<BookLoanDTO> convert(Page<BookLoan> page) {
 
         return new PageResponse<>(
-                bookLoanDTOs,
-                bookLoanPage.getNumber(),
-                bookLoanPage.getSize(),
-                bookLoanPage.getTotalElements(),
-                bookLoanPage.getTotalPages(),
-                bookLoanPage.isLast(),
-                bookLoanPage.isFirst(),
-                bookLoanPage.isEmpty()
+                page.getContent().stream().map(mapper::toDTO).collect(Collectors.toList()),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast(),
+                page.isFirst(),
+                page.isEmpty()
         );
     }
 
-
-    public int calculateOverdueDate(LocalDate dueDate, LocalDate today) {
-    if (today.isBefore(dueDate) || today.isEqual(dueDate)) {
-        return 0;
+    private int calculateOverdueDate(LocalDate due, LocalDate today) {
+        if (due == null || !today.isAfter(due)) return 0;
+        return (int) ChronoUnit.DAYS.between(due, today);
     }
-
-    return (int) ChronoUnit.DAYS.between(dueDate, today);
-}
 }

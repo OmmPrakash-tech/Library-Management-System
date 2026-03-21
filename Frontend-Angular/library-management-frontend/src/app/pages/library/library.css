@@ -1,0 +1,162 @@
+/* HERO SECTION */
+
+.library-hero{
+  height:320px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+  background:
+  linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+  url('/image3.png');
+
+  background-size:cover;
+  background-position:center;
+
+  color:white;
+  text-align:center;
+}
+
+.library-hero h1{
+  font-size:38px;
+  margin-bottom:20px;
+  font-weight:600;
+}
+
+
+/* SEARCH BOX */
+
+.search-box{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+}
+
+.search-box select{
+  padding:10px;
+  border-radius:6px;
+  border:1px solid #ddd;
+}
+
+.search-box button{
+  padding:10px 22px;
+  border:none;
+  background:#2c3e80;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.search-box button:hover{
+  background:#1e2c63;
+}
+
+
+/* LIBRARY SECTION */
+
+.library-list{
+  padding:70px 80px;
+}
+
+.library-list h2{
+  font-size:30px;
+  margin-bottom:40px;
+  color:#1f2b3c;
+}
+
+
+/* GRID */
+
+.library-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:30px;
+}
+
+
+/* CARD */
+
+.library-card{
+  position:relative;
+  padding:25px;
+  background:white;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+  transition:0.3s;
+  overflow:hidden;
+}
+
+.library-card:hover{
+  transform:translateY(-5px);
+}
+
+
+/* TITLE */
+
+.library-card h3{
+  color:#1aa3a8;
+  margin-bottom:5px;
+  font-size:20px;
+}
+
+
+/* ADDRESS */
+
+.library-card p{
+  color:#777;
+  font-size:14px;
+}
+
+
+/* INFO */
+
+.library-info{
+  margin:15px 0;
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+}
+
+.library-info span{
+  font-weight:500;
+}
+
+
+/* BUTTON */
+
+.details-btn{
+  margin-top:10px;
+  padding:10px 18px;
+  border:none;
+  background:#24316d;
+  color:white;
+  border-radius:20px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.details-btn:hover{
+  background:#1a244f;
+}
+
+
+/* CIRCULAR IMAGE */
+
+.library-img{
+  position:absolute;
+  bottom:-25px;
+  right:-25px;
+
+  width:120px;
+  height:120px;
+
+  border-radius:50%;
+  object-fit:cover;
+
+  border:5px solid white;
+}

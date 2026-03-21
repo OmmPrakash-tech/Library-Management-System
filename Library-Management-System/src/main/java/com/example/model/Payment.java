@@ -12,6 +12,7 @@ import com.example.domain.PaymentType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,48 +32,53 @@ import lombok.Setter;
 public class Payment {
 
     @Id
-@GeneratedValue(strategy = GenerationType.AUTO)
-private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-@ManyToOne
-private User user;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private User user;
 
-@ManyToOne
-private Subscription subscription;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Subscription subscription;
 
-private PaymentType paymentType;
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
 
-private PaymentStatus status;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
 
-@Enumerated(EnumType.STRING)
-private PaymentGateway gateway;
+    @Enumerated(EnumType.STRING)
+    private PaymentGateway gateway;
 
-private Long amount;
+    private Long amount; // keep if using paise
 
-private String transactionId;
+    private String transactionId;
+    private String gatewayPaymentId;
+    private String gatewayOrderId;
+    private String gatewaySignature;
 
-private String gatewayPaymentId;
+    private String description;
+    private String failureReason;
 
-private String gatewayOrderId;
+    private LocalDateTime initiatedAt;
+    private LocalDateTime completedAt;
 
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-private String gatewaySignature;
+    // 🔥 Helper methods
+    public boolean isSuccess() {
+        return PaymentStatus.SUCCESS.equals(this.status);
+    }
 
-private String description;
+    public boolean isFailed() {
+        return PaymentStatus.FAILED.equals(this.status);
+    }
 
-private String failureReason;
-
-@CreationTimestamp
-private LocalDateTime initiatedAt;
-
-private LocalDateTime completedAt;
-
-@UpdateTimestamp
-private LocalDateTime updatedAt;
-
-@CreationTimestamp
-private LocalDateTime createdAt;
-
-
+    public boolean isPending() {
+        return PaymentStatus.PENDING.equals(this.status);
+    }
 }

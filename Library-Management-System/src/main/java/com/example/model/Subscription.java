@@ -61,7 +61,7 @@ private LocalDate endDate;
 @Column(nullable = false)
 private Boolean isActive = true;
 
-private Boolean autoReview;
+private Boolean autoRenew;
 
 private LocalDateTime cancelledAt;
 

@@ -1,0 +1,123 @@
+/* =======================
+   MAIN CONTAINER
+======================= */
+.performance-container {
+  width: 100%;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 40px;
+
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+  color: white;
+
+  /* Animated Premium Gradient */
+  background: linear-gradient(-45deg, #1e3c72, #2a5298, #6dd5ed, #00c6ff);
+  background-size: 400% 400%;
+  animation: gradientMove 10s ease infinite;
+}
+
+/* Gradient Animation */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glow Overlay */
+.performance-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 80px rgba(255,255,255,0.1);
+  pointer-events: none;
+}
+
+/* Bottom Glow Line */
+.performance-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 3px;
+  background: linear-gradient(to right, transparent, #00e5ff, transparent);
+}
+
+/* =======================
+   HEADER
+======================= */
+.performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  padding: 20px 40px;
+  margin-bottom: 20px;
+
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.2);
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Title */
+.performance-header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+
+/* =======================
+   BUTTON
+======================= */
+.details-btn {
+  padding: 10px 25px;
+  border-radius: 25px;
+
+  background: linear-gradient(45deg, #00c853, #69f0ae);
+  color: white;
+  border: none;
+
+  font-weight: 500;
+  cursor: pointer;
+
+  box-shadow: 0 5px 15px rgba(0, 200, 83, 0.4);
+  transition: all 0.3s ease;
+}
+
+.details-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 200, 83, 0.7);
+}
+
+/* =======================
+   BODY
+======================= */
+.performance-body {
+  min-height: calc(100vh - 120px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  padding: 30px;
+}
+
+/* Text */
+.performance-body p {
+  font-size: 18px;
+  max-width: 700px;
+  line-height: 1.6;
+  opacity: 0.95;
+}

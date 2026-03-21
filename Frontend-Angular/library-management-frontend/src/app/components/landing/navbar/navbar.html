@@ -1,0 +1,48 @@
+<header class="navbar">
+
+  <!-- Logo -->
+  <div class="logo" routerLink="/">
+    📚 Library
+  </div>
+
+  <!-- Navigation Links -->
+  <nav class="nav-links">
+
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      Home
+    </a>
+
+    <a routerLink="/about" routerLinkActive="active">
+      About Us
+    </a>
+
+    <a routerLink="/pricing" routerLinkActive="active">
+      Pricing
+    </a>
+
+    <a routerLink="/library" routerLinkActive="active">
+      Find My Library
+    </a>
+
+    <a routerLink="/blog" routerLinkActive="active">
+      Blog
+    </a>
+
+    <a routerLink="/contact" routerLinkActive="active">
+      Contact Us
+    </a>
+
+  </nav>
+
+  <!-- Auth Button -->
+  <div class="auth">
+
+    <button
+      class="signin-btn"
+      routerLink="/login">
+      Sign In
+    </button>
+
+  </div>
+
+</header>

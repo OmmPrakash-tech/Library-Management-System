@@ -1,0 +1,150 @@
+.login-page{
+  display:flex;
+  height:100vh;
+  width:100%;
+  font-family:'Poppins',sans-serif;
+  overflow:hidden;
+}
+
+/* LEFT IMAGE */
+
+.image-section{
+  width:70%;
+  position:relative;
+  overflow:hidden;
+}
+
+.background-image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+
+  /* smooth transition */
+  opacity:1;
+  transition:opacity 1s ease-in-out;
+}
+
+/* IMAGE FADE EFFECT */
+
+.fade{
+  opacity:0;
+}
+
+/* DARK OVERLAY */
+
+.overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.3),
+    rgba(0,0,0,0.85)
+  );
+}
+
+/* TEXT */
+
+.overlay-text{
+  position:absolute;
+  bottom:120px;
+  left:100px;
+  color:white;
+}
+
+.overlay-text h1{
+  font-size:36px;
+  font-weight:600;
+  line-height:1.4;
+}
+
+/* RIGHT FORM */
+
+.form-section{
+  width:30%;
+  background:#f5f7fb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.form-container{
+  width:350px;
+}
+
+/* TEXT */
+
+.welcome{
+  color:#2bb7a3;
+  font-weight:600;
+}
+
+.form-container h2{
+  font-size:28px;
+  font-weight:700;
+}
+
+.subtitle{
+  color:#777;
+  margin-bottom:20px;
+}
+
+/* INPUT */
+
+input{
+  width:100%;
+  padding:11px;
+  margin-top:6px;
+  margin-bottom:16px;
+  border:1px solid #ddd;
+  border-radius:6px;
+  outline:none;
+  transition:all 0.2s ease;
+}
+
+/* INPUT FOCUS EFFECT */
+
+input:focus{
+  border-color:#1e2a78;
+  box-shadow:0 0 0 2px rgba(30,42,120,0.1);
+}
+
+/* BUTTON */
+
+button{
+  width:100%;
+  padding:13px;
+  background:#1e2a78;
+  color:white;
+  border:none;
+  border-radius:6px;
+  font-size:15px;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+
+button:hover{
+  background:#16205c;
+  transform:translateY(-1px);
+}
+
+/* LINKS */
+
+.forgot{
+  text-align:center;
+  margin-top:15px;
+  font-size:13px;
+}
+
+.signup{
+  text-align:center;
+  margin-top:10px;
+}
+
+.signup span{
+  color:#1e2a78;
+  font-weight:600;
+  cursor:pointer;
+}

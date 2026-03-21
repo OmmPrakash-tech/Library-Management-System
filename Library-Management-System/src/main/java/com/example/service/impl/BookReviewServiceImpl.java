@@ -2,13 +2,12 @@ package com.example.service.impl;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.BookLoanStatus;
+import com.example.exception.BookException;
 import com.example.mapper.BookReviewMapper;
 import com.example.model.Book;
 import com.example.model.BookReview;
@@ -29,88 +28,89 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BookReviewServiceImpl implements BookReviewService {
 
-    private final BookReviewRepository bookReviewRepository;
+    private final BookReviewRepository reviewRepository;
     private final BookRepository bookRepository;
     private final UserService userService;
-    private final BookReviewMapper bookReviewMapper;
+    private final BookReviewMapper mapper;
     private final BookLoanRepository bookLoanRepository;
 
+    // ================= CREATE =================
     @Override
+    @Transactional
     public BookReviewDTO createReview(CreateReviewRequest request) {
 
         User user = userService.getCurrentUser();
 
         Book book = bookRepository.findById(request.getBookId())
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new BookException("Book not found"));
 
-        if (bookReviewRepository.existsByUserIdAndBookId(user.getId(), book.getId())) {
-            throw new RuntimeException("You have already reviewed this book");
+        // Prevent duplicate
+        if (reviewRepository.existsByUserIdAndBookId(user.getId(), book.getId())) {
+            throw new BookException("Already reviewed");
         }
 
-        boolean hasReadBook =
-                bookLoanRepository.existsByUserIdAndBookIdAndStatus(
-                        user.getId(),
-                        book.getId(),
-                        BookLoanStatus.RETURNED
-                );
+        // Must have read book
+boolean hasRead = bookLoanRepository.existsByUserIdAndBookIdAndStatusIn(
+        user.getId(),
+        book.getId(),
+        List.of(BookLoanStatus.RETURNED)
+);
 
-        if (!hasReadBook) {
-            throw new RuntimeException("You must read the book before reviewing");
+        if (!hasRead) {
+            throw new BookException("Read book before reviewing");
         }
 
         BookReview review = new BookReview();
         review.setUser(user);
         review.setBook(book);
         review.setRating(request.getRating());
-        review.setReviewText(request.getReviewText());
+        review.setReviewText(request.getReviewText().trim());
         review.setTitle(request.getTitle());
 
-        BookReview saved = bookReviewRepository.save(review);
-
-        return bookReviewMapper.toDTO(saved);
+        return mapper.toDTO(reviewRepository.save(review));
     }
 
+    // ================= UPDATE =================
     @Override
+    @Transactional
     public BookReviewDTO updateReview(Long reviewId, UpdateReviewRequest request) {
 
         User user = userService.getCurrentUser();
 
-        BookReview review = bookReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("Review not found"));
+        BookReview review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new BookException("Review not found"));
 
         if (!review.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You can only update your own review");
+            throw new BookException("Not your review");
         }
 
-        review.setReviewText(request.getReviewText());
+        review.setReviewText(request.getReviewText().trim());
         review.setTitle(request.getTitle());
         review.setRating(request.getRating());
 
-        BookReview saved = bookReviewRepository.save(review);
-
-        return bookReviewMapper.toDTO(saved);
+        return mapper.toDTO(reviewRepository.save(review));
     }
 
+    // ================= DELETE =================
     @Override
+    @Transactional
     public void deleteReview(Long reviewId) {
 
         User user = userService.getCurrentUser();
 
-        BookReview review = bookReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
+        BookReview review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new BookException("Review not found"));
 
         if (!review.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You can only delete your own reviews");
+            throw new BookException("Not your review");
         }
 
-        bookReviewRepository.delete(review);
+        reviewRepository.delete(review);
     }
 
+    // ================= GET REVIEWS =================
     @Override
-    public PageResponse<BookReviewDTO> getReviewsByBookId(Long id, int page, int size) {
-
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found by id"));
+    public PageResponse<BookReviewDTO> getReviewsByBook(Long bookId, int page, int size) {
 
         Pageable pageable = PageRequest.of(
                 page,
@@ -118,28 +118,41 @@ public class BookReviewServiceImpl implements BookReviewService {
                 Sort.by("createdAt").descending()
         );
 
-        Page<BookReview> reviews = bookReviewRepository.findByBook(book, pageable);
+        Page<BookReview> reviews =
+                reviewRepository.findByBookIdOrderByCreatedAtDesc(bookId, pageable);
 
-        return convertToPageResponse(reviews);
+        return convert(reviews);
     }
 
-    private PageResponse<BookReviewDTO> convertToPageResponse(Page<BookReview> reviewPage) {
+    // ================= HELPER =================
+    private PageResponse<BookReviewDTO> convert(Page<BookReview> page) {
 
-        List<BookReviewDTO> reviewDTOs =
-                reviewPage.getContent()
-                        .stream()
-                        .map(bookReviewMapper::toDTO)
-                        .toList();
+        List<BookReviewDTO> dtoList = page.getContent()
+                .stream()
+                .map(mapper::toDTO)
+                .toList();
 
         return new PageResponse<>(
-                reviewDTOs,
-                reviewPage.getNumber(),
-                reviewPage.getSize(),
-                reviewPage.getTotalElements(),
-                reviewPage.getTotalPages(),
-                reviewPage.isLast(),
-                reviewPage.isFirst(),
-                reviewPage.isEmpty()
+                dtoList,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast(),
+                page.isFirst(),
+                page.isEmpty()
         );
+    }
+
+    @Override
+    public Double getAverageRating(Long bookId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAverageRating'");
+    }
+
+    @Override
+    public BookReviewDTO getReviewById(Long reviewId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getReviewById'");
     }
 }

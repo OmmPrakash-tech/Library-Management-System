@@ -1,0 +1,139 @@
+.admin-dashboard{
+  font-family:'Poppins',sans-serif;
+  background:#f5f7fb;
+  min-height:100vh;
+}
+
+/* NAVBAR */
+
+.navbar{
+  height:70px;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+.logo{
+  font-size:20px;
+  font-weight:600;
+}
+
+nav a{
+  margin:0 15px;
+  cursor:pointer;
+  color:#333;
+}
+
+nav a:hover{
+  color:#1e2a78;
+}
+
+.logout{
+  background:#1e2a78;
+  color:white;
+  border:none;
+  padding:8px 16px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* HERO */
+
+.hero{
+  text-align:center;
+  padding:40px;
+}
+
+.hero h1{
+  font-size:34px;
+}
+
+.hero p{
+  color:#666;
+}
+
+/* STATS */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+  padding:40px;
+}
+
+.card{
+  background:white;
+  padding:25px;
+  border-radius:10px;
+  text-align:center;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.card .icon{
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+.card h3{
+  color:#777;
+  font-size:16px;
+}
+
+.card p{
+  font-size:28px;
+  font-weight:600;
+}
+
+/* ACTIONS */
+
+.actions{
+  padding:40px;
+}
+
+.actions h2{
+  margin-bottom:20px;
+}
+
+.action-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+
+.action-card{
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+  transition:0.2s;
+}
+
+.action-card:hover{
+  transform:translateY(-3px);
+}
+
+/* ACTIVITY */
+
+.activity{
+  padding:40px;
+}
+
+.activity h2{
+  margin-bottom:20px;
+}
+
+.activity ul{
+  background:white;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.activity li{
+  margin-bottom:10px;
+}

@@ -20,40 +20,47 @@ public class BookLoanMapper {
         BookLoanDTO dto = new BookLoanDTO();
         dto.setId(bookLoan.getId());
 
-        // User information
+        // User info
         if (bookLoan.getUser() != null) {
             dto.setUserId(bookLoan.getUser().getId());
             dto.setUserName(bookLoan.getUser().getFullName());
             dto.setUserEmail(bookLoan.getUser().getEmail());
         }
 
-        // Book information
+        // Book info
         if (bookLoan.getBook() != null) {
             dto.setBookId(bookLoan.getBook().getId());
             dto.setBookTitle(bookLoan.getBook().getTitle());
             dto.setBookIsbn(bookLoan.getBook().getIsbn());
+            dto.setBookAuthor(bookLoan.getBook().getAuthor());
+            dto.setBookCoverImage(bookLoan.getBook().getCoverImageUrl());
         }
 
-        // Book loan details
+        // Loan details
         dto.setType(bookLoan.getType());
         dto.setStatus(bookLoan.getStatus());
         dto.setCheckoutDate(bookLoan.getCheckoutDate());
         dto.setDueDate(bookLoan.getDueDate());
 
-        dto.setRemainingDays(
-                ChronoUnit.DAYS.between(
-                        LocalDate.now(),
-                        bookLoan.getDueDate()
-                )
-        );
+        // Remaining days (safe + non-negative)
+        if (bookLoan.getDueDate() != null) {
+            long days = ChronoUnit.DAYS.between(LocalDate.now(), bookLoan.getDueDate());
+            dto.setRemainingDays(Math.max(days, 0L));
+        } else {
+            dto.setRemainingDays(0L);
+        }
 
         dto.setReturnDate(bookLoan.getReturnDate());
         dto.setRenewalCount(bookLoan.getRenewalCount());
         dto.setMaxRenewals(bookLoan.getMaxRenewals());
-
         dto.setNotes(bookLoan.getNotes());
-        dto.setIsOverdue(bookLoan.getIsOverdue());
+
+        // Computed fields
+        dto.setOverdue(bookLoan.isOverdue()); // ✅ FIXED
         dto.setOverdueDays(bookLoan.getOverdueDays());
+        dto.setActive(bookLoan.isActive());
+        dto.setCanRenew(bookLoan.canRenew());
+
         dto.setCreatedAt(bookLoan.getCreatedAt());
         dto.setUpdatedAt(bookLoan.getUpdatedAt());
 

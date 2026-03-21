@@ -1,0 +1,89 @@
+<section class="login-page">
+
+  <!-- LEFT IMAGE SECTION -->
+
+  <div class="image-section">
+
+    <img
+      class="background-image"
+      [src]="images[currentIndex]"
+      [class.fade]="isFading"
+      alt="Library Image"
+    />
+
+    <div class="overlay"></div>
+
+    <div class="overlay-text">
+      <h1>
+        Empower Learning,<br>
+        Shape Futures:<br>
+        Your Library, Your Legacy.
+      </h1>
+    </div>
+
+  </div>
+
+
+  <!-- RIGHT LOGIN FORM -->
+
+  <div class="form-section">
+
+    <div class="form-container">
+
+      <h4 class="welcome">Welcome Back</h4>
+      <h2>Library Admin!</h2>
+
+      <p class="subtitle">
+        We're glad to see you again! 🎉
+      </p>
+
+      <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+
+        <!-- EMAIL -->
+
+        <label>Email Address</label>
+
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="loginData.email"
+          placeholder="Enter your email"
+          required
+        />
+
+        <!-- PASSWORD -->
+
+        <label>Password</label>
+
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="loginData.password"
+          placeholder="Enter your password"
+          required
+        />
+
+        <!-- LOGIN BUTTON -->
+
+        <button type="submit">
+          Let's get started!
+        </button>
+
+        <!-- LINKS -->
+
+        <p class="forgot">
+          Forgot Password ?
+        </p>
+
+        <p class="signup">
+          If you are Not Register ?
+          <span routerLink="/signup">Register Now</span>
+        </p>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</section>

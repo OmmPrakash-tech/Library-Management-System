@@ -1,0 +1,53 @@
+/* NAVBAR */
+
+.navbar{
+  height:70px;
+  width:100%;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 50px;
+
+  /* PREMIUM GREEN GRADIENT */
+  background:linear-gradient(90deg,#0f5132,#198754,#2ecc71);
+
+  color:white;
+
+  box-shadow:0 4px 15px rgba(0,0,0,0.15);
+
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+/* LOGO */
+
+.logo{
+  font-size:22px;
+  font-weight:600;
+  letter-spacing:0.5px;
+}
+
+/* SIGN OUT BUTTON */
+
+.signout{
+  padding:8px 18px;
+
+  border:none;
+  border-radius:6px;
+
+  background:white;
+  color:#0f5132;
+
+  font-weight:500;
+
+  cursor:pointer;
+
+  transition:0.3s;
+}
+
+.signout:hover{
+  background:#e6f7ee;
+}

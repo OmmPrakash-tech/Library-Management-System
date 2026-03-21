@@ -5,10 +5,16 @@ import org.springframework.stereotype.Component;
 import com.example.model.Payment;
 import com.example.payload.dto.PaymentDTO;
 
+ // // Book loan information
+    // if (payment.getBookLoan() != null) {
+    //     dto.setBookLoanId(payment.getBookLoan().getId());
+    // }
+
 @Component
 public class PaymentMapper {
 
     public PaymentDTO toDTO(Payment payment) {
+
     if (payment == null) {
         return null;
     }
@@ -16,19 +22,14 @@ public class PaymentMapper {
     PaymentDTO dto = new PaymentDTO();
     dto.setId(payment.getId());
 
-    // User information
+    // User
     if (payment.getUser() != null) {
         dto.setUserId(payment.getUser().getId());
         dto.setUserName(payment.getUser().getFullName());
         dto.setUserEmail(payment.getUser().getEmail());
     }
 
-    // // Book loan information
-    // if (payment.getBookLoan() != null) {
-    //     dto.setBookLoanId(payment.getBookLoan().getId());
-    // }
-
-    // Subscription information
+    // Subscription
     if (payment.getSubscription() != null) {
         dto.setSubscriptionId(payment.getSubscription().getId());
     }
@@ -41,10 +42,12 @@ public class PaymentMapper {
     dto.setTransactionId(payment.getTransactionId());
     dto.setGatewayPaymentId(payment.getGatewayPaymentId());
     dto.setGatewayOrderId(payment.getGatewayOrderId());
-    dto.setGatewaySignature(payment.getGatewaySignature());
 
     dto.setDescription(payment.getDescription());
-    dto.setFailureReason(payment.getFailureReason());
+
+    if (payment.getStatus() != null && payment.getStatus().isFailure()) {
+        dto.setFailureReason(payment.getFailureReason());
+    }
 
     dto.setInitiatedAt(payment.getInitiatedAt());
     dto.setCompletedAt(payment.getCompletedAt());
@@ -54,6 +57,5 @@ public class PaymentMapper {
 
     return dto;
 }
-    
 
 }

@@ -90,14 +90,12 @@ public class FineServiceImpl implements FineService {
 
         User user = userService.getCurrentUser();
 
-        PaymentInitiateRequest request = PaymentInitiateRequest.builder()
-                .userId(user.getId())
-                .fineId(fine.getId())
-                .paymentType(PaymentType.FINE)
-                .gateway(PaymentGateway.RAZORPAY)
-                .amount(fine.getAmount())
-                .description("Library fine payment")
-                .build();
+PaymentInitiateRequest request = PaymentInitiateRequest.builder()
+        .fineId(fine.getId())
+        .paymentType(PaymentType.FINE)
+        .gateway(PaymentGateway.RAZORPAY)
+        .description("Library fine payment")
+        .build();
 
         return paymentService.initiatePayment(request);
     }

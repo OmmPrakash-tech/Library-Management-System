@@ -1,0 +1,169 @@
+/* HERO SECTION */
+
+.hero{
+  background: linear-gradient(135deg,#e7f4f2,#cfeae5);
+  padding:100px 80px;
+}
+
+.hero-container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+/* LEFT TEXT AREA */
+
+.hero-text{
+  width:50%;
+}
+
+/* small tagline */
+
+.tagline{
+  color:#2f8f8b;
+  font-weight:600;
+  margin-bottom:15px;
+  font-size:18px;
+}
+
+/* MAIN TITLE */
+
+.hero-title{
+  font-size:48px;
+  line-height:1.2;
+  color:#1c2b4a;
+  margin-bottom:20px;
+}
+
+/* TYPING ANIMATION TEXT */
+
+.typing-text{
+
+  border-right:3px solid #1e2c72;
+
+  white-space:nowrap;
+  overflow:hidden;
+
+  display:inline-block;
+
+  animation:
+    typing 4s steps(40,end),
+    blink 0.8s infinite;
+}
+
+/* typing animation */
+
+@keyframes typing{
+
+  from{
+    width:0;
+  }
+
+  to{
+    width:100%;
+  }
+
+}
+
+/* blinking cursor */
+
+@keyframes blink{
+
+  0%{
+    border-color:transparent;
+  }
+
+  50%{
+    border-color:#1e2c72;
+  }
+
+  100%{
+    border-color:transparent;
+  }
+
+}
+
+/* DESCRIPTION */
+
+.description{
+  color:#555;
+  margin-bottom:30px;
+  font-size:18px;
+  line-height:1.6;
+}
+
+/* BUTTON */
+
+.hero-btn{
+  display:inline-block;
+  padding:15px 30px;
+  background:linear-gradient(135deg,#2c3e80,#1aa3a8);
+  color:white;
+  border-radius:10px;
+  font-weight:600;
+  text-decoration:none;
+  transition:0.3s;
+}
+
+.hero-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+/* RIGHT IMAGE AREA */
+
+.hero-images{
+  width:45%;
+  display:flex;
+  justify-content:end;
+}
+
+.hero-main-image{
+  width:480px;
+  border-radius:100%;
+}
+
+/* MAIN IMAGE */
+
+.img-main{
+  width:350px;
+  border-radius:50%;
+}
+
+/* SMALL FLOATING IMAGES */
+
+.img-small{
+  position:absolute;
+  width:150px;
+  border-radius:50%;
+}
+
+.img-small.top{
+  top:-40px;
+  right:40px;
+}
+
+.img-small.bottom{
+  bottom:-40px;
+  right:-20px;
+}
+
+/* DECORATIVE DOTS */
+
+.dot{
+  position:absolute;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+}
+
+.blue{
+  background:#2d8cff;
+  top:120px;
+  left:-30px;
+}
+
+.orange{
+  background:#ffa726;
+  bottom:80px;
+  left:40px;
+}

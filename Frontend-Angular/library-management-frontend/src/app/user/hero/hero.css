@@ -1,0 +1,61 @@
+.hero{
+  position: relative;
+
+  height: 90vh;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  background-image:
+    linear-gradient(
+      rgba(0,0,0,0.45),
+      rgba(0,0,0,0.6)
+    ),
+    url("/signin3.png");
+
+  background-size: cover;
+  background-position: center;
+
+  color: white;
+}
+
+/* HERO CONTENT */
+
+.hero-content{
+  position: relative;
+  max-width: 650px;
+
+  /* changed from 80px → 180px to avoid side nav overlap */
+  margin-left: 280px;
+
+  font-family: 'Poppins', sans-serif;
+}
+
+.hero h1{
+  font-size: 56px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.1;
+}
+
+.hero p{
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #e6e6e6;
+}
+
+.hero-btn{
+  padding: 12px 30px;
+  border: none;
+  border-radius: 6px;
+  background: #27ae60;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.hero-btn:hover{
+  background:#1e874b;
+}

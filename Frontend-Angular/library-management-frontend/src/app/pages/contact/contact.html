@@ -1,0 +1,63 @@
+<section class="contact-hero">
+
+  <h1>Contact Us</h1>
+  <p>We would love to hear from you</p>
+
+</section>
+
+
+<section class="contact-section">
+
+  <div class="contact-container">
+
+    <!-- Contact Form -->
+
+    <div class="contact-form">
+
+      <h2>Send Us a Message</h2>
+
+      <input
+        type="text"
+        placeholder="Your Name"
+        [(ngModel)]="name">
+
+      <input
+        type="email"
+        placeholder="Your Email"
+        [(ngModel)]="email">
+
+      <textarea
+        rows="5"
+        placeholder="Your Message"
+        [(ngModel)]="message">
+      </textarea>
+
+      <button (click)="submitForm()">
+        Send Message
+      </button>
+
+    </div>
+
+
+    <!-- Contact Info -->
+
+    <div class="contact-info">
+
+      <h2>Contact Information</h2>
+
+      <p><strong>📍 Address:</strong> Kota, Rajasthan</p>
+
+      <p><strong>📞 Phone:</strong> +91 9876543210</p>
+
+      <p><strong>✉ Email:</strong> support@libraro.com</p>
+
+      <p>
+        Feel free to reach out to us for any questions
+        regarding our library management system.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>

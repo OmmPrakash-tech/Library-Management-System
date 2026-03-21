@@ -1,6 +1,8 @@
 package com.example.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,43 +25,72 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins="http://localhost:4200")
 @RequestMapping("/api/reviews")
 public class BookReviewController {
-    
+
     private final BookReviewService bookReviewService;
 
+    // ================= CREATE =================
     @PostMapping
-    public ResponseEntity<?> createReview(
-            @Valid @RequestBody CreateReviewRequest request
-    ) throws Exception {
-        BookReviewDTO reviewDTO = bookReviewService.createReview(request);
-        return ResponseEntity.ok(reviewDTO);
+    public ResponseEntity<BookReviewDTO> createReview(
+            @Valid @RequestBody CreateReviewRequest request) {
+
+        BookReviewDTO response = bookReviewService.createReview(request);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    // ================= UPDATE =================
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateReview(
+    public ResponseEntity<BookReviewDTO> updateReview(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateReviewRequest request
-    ) throws Exception {
-        BookReviewDTO reviewDTO = bookReviewService.updateReview(id, request);
-        return ResponseEntity.ok(reviewDTO);
+            @Valid @RequestBody UpdateReviewRequest request) {
+
+        BookReviewDTO response = bookReviewService.updateReview(id, request);
+
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{reviewId}")
-    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) throws Exception {
-        bookReviewService.deleteReview(reviewId);
+    // ================= DELETE =================
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteReview(@PathVariable Long id) {
+
+        bookReviewService.deleteReview(id);
+
         return ResponseEntity.ok(
-                new ApiResponse("Review deleted successfully", true));
+                new ApiResponse("Review deleted successfully", true)
+        );
     }
 
+    // ================= GET REVIEWS BY BOOK =================
     @GetMapping("/book/{bookId}")
     public ResponseEntity<PageResponse<BookReviewDTO>> getReviewsByBook(
             @PathVariable Long bookId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) throws Exception {
-        
-        PageResponse<BookReviewDTO> reviews = bookReviewService
-                .getReviewsByBookId(bookId, page, size);
-        return ResponseEntity.ok(reviews);
+            @RequestParam(defaultValue = "10") int size) {
+
+        PageResponse<BookReviewDTO> response =
+                bookReviewService.getReviewsByBook(bookId, page, size);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ================= GET SINGLE REVIEW =================
+    @GetMapping("/{id}")
+    public ResponseEntity<BookReviewDTO> getReviewById(@PathVariable Long id) {
+
+        BookReviewDTO response = bookReviewService.getReviewById(id);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ================= AVG RATING =================
+    @GetMapping("/book/{bookId}/average-rating")
+    public ResponseEntity<Double> getAverageRating(@PathVariable Long bookId) {
+
+        Double avg = bookReviewService.getAverageRating(bookId);
+
+        return ResponseEntity.ok(avg);
     }
 }
