@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UserService } from './userService';
+import { UserService } from './userService'; // ✅ adjust if needed
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -15,46 +16,65 @@ export class Profile implements OnInit {
   imageUrl: string = '';
   userName: string = '';
   email: string = '';
+  userId: number = 0;
 
   showModal: boolean = false;
   imageLink: string = '';
   isEditMode: boolean = false;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadProfile();
   }
 
-  // 🔥 Load user profile from backend
+  // ✅ Load profile
   loadProfile() {
-    this.userService.getProfile().subscribe((data: any) => {
-      this.userName = data.name;
-      this.email = data.email;
-      this.imageUrl = data.image || 'https://via.placeholder.com/150';
+    this.userService.getProfile().subscribe({
+      next: (data: any) => {
+        console.log("Profile Data:", data);
+
+        this.userId = data.id;
+        this.userName = data.fullName || '';
+        this.email = data.email || '';
+        this.imageUrl = data.profileImage || 'https://via.placeholder.com/150';
+      },
+      error: (err: any) => console.error(err)
     });
   }
 
-  // ✏️ Enable edit mode
-  enableEdit() {
-    this.isEditMode = true;
+  // ✏️ Toggle edit mode
+  toggleEdit() {
+    this.isEditMode = !this.isEditMode;
   }
 
   // 💾 Save profile
   saveProfile() {
     const payload = {
-      name: this.userName,
+      fullName: this.userName,
+      // ⚠️ Only send email if backend allows update
       email: this.email,
-      image: this.imageUrl
+      profileImage: this.imageUrl
     };
 
-    this.userService.updateProfile(payload).subscribe(() => {
-      alert('Profile Updated ✅');
-      this.isEditMode = false;
+    this.userService.updateProfile(this.userId, payload).subscribe({
+      next: () => {
+        alert('Profile Updated ✅');
+        this.isEditMode = false;
+      },
+      error: (err: any) => console.error(err)
     });
   }
 
-  // IMAGE LOGIC (same as before)
+  // 🚀 Navigate
+  goToProfilePage() {
+    this.router.navigate(['/user/profile-view']);
+  }
+
+  // 📂 Modal control
   openModal() {
     this.showModal = true;
   }
@@ -63,6 +83,7 @@ export class Profile implements OnInit {
     this.showModal = false;
   }
 
+  // 📁 Upload image (preview only)
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -71,15 +92,11 @@ export class Profile implements OnInit {
     }
   }
 
+  // 🔗 Use image URL
   useImageLink() {
-    if (this.imageLink) {
+    if (this.imageLink?.trim()) {
       this.imageUrl = this.imageLink;
       this.closeModal();
     }
-  }
-
-  selectAvatar(path: string) {
-    this.imageUrl = path;
-    this.closeModal();
   }
 }

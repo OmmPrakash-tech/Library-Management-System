@@ -19,6 +19,8 @@ import { AttendanceFeature } from './components/landing/feature2/attendance-feat
 import { ReportsFeature } from './components/landing/feature2/reports-feature/reports-feature';
 import { DirectoryListingFeature } from './components/landing/feature2/directory-listing-feature/directory-listing-feature';
 import { Book } from './user/home/book/book';
+import { ProfileView } from './user/profile-view/profile-view';
+
 
 export const routes: Routes = [
 
@@ -78,7 +80,9 @@ export const routes: Routes = [
   component: DirectoryListingFeature
 },
 
-{ path: 'book', component: Book }
+{ path: 'book', component: Book },
+
+{ path: 'user/profile-view', component: ProfileView }
 
 
 ];

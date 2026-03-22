@@ -65,45 +65,66 @@
   position: relative;
 }
 
+/* Image clickable */
 .profile-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-}
-
-/* =========================
-   + BUTTON
-========================= */
-.add-btn {
-  position: absolute;
-  bottom: -12px;
-  right: -12px;
-
-  width: 55px;
-  height: 55px;
-
-  border-radius: 50%;
-  background: #e3f2fd;
-  border: 2px solid #00e676;
-
-  color: #1565c0;
-  font-size: 28px;
-  font-weight: bold;
 
   cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   transition: 0.3s;
 }
 
-.add-btn:hover {
-  transform: scale(1.1);
-  background: #bbdefb;
+.profile-image img:hover {
+  transform: scale(1.05);
+}
+
+/* =========================
+   USER INFO
+========================= */
+.username {
+  margin-top: 20px;
+  font-size: 22px;
+  color: white;
+  font-weight: 600;
+}
+
+.email {
+  font-size: 14px;
+  color: #ddd;
+}
+
+/* =========================
+   EDIT SECTION
+========================= */
+.edit-section {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+
+.edit-section input {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+.save-btn {
+  padding: 8px;
+  border-radius: 6px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #43a047;
 }
 
 /* =========================
@@ -125,6 +146,23 @@
 }
 
 /* =========================
+   VISIT BUTTON
+========================= */
+.visit-btn {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.visit-btn:hover {
+  background-color: #45a049;
+}
+
+/* =========================
    MODAL
 ========================= */
 .modal {
@@ -140,7 +178,7 @@
   justify-content: center;
   align-items: center;
 
-  z-index: 1000;  /* ✅ FIX: ensures modal appears above everything */
+  z-index: 1000;
 }
 
 /* Modal box */
@@ -154,7 +192,7 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-/* Buttons */
+/* Buttons inside modal */
 .modal-content button {
   margin: 10px 0;
   padding: 8px 15px;
@@ -176,41 +214,8 @@
   border: 1px solid #ccc;
 }
 
-/* Avatar section */
-.avatar-section {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 10px;
-}
-
-.avatar-section img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.avatar-section img:hover {
-  transform: scale(1.1);
-}
-
 /* Close button */
 .close-btn {
   background: #f44336;
   color: white;
-}
-
-.visit-btn {
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.visit-btn:hover {
-  background-color: #45a049;
 }

@@ -6,17 +6,17 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UserService {
 
-  private baseUrl = 'http://localhost:5050/api/user';
+  private baseUrl = 'http://localhost:5050/api/users';
 
   constructor(private http: HttpClient) {}
 
-  // GET profile
+  // ✅ GET profile
   getProfile() {
     return this.http.get(`${this.baseUrl}/profile`);
   }
 
-  // UPDATE profile
-  updateProfile(data: any) {
-    return this.http.post(`${this.baseUrl}/update`, data);
+  // ✅ UPDATE profile
+  updateProfile(id: number, payload: any) {
+    return this.http.put(`${this.baseUrl}/update/${id}`, payload);
   }
 }

@@ -1,0 +1,63 @@
+<div class="profile-page">
+
+  <!-- REFRESH BUTTON -->
+  <div class="top-bar">
+    <button class="refresh-btn" (click)="refreshProfile()" [disabled]="isRefreshing">
+      🔄 Refresh <span *ngIf="isRefreshing">...</span>
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="isLoading; else profileBlock" class="loading-text">
+    🚀 Loading your profile...
+  </div>
+
+  <!-- PROFILE -->
+  <ng-template #profileBlock>
+    <div class="profile-container">
+
+      <!-- LEFT -->
+      <div class="left">
+        <img 
+          [src]="user?.profileImage || 'https://via.placeholder.com/150'" 
+          alt="Profile Image"
+        />
+      </div>
+
+      <!-- RIGHT -->
+      <div class="right">
+
+        <!-- TOP RIGHT EDIT BUTTON -->
+        <div class="card-header">
+          <button class="edit-btn" (click)="showEdit = true">
+            ✏️ Edit Profile
+          </button>
+        </div>
+
+        <!-- USER NAME -->
+        <h2>{{ user?.fullName }}</h2>
+
+        <!-- USER INFO -->
+        <div class="info">
+          <p><span>ID:</span> {{ user?.id }}</p>
+          <p><span>Email:</span> {{ user?.email }}</p>
+          <p><span>Role:</span> {{ user?.role }}</p>
+          <p><span>Phone:</span> {{ user?.phone }}</p>
+          <p><span>Auth Provider:</span> {{ user?.authProvider }}</p>
+          <p><span>Google ID:</span> {{ user?.googleId || 'N/A' }}</p>
+        </div>
+
+      </div>
+
+    </div>
+  </ng-template>
+
+  <!-- ✅ EDIT MODAL (VERY IMPORTANT - KEEP AT BOTTOM) -->
+  <app-edit-profile
+    *ngIf="showEdit"
+    [user]="user"
+    (close)="showEdit = false"
+    (updated)="onUserUpdated($event)">
+  </app-edit-profile>
+
+</div>

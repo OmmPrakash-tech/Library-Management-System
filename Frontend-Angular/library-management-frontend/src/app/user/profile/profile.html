@@ -2,14 +2,20 @@
 
   <!-- Top Right Button -->
   <div class="top-bar">
-    <button class="edit-btn" (click)="enableEdit()">Edit Profile</button>
+    <button class="edit-btn" (click)="toggleEdit()">
+      {{ isEditMode ? 'Cancel' : 'Edit Profile' }}
+    </button>
   </div>
 
   <!-- Profile Image -->
-  <div class="profile-image">
+  <div class="profile-image" (click)="openModal()">
     <img [src]="imageUrl" alt="Profile Image" />
+  </div>
 
-    <!-- USER INFO VIEW MODE -->
+  <!-- USER INFO -->
+  <div class="profile-info">
+
+    <!-- VIEW MODE -->
     <div *ngIf="!isEditMode">
       <h3 class="username">{{ userName }}</h3>
       <p class="email">{{ email }}</p>
@@ -22,8 +28,6 @@
       <button class="save-btn" (click)="saveProfile()">Save</button>
     </div>
 
-    <!-- Add Image Button -->
-    <button class="add-btn" (click)="openModal()">+</button>
   </div>
 
   <!-- Hidden File Input -->
@@ -42,12 +46,6 @@
         <button (click)="useImageLink()">Use</button>
       </div>
 
-      <div class="avatar-section">
-        <img src="/avatar1.png" (click)="selectAvatar('/avatar1.png')" />
-        <img src="/avatar2.png" (click)="selectAvatar('/avatar2.png')" />
-        <img src="/avatar3.png" (click)="selectAvatar('/avatar3.png')" />
-      </div>
-
       <button class="close-btn" (click)="closeModal()">Close</button>
 
     </div>
@@ -55,7 +53,7 @@
 
   <!-- Bottom Box -->
   <div class="profile-box">
-    <button class="visit-btn" (click)="loadProfile()">
+    <button class="visit-btn" (click)="goToProfilePage()">
       Visit your profile
     </button>
   </div>
