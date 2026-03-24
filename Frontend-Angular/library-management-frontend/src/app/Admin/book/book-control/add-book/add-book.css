@@ -1,0 +1,46 @@
+.add-book-container {
+  max-width: 500px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 20px;
+
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: white;
+}
+
+.add-book-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form input {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  color: white;
+}
+
+.cancel {
+  background: #ef4444;
+}

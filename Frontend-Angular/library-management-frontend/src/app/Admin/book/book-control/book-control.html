@@ -1,0 +1,56 @@
+<div class="controller-container">
+
+  <div class="controller-header">
+    <h1>Book Controller 📚</h1>
+    <p>
+      Manage your book collection efficiently. Add new books, view records,
+      and maintain your library system with ease.
+    </p>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="controller-actions">
+
+<button class="action-btn" (click)="onAddBook()">➕ Add Book</button>
+    <button class="action-btn" (click)="onViewBooks()">📖 Refresh</button>
+    <button class="action-btn" (click)="onManageBooks()">⚙️ Manage</button>
+
+  </div>
+
+  <!-- 📚 BOOK LIST AUTO LOAD -->
+<div class="book-list">
+
+  <h2>All Books</h2>
+
+  <div class="book-grid">
+
+    <div class="book-card" *ngFor="let book of books">
+
+      <!-- IMAGE -->
+      <img 
+        [src]="book.image || 'https://picsum.photos/300/200?random=' + book.id" 
+        alt="book image"
+      />
+
+      <!-- INFO -->
+      <div class="book-info">
+        <h3>{{ book.title }}</h3>
+        <p class="author">ISBN: {{ book.isbn }}</p>
+
+        <!-- KEEP YOUR BUTTONS -->
+<div class="actions">
+  <button class="btn view-btn" (click)="viewBook(book.id)">
+  👁 View
+</button>
+  <button class="btn soft-btn">🗑 Soft</button>
+  <button class="btn hard-btn">❌ Hard</button>
+</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>

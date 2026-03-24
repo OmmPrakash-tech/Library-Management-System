@@ -13,7 +13,7 @@
 
     <div class="book-card" *ngFor="let book of books">
 
-      <img [src]="book.image || 'https://picsum.photos/300/200'" />
+      <img [src]="book.image || 'https://picsum.photos/300/200?random=' + book.id" />
 
       <div class="book-info">
         <h3>{{ book.title }}</h3>

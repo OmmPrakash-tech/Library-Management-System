@@ -20,16 +20,20 @@ import { SecurityFeature } from './components/landing/feature2/security-feature/
 import { AttendanceFeature } from './components/landing/feature2/attendance-feature/attendance-feature';
 import { ReportsFeature } from './components/landing/feature2/reports-feature/reports-feature';
 import { DirectoryListingFeature } from './components/landing/feature2/directory-listing-feature/directory-listing-feature';
+import { ManageBooks } from './Admin/book/book-control/manage-books/manage-books';
 
 import { Book } from './user/home/book/book';
 import { ProfileView } from './user/profile-view/profile-view';
 
 import { AllUser } from './Admin/user/alluser/alluser';
-import { BookController } from './Admin/book/book-controller/book-controller';
+import { BookControl } from './Admin/book/book-control/book-control';
+
 
 /* ✅ IMPORT EDIT USER */
 import { EditUser } from './Admin/user/alluser/edituser/edituser';
 import { GenreControl } from './Admin/genre/genre-control/genre-control';
+import { AddBook } from './Admin/book/book-control/add-book/add-book';
+import { ViewBook } from './Admin/book/book-control/view-book/view-book';
 
 export const routes: Routes = [
 
@@ -96,8 +100,17 @@ export const routes: Routes = [
   /* 🔥 ADD THIS (EDIT USER ROUTE) */
   { path: 'admin/edit-user/:id', component: EditUser },
 
-  { path: 'book-controller', component: BookController },
+  { path: 'book-control', component: BookControl },
 
-    { path: 'genre-control', component: GenreControl }
+    { path: 'genre-control', component: GenreControl },
+
+    { path: 'add-book', component: AddBook },
+
+    { path: 'view-book/:id', component: ViewBook },
+
+    { path: 'manage-books', component: ManageBooks },
+
+    { path: '', redirectTo: 'book-control', pathMatch: 'full' }
+
 
 ];

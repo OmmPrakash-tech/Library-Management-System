@@ -1,0 +1,246 @@
+.controller-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 50px;
+
+  border-radius: 20px;
+
+  background: linear-gradient(135deg, #0f172a, #020617);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+}
+
+/* HEADER */
+.controller-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.controller-header h1 {
+  font-size: 42px;
+  font-weight: bold;
+
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  margin-bottom: 10px;
+}
+
+.controller-header p {
+  font-size: 16px;
+  color: #cbd5f5;
+}
+
+/* ACTION CONTAINER */
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* BASE BUTTON */
+.btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+/* 👁 VIEW BUTTON */
+.view-btn {
+  background: linear-gradient(90deg, #38bdf8, #6366f1);
+  color: white;
+}
+
+/* 🗑 SOFT DELETE */
+.soft-btn {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  color: black;
+}
+
+/* ❌ HARD DELETE */
+.hard-btn {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+  color: white;
+}
+
+/* HOVER EFFECT */
+.btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 12px rgba(255,255,255,0.2);
+}
+
+/* ACTION BUTTONS */
+.controller-actions {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 15px 30px;
+  border-radius: 12px;
+  border: none;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+}
+
+/* ============================= */
+/* 📚 TABLE LAYOUT FIX ONLY */
+/* ============================= */
+
+.book-list {
+  margin-top: 40px;
+  width: 100%;
+}
+
+/* Center the table properly */
+.book-list table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Proper column spacing */
+.book-list th,
+.book-list td {
+  padding: 12px 10px;
+  text-align: left;
+}
+
+/* Define column widths */
+.book-list th:nth-child(1),
+.book-list td:nth-child(1) {
+  width: 10%;
+}
+
+.book-list th:nth-child(2),
+.book-list td:nth-child(2) {
+  width: 40%;
+}
+
+.book-list th:nth-child(3),
+.book-list td:nth-child(3) {
+  width: 30%;
+}
+
+.book-list th:nth-child(4),
+.book-list td:nth-child(4) {
+  width: 20%;
+}
+
+/* Fix action buttons alignment */
+.book-list td:last-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Prevent content squeezing */
+.book-list td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================= */
+/* 🔥 TEXT VISIBILITY FIX */
+/* ============================= */
+
+.book-list th {
+  color: #38bdf8; /* matches your heading gradient tone */
+}
+
+.book-list td {
+  color: #e2e8f0; /* light readable text */
+}
+
+/* Fix heading */
+.book-list h2 {
+  color: #c7d2fe;
+}
+
+/* Fix table inheriting black */
+.book-list table {
+  color: #e2e8f0;
+}
+
+/* GRID */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+/* CARD */
+.book-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: 0.3s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-6px);
+}
+
+/* IMAGE */
+.book-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+/* INFO */
+.book-info {
+  padding: 15px;
+}
+
+.book-info h3 {
+  margin: 0;
+  color: #e2e8f0;
+}
+
+.author {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 6px 0 10px;
+}
+
+/* ACTIONS */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* KEEP YOUR BUTTON STYLES */
+.soft-btn {
+  flex: 1;
+}
+
+.hard-btn {
+  flex: 1;
+}

@@ -1,0 +1,32 @@
+<div class="add-book-container">
+
+  <h2>➕ Add New Book</h2>
+
+  <div class="form">
+
+    <!-- BASIC -->
+    <input [(ngModel)]="book.title" placeholder="Book Title" />
+    <input [(ngModel)]="book.author" placeholder="Author Name" />
+    <input [(ngModel)]="book.isbn" placeholder="ISBN" />
+
+    <!-- REQUIRED BACKEND FIELDS -->
+    <input [(ngModel)]="book.genreId" type="number" placeholder="Genre ID" />
+    <input [(ngModel)]="book.publisher" placeholder="Publisher" />
+    <input [(ngModel)]="book.publishedDate" type="date" />
+    <input [(ngModel)]="book.language" placeholder="Language" />
+    <input [(ngModel)]="book.pages" type="number" placeholder="Pages" />
+
+    <textarea [(ngModel)]="book.description" placeholder="Description"></textarea>
+
+    <input [(ngModel)]="book.totalCopies" type="number" placeholder="Total Copies" />
+    <input [(ngModel)]="book.price" type="number" placeholder="Price" />
+
+    <!-- BUTTONS -->
+    <div class="buttons">
+      <button (click)="addBook()">Save</button>
+      <button class="cancel" (click)="goBack()">Cancel</button>
+    </div>
+
+  </div>
+
+</div>

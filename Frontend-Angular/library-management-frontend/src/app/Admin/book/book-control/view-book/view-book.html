@@ -1,0 +1,56 @@
+<div class="view-container">
+
+  <!-- 🔄 REFRESH BUTTON (TOP RIGHT) -->
+  <button class="refresh-btn global-refresh" (click)="refreshBook()">
+    🔄 Refresh
+  </button>
+
+  <div class="view-card" *ngIf="book">
+
+    <!-- BACK BUTTON -->
+    <button class="back-btn" (click)="goBack()">⬅ Back</button>
+
+    <div class="content">
+
+      <!-- IMAGE -->
+      <div class="image-section">
+        <img 
+          [src]="'https://picsum.photos/400/250?random=' + book?.id" 
+        />
+      </div>
+
+      <!-- DETAILS -->
+      <div class="details-section">
+        <h1 class="title">{{ book?.title }}</h1>
+
+        <p><b>Author:</b> {{ book?.author }}</p>
+        <p><b>ISBN:</b> {{ book?.isbn }}</p>
+        <p><b>Genre:</b> {{ book?.genreName }}</p>
+        <p><b>Publisher:</b> {{ book?.publisher }}</p>
+        <p><b>Language:</b> {{ book?.language }}</p>
+        <p><b>Pages:</b> {{ book?.pages }}</p>
+        <p><b>Price:</b> ₹{{ book?.price }}</p>
+
+        <p class="description">{{ book?.description }}</p>
+
+
+        <div class="action-buttons">
+
+  <button class="soft-btn" (click)="deleteBook()">
+    🗑 Soft Delete
+  </button>
+
+  <button class="hard-btn" (click)="hardDeleteBook()">
+    ❌ Hard Delete
+  </button>
+
+</div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

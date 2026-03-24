@@ -1,0 +1,150 @@
+/* 🌌 FULL PAGE BACKGROUND (same theme) */
+.view-container {
+  min-height: 100vh;
+  padding: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* ✅ important fix */
+
+  background: linear-gradient(135deg, #0f172a, #020617);
+}
+
+/* 📦 CARD */
+.view-card {
+  width: 100%;
+  max-width: 950px;
+
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+
+  padding: 25px;
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+/* 🔙 BACK BUTTON */
+.back-btn {
+  margin-bottom: 20px;
+  padding: 8px 16px;
+
+  border: none;
+  border-radius: 8px;
+
+  cursor: pointer;
+  font-weight: bold;
+
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  color: white;
+
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  transform: scale(1.05);
+}
+
+/* 📐 CONTENT LAYOUT */
+.content {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap; /* ✅ prevents breaking */
+}
+
+/* 🖼 IMAGE SECTION */
+.image-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.image-section img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+
+  border-radius: 12px;
+}
+
+/* 📄 DETAILS */
+.details-section {
+  flex: 1;
+  min-width: 300px;
+
+  color: #e2e8f0;
+}
+
+/* 🧾 TITLE */
+.title {
+  font-size: 28px;
+  margin-bottom: 15px;
+
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 📜 DESCRIPTION */
+.description {
+  margin-top: 15px;
+  color: #cbd5f5;
+  line-height: 1.5;
+}
+
+/* 🔄 GLOBAL REFRESH BUTTON (TOP RIGHT) */
+.global-refresh {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+
+  z-index: 1000;
+
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+
+  font-weight: bold;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #22c55e, #06b6d4);
+  color: white;
+
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+
+  transition: 0.3s;
+}
+
+.global-refresh:hover {
+  transform: scale(1.08);
+}
+
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.soft-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.hard-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, #ef4444, #f87171);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.soft-btn:hover,
+.hard-btn:hover {
+  transform: scale(1.05);
+}

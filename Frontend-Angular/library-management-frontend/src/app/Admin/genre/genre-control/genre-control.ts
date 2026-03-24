@@ -49,19 +49,23 @@ export class GenreControl implements OnInit {
   }
 
   // ADD / UPDATE
-  onAddGenre() {
-    if (this.editMode && this.selectedId) {
-      this.genreService.updateGenre(this.selectedId, this.newGenre).subscribe(() => {
-        this.resetForm();
-        this.loadGenres();
-      });
-    } else {
-      this.genreService.createGenre(this.newGenre).subscribe(() => {
-        this.resetForm();
-        this.loadGenres();
-      });
-    }
+onAddGenre() {
+
+  if (!this.newGenre.name?.trim() || !this.newGenre.code?.trim()) {
+    alert("Name & Code required!");
+    return;
   }
+
+  this.genreService.createGenre(this.newGenre).subscribe({
+    next: () => {
+      this.resetForm();
+      this.loadGenres();
+    },
+    error: (err) => {
+      console.log(err.error);
+    }
+  });
+}
 
   // EDIT
   editGenre(g: any) {

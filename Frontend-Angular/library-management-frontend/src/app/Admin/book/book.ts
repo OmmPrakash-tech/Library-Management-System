@@ -14,7 +14,7 @@ export class Book {
    constructor(private router: Router) {}
 
   controlBooks() {
-    this.router.navigate(['/book-controller']);
+    this.router.navigate(['/book-control']);
   }
 
 }
