@@ -1,0 +1,31 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1e293b;
+  padding: 12px 20px;
+  color: white;
+}
+
+/* Logo */
+.logo {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Button */
+.signout-btn {
+  background-color: #ef4444;
+  border: none;
+  padding: 8px 16px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.signout-btn:hover {
+  background-color: #dc2626;
+}

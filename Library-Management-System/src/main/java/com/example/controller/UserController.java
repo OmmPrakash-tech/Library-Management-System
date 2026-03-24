@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.mapper.UserMapper;
 import com.example.model.User;
 import com.example.payload.dto.UserDTO;
+import com.example.repository.UserRepository;
 import com.example.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     @GetMapping("/list")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -43,7 +48,12 @@ public ResponseEntity<User> getUserProfile() throws Exception {
 @DeleteMapping("/delete/{id}")
 public ResponseEntity<String> deleteUser(@PathVariable Long id) {
 
-    userService.deleteUser(id);
+    if (!userRepository.existsById(id)) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("User not found");
+    }
+
+    userRepository.deleteById(id);
 
     return ResponseEntity.ok("User deleted successfully");
 }
@@ -58,5 +68,13 @@ public ResponseEntity<UserDTO> updateUser(
     return ResponseEntity.ok(updatedUser);
 }
 
+@GetMapping("/{id}")
+public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+
+    User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return ResponseEntity.ok(userMapper.toDTO(user));
+}
 
 }

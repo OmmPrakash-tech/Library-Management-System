@@ -1,0 +1,52 @@
+<div class="edit-container">
+
+  <h2>Edit User ✏️</h2>
+
+  <form (ngSubmit)="updateUser()">
+
+    <!-- Full Name -->
+    <input 
+      type="text" 
+      [(ngModel)]="user.fullName" 
+      name="fullName" 
+      placeholder="Full Name" 
+      required
+    >
+
+    <!-- Email -->
+    <input 
+      type="email" 
+      [(ngModel)]="user.email" 
+      name="email" 
+      placeholder="Email"
+    >
+
+    <!-- Phone -->
+    <input 
+      type="text" 
+      [(ngModel)]="user.phone" 
+      name="phone" 
+      placeholder="Phone"
+    >
+
+    <!-- Password -->
+    <input 
+      type="password" 
+      [(ngModel)]="user.password" 
+      name="password" 
+      placeholder="New Password (optional)"
+    >
+
+    <!-- Role -->
+    <select [(ngModel)]="user.role" name="role">
+      <option value="" disabled>Select Role</option>
+      <option value="ROLE_ADMIN">Admin</option>
+      <option value="ROLE_USER">User</option>
+    </select>
+
+    <!-- Submit -->
+    <button type="submit">Update User</button>
+
+  </form>
+
+</div>

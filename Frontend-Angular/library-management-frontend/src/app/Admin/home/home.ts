@@ -1,20 +1,21 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Navbar } from '../navbar/navbar';
+import { Hero } from '../hero/hero';
+import { User } from '../user/user';
+import { Book } from '../book/book';
+import { GenreComponent } from '../genre/genre';
+
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Navbar, Hero, User, Book, GenreComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
 export class Home {
 
-  stats = [
-    { title: 'Total Books', value: 1240, icon: '📚' },
-    { title: 'Registered Users', value: 320, icon: '👥' },
-    { title: 'Books Issued', value: 210, icon: '📖' },
-    { title: 'Active Subscriptions', value: 95, icon: '💳' }
-  ];
+  adminName: string = 'Admin';
 
 }

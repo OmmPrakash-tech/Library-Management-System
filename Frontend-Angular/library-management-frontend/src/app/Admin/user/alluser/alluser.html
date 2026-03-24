@@ -1,0 +1,47 @@
+<app-navbar></app-navbar>
+
+<section class="alluser-section">
+  <h1>All Users 👥</h1>
+
+  <!-- Button -->
+  <button class="show-btn" (click)="showUsers()">
+    Show Users List
+  </button>
+
+  <!-- Loading -->
+  <p *ngIf="loading">Loading users...</p>
+
+  <!-- No Data -->
+  <p *ngIf="!loading && users.length === 0">
+    No users found
+  </p>
+
+  <!-- Table -->
+  <div class="table-container" *ngIf="users.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.fullName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+
+          <td>
+            <button class="edit-btn" (click)="editUser(user.id)">Edit</button>
+            <button class="delete-btn" (click)="deleteUser(user.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

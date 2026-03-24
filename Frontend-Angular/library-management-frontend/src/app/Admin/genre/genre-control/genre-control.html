@@ -1,0 +1,76 @@
+<div class="controller-container">
+
+  <h2>Genre Management 🎭</h2>
+
+  <!-- FORM -->
+  <div class="form-section">
+    <input type="text" [(ngModel)]="newGenre.name" placeholder="Genre Name">
+    <input type="text" [(ngModel)]="newGenre.code" placeholder="Genre Code">
+
+    <button (click)="onAddGenre()">
+      {{ editMode ? 'Update' : 'Add' }}
+    </button>
+
+    <button (click)="resetForm()" class="reset-btn">
+      Reset
+    </button>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <input type="text" [(ngModel)]="searchText" placeholder="Search Genre..." (input)="search()">
+  </div>
+
+  <!-- TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Code</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody *ngIf="filteredGenres.length > 0; else noData">
+      <tr *ngFor="let g of filteredGenres">
+        <td>{{ g.id }}</td>
+        <td>{{ g.name }}</td>
+        <td>{{ g.code }}</td>
+        <td class="actions">
+          <button (click)="editGenre(g)">✏️</button>
+          <button (click)="deleteGenre(g.id)">❌</button>
+          <button (click)="hardDelete(g.id)">🔥</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- EMPTY STATE -->
+  <ng-template #noData>
+    <p class="no-data">No genres found 🚫</p>
+  </ng-template>
+
+  <!-- TREE -->
+ <div class="tree-section">
+  <h3>Genre Tree 🌳</h3>
+
+  <ul class="tree">
+    <ng-container *ngFor="let g of genreTree">
+      <li>
+        📁 {{ g.name }}
+
+        <ul *ngIf="g.subGenres && g.subGenres.length > 0">
+          <ng-container *ngFor="let sub of g.subGenres">
+            <li>
+              📂 {{ sub.name }}
+            </li>
+          </ng-container>
+        </ul>
+
+      </li>
+    </ng-container>
+  </ul>
+</div>
+
+</div>
