@@ -3,7 +3,7 @@ package com.example.service.impl;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,12 @@ import com.example.payload.dto.PaymentDTO;
 import com.example.payload.request.PaymentInitiateRequest;
 import com.example.payload.request.PaymentVerifyRequest;
 import com.example.payload.response.PaymentInitiateResponse;
-import com.example.payload.response.PaymentLinkResponse;
 import com.example.payload.response.RazorpayOrderResponse;
 import com.example.repository.PaymentRepository;
 import com.example.repository.SubscriptionRepository;
 import com.example.repository.UserRepository;
-import com.example.service.*;
+import com.example.service.PaymentService;
+import com.example.service.UserService;
 import com.example.service.gateway.RazorpayService;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +43,12 @@ private final PaymentRepository paymentRepository;
 private final RazorpayService razorpayService;
 private final PaymentMapper paymentMapper;
 private final PaymentEventPublisher paymentEventPublisher;
+
+@Value("${razorpay.key.id}")
+private String razorpayKeyId;
+
+@Value("${razorpay.key.secret}")
+private String razorpayKeySecret;
 
 @Override
 public PaymentInitiateResponse initiatePayment(PaymentInitiateRequest request) {
@@ -88,7 +94,7 @@ public PaymentInitiateResponse initiatePayment(PaymentInitiateRequest request) {
             .paymentId(payment.getId())
             .gateway(payment.getGateway())
             .razorpayOrderId(order.getOrderId())
-            .key("rzp_test_XXXX") // your key
+            .key(razorpayKeyId) // your key
             .currency("INR")
             .amount(payment.getAmount())
             .description(payment.getDescription())

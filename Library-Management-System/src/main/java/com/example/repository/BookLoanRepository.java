@@ -58,4 +58,10 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
            "JOIN FETCH bl.user JOIN FETCH bl.book " +
            "WHERE bl.id = :id")
     Optional<BookLoan> findByIdWithUserAndBook(@Param("id") Long id);
+
+        boolean existsByUserIdAndBookIdAndStatus(
+        Long userId,
+        Long bookId,
+        BookLoanStatus status
+);
 }

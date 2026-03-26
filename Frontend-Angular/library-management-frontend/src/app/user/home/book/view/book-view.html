@@ -1,0 +1,38 @@
+<div class="view-container" *ngIf="book">
+
+  <div class="image-section">
+    <img [src]="book.coverImageUrl || 'https://via.placeholder.com/400'" alt="Book">
+  </div>
+
+  <div class="details-section">
+    <h1>{{ book.title }}</h1>
+
+    <p><b>Author:</b> {{ book.author }}</p>
+    <p><b>ISBN:</b> {{ book.isbn }}</p>
+    <p><b>Genre:</b> {{ book.genreName }}</p>
+    <p><b>Publisher:</b> {{ book.publisher }}</p>
+    <p><b>Language:</b> {{ book.language }}</p>
+    <p><b>Pages:</b> {{ book.pages }}</p>
+    <p><b>Price:</b> ₹{{ book.price }}</p>
+
+    <p class="desc">{{ book.description }}</p>
+
+    <!-- 🔥 ACTION BUTTONS -->
+    <div class="actions">
+
+      <button class="borrow-btn" (click)="borrowBook()">
+        📚 Borrow
+      </button>
+
+      <button class="wishlist-btn" (click)="toggleWishlist()">
+        {{ isWishlisted ? '❤️ Remove Wishlist' : '🤍 Add Wishlist' }}
+      </button>
+
+      <button class="back-btn" (click)="goBack()">
+        ⬅ Back
+      </button>
+
+    </div>
+
+  </div>
+</div>

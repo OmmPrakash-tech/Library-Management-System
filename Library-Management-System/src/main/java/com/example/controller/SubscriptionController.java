@@ -58,9 +58,17 @@ public ResponseEntity<ApiResponse> deactivateExpiredSubscriptions() {
 }
 
 @GetMapping("/user/active")
-public ResponseEntity<SubscriptionDTO> getUsersActiveSubscription() {
+public ResponseEntity<?> getActiveSubscription() {
 
-    return ResponseEntity.ok(subscriptionService.getUsersActiveSubscription());
+    SubscriptionDTO subscription = subscriptionService.getUsersActiveSubscription();
+
+    if (subscription == null) {
+        return ResponseEntity.ok(
+                new ApiResponse("No active subscription", false)
+        );
+    }
+
+    return ResponseEntity.ok(subscription);
 }
 
 @PatchMapping("/{subscriptionId}/cancel")

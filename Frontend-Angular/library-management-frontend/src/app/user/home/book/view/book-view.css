@@ -1,0 +1,51 @@
+.view-container {
+  display: flex;
+  padding: 30px;
+  background: #0f172a;
+  color: white;
+}
+
+.image-section img {
+  width: 400px;
+  border-radius: 10px;
+}
+
+.details-section {
+  margin-left: 30px;
+}
+
+.details-section h1 {
+  color: #38bdf8;
+}
+
+.desc {
+  margin-top: 15px;
+  color: #cbd5f5;
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+button {
+  margin-right: 10px;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.borrow-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.wishlist-btn {
+  background: #ec4899;
+  color: white;
+}
+
+.back-btn {
+  background: #64748b;
+  color: white;
+}

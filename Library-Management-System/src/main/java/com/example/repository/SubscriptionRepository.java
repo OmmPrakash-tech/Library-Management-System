@@ -26,4 +26,6 @@ List<Subscription> findExpiredActiveSubscriptions(
         @Param("today") LocalDate today
 );
 
+List<Subscription> findByUserIdAndIsActiveTrue(Long userId);
+
 }

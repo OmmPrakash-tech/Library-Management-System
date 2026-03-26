@@ -140,12 +140,10 @@ public SubscriptionDTO getUsersActiveSubscription() {
 
     User user = userService.getCurrentUser();
 
-    Subscription subscription = subscriptionRepository
+    return subscriptionRepository
             .findActiveSubscriptionByUserId(user.getId(), LocalDate.now())
-            .orElseThrow(() -> new SubscriptionException(
-                    "No active subscription found for user"));
-
-    return subscriptionMapper.toDTO(subscription);
+            .map(subscriptionMapper::toDTO)
+            .orElse(null); // ✅ no exception
 }
 
     // ================= CANCEL =================
@@ -242,4 +240,5 @@ public List<SubscriptionDTO> assignSubscriptionsToUsers(List<SubscriptionDTO> dt
 
     return result;
 }
+
 }

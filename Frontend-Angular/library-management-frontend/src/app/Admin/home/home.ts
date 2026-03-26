@@ -5,12 +5,13 @@ import { Hero } from '../hero/hero';
 import { User } from '../user/user';
 import { Book } from '../book/book';
 import { GenreComponent } from '../genre/genre';
+import { SubscriptionHeroComponent } from '../subscription/subscription';
 
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule, Navbar, Hero, User, Book, GenreComponent],
+  imports: [CommonModule, Navbar, Hero, User, Book, GenreComponent, SubscriptionHeroComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })

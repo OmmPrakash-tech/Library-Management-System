@@ -22,7 +22,9 @@
         We are providing to support your knowledge and provide you to read
         the books with minimum amount of subscription
       </p>
-      <button>View</button>
+      <button (click)="goToSubscribe()">
+  Subscribe Now
+</button>
     </div>
 
     <!-- Wishlist -->
@@ -32,7 +34,9 @@
         You can see your wish list it helps you to store the book you like most
         and you want to read which book after one
       </p>
-      <button>View</button>
+<button class="view-btn" routerLink="/wishlist">
+  ❤️ View Wishlist
+</button>
     </div>
 
     <!-- Loan Status -->

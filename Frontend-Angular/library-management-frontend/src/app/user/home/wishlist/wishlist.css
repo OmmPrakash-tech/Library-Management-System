@@ -1,0 +1,191 @@
+/* 🌌 Background */
+.wishlist-container {
+  padding: 40px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #0f172a, #020617);
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ✨ Animated gradient glow blobs */
+.wishlist-container::before,
+.wishlist-container::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(140px);
+  animation: floatGlow 8s infinite alternate ease-in-out;
+}
+
+.wishlist-container::before {
+  background: #3b82f6;
+  top: -100px;
+  left: -100px;
+}
+
+.wishlist-container::after {
+  background: #ec4899;
+  bottom: -100px;
+  right: -100px;
+}
+
+@keyframes floatGlow {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(60px); }
+}
+
+/* Keep content above */
+.wishlist-container * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Title */
+h2 {
+  text-align: center;
+  font-size: 32px;
+}
+
+.count {
+  text-align: center;
+  color: #4ade80;
+  margin-bottom: 30px;
+}
+
+/* Grid */
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+/* 💎 Glass Card */
+.card {
+  position: relative;
+  padding: 20px;
+  border-radius: 20px;
+
+  /* 🔥 DARKER GLASS */
+  background: rgba(15, 23, 42, 0.6);   /* darker shade */
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  transition: 0.4s ease;
+  overflow: hidden;
+}
+
+/* 🌈 Animated border glow */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(45deg, #3b82f6, #ec4899, #22c55e);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  opacity: 0;
+  transition: 0.4s;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* ✨ Shimmer effect */
+.card::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.2),
+    transparent
+  );
+  transform: rotate(25deg);
+  opacity: 0;
+}
+
+.card:hover::after {
+  animation: shimmer 1.5s;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  100% { transform: translateX(100%) rotate(25deg); }
+}
+
+/* Hover motion */
+.card:hover {
+  transform: translateY(-12px) scale(1.04);
+  box-shadow:
+    0 0 25px rgba(59,130,246,0.4),
+    0 0 60px rgba(236,72,153,0.3);
+}
+
+/* Text */
+.card-content h3 {
+  color: #f1f5f9;  /* brighter */
+}
+
+.card-content p {
+  color: #94a3b8;  /* softer gray */
+}
+
+/* Buttons */
+.actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 🔥 Button base */
+.view-btn,
+.remove-btn {
+  border: none;
+  padding: 7px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s;
+}
+
+/* 💫 Glow pulse animation */
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 5px; }
+  50% { box-shadow: 0 0 20px; }
+  100% { box-shadow: 0 0 5px; }
+}
+
+/* View */
+.view-btn {
+  background: #3b82f6;
+  animation: glowPulse 2s infinite;
+}
+
+.view-btn:hover {
+  background: #3b82f6;
+}
+
+/* Remove */
+.remove-btn {
+  background: #ef4444;
+  animation: glowPulse 2s infinite;
+}
+
+.remove-btn:hover {
+  background: #ef4444;
+}

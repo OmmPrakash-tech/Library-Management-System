@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.payload.dto.BookReviewDTO;
+import com.example.payload.dto.RatingSummaryDTO;
 import com.example.payload.request.CreateReviewRequest;
 import com.example.payload.request.UpdateReviewRequest;
 import com.example.payload.response.PageResponse;
@@ -15,7 +16,9 @@ public interface BookReviewService {
 
     PageResponse<BookReviewDTO> getReviewsByBook(Long bookId, int page, int size);
 
-    Double getAverageRating(Long bookId);
+    PageResponse<BookReviewDTO> getReviewsByUser(Long userId, int page, int size);
 
-    BookReviewDTO getReviewById(Long reviewId); // optional
+RatingSummaryDTO getRatingSummary(Long bookId);
+
+    BookReviewDTO getReviewById(Long reviewId);
 }

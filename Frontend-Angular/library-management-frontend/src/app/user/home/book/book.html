@@ -21,8 +21,14 @@
 
         <div class="actions">
           <button (click)="borrowBook(book)">Borrow</button>
-          <button (click)="addToWishlist(book)">Wishlist</button>
-        </div>
+
+            <!-- ✅ VIEW BUTTON -->
+  <button (click)="viewBook(book.id)" class="view-btn">
+    View
+  </button>
+  
+<button (click)="addToWishlist(book.id)">Wishlist</button>       
+ </div>
       </div>
 
     </div>

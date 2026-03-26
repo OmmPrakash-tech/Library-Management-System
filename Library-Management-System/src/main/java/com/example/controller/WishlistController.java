@@ -19,44 +19,46 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/wishlist")
 public class WishlistController {
 
     private final WishlistService wishlistService;
 
-    @PostMapping("/add/{bookId}")
-    public ResponseEntity<?> addToWishlist(
+    @PostMapping("/{bookId}")
+    public ResponseEntity<WishlistDTO> addToWishlist(
             @PathVariable Long bookId,
             @RequestParam(required = false) String notes
-    ) throws Exception {
-
-        WishlistDTO wishlistDTO = wishlistService.addToWishlist(bookId, notes);
-        return ResponseEntity.ok(wishlistDTO);
+    ) {
+        return ResponseEntity.ok(wishlistService.addToWishlist(bookId, notes));
     }
 
-    @DeleteMapping("/remove/{bookId}")
+    @DeleteMapping("/{bookId}")
     public ResponseEntity<ApiResponse> removeFromWishlist(
             @PathVariable Long bookId
-    ) throws Exception {
-
+    ) {
         wishlistService.removeFromWishlist(bookId);
 
         return ResponseEntity.ok(
-                new ApiResponse(
-                        "Book removed from wishlist successfully",
-                        true
-                )
+                new ApiResponse("Book removed from wishlist successfully", true)
         );
     }
 
-    @GetMapping("/my-wishlist")
-    public ResponseEntity<?> getMyWishlist(
+    @GetMapping
+    public ResponseEntity<PageResponse<WishlistDTO>> getMyWishlist(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        return ResponseEntity.ok(wishlistService.getMyWishlist(page, size));
+    }
 
-        PageResponse<WishlistDTO> wishlist = wishlistService.getMyWishlist(page, size);
-        return ResponseEntity.ok(wishlist);
+    @GetMapping("/exists/{bookId}")
+    public ResponseEntity<Boolean> isInWishlist(@PathVariable Long bookId) {
+        return ResponseEntity.ok(wishlistService.isBookInWishlist(bookId));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getWishlistCount() {
+        return ResponseEntity.ok(wishlistService.getWishlistCount());
     }
 }

@@ -28,12 +28,15 @@ import { ProfileView } from './user/profile-view/profile-view';
 import { AllUser } from './Admin/user/alluser/alluser';
 import { BookControl } from './Admin/book/book-control/book-control';
 
-
 /* ✅ IMPORT EDIT USER */
 import { EditUser } from './Admin/user/alluser/edituser/edituser';
 import { GenreControl } from './Admin/genre/genre-control/genre-control';
 import { AddBook } from './Admin/book/book-control/add-book/add-book';
 import { ViewBook } from './Admin/book/book-control/view-book/view-book';
+import { PaymentComponent } from './payment/payment';
+import { SubscriptionComponent } from './user/home/subscribe/subscribe';
+import { WishlistComponent } from './user/home/wishlist/wishlist';
+import { BookViewComponent } from './user/home/book/view/view';
 
 export const routes: Routes = [
 
@@ -110,7 +113,15 @@ export const routes: Routes = [
 
     { path: 'manage-books', component: ManageBooks },
 
-    { path: '', redirectTo: 'book-control', pathMatch: 'full' }
+    {
+  path: 'payment',
+  component: PaymentComponent
+},
 
+{ path: 'subscription', component: SubscriptionComponent },
+
+  { path: 'wishlist', component: WishlistComponent },
+
+{ path: 'book/:id', component: BookViewComponent }
 
 ];

@@ -1,0 +1,35 @@
+<div class="wishlist-container">
+
+  <h2>❤️ My Wishlist</h2>
+  <p class="count">Total Items: {{ count }}</p>
+
+  <div *ngIf="wishlist.length === 0" class="empty">
+    Your wishlist is empty 📭
+  </div>
+
+  <div class="wishlist-grid">
+    <div class="card" *ngFor="let item of wishlist">
+
+      <div class="card-content">
+        <h3>{{ item?.book?.title }}</h3>
+        <p>by {{ item?.book?.author }}</p>
+      </div>
+
+      <div class="actions">
+
+        <button class="view-btn"
+                (click)="viewBook(item?.book?.id)">
+          👁 View
+        </button>
+
+        <button class="remove-btn"
+                (click)="removeFromWishlist(item?.book?.id)">
+          ❌ Remove
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

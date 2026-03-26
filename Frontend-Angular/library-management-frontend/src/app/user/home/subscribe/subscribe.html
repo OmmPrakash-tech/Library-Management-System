@@ -1,0 +1,87 @@
+<!-- 🔄 Refresh -->
+<div class="refresh-wrapper">
+  <button class="refresh-btn" (click)="refreshPlans()" [disabled]="loading">
+    🔄 Refresh Plans
+  </button>
+</div>
+
+<h2 class="title">Choose Your Plan</h2>
+
+<!-- LOADING -->
+<div *ngIf="loading" class="loading">
+  Loading plans...
+</div>
+
+<!-- ERROR -->
+<div *ngIf="!loading && errorMessage" class="error">
+  {{ errorMessage }}
+</div>
+
+<!-- NO DATA -->
+<div *ngIf="!loading && plans.length === 0 && !errorMessage" class="no-data">
+  No plans available
+</div>
+
+<!-- PLANS -->
+<div *ngIf="!loading && plans.length > 0" class="plans">
+
+  <div *ngFor="let plan of plans" class="plan-card">
+
+    <div *ngIf="plan.badgeText" class="badge">
+      {{ plan.badgeText }}
+    </div>
+
+    <h3>{{ plan.name }}</h3>
+
+    <p class="price">₹{{ plan.price }}</p>
+
+    <p class="desc">{{ plan.description }}</p>
+
+    <ul>
+      <li>📅 Duration: {{ plan.durationDays }} days</li>
+      <li>📚 Max Books: {{ plan.maxBooksAllowed }}</li>
+      <li>⏳ Days per Book: {{ plan.maxDaysPerBook }}</li>
+    </ul>
+
+    <div *ngIf="plan.isFeatured" class="featured">
+      ⭐ Most Popular
+    </div>
+
+    <!-- 🔥 BUTTON -->
+    <button 
+      (click)="subscribe(plan)" 
+      [disabled]="hasActiveSubscription">
+
+      {{ hasActiveSubscription ? 'Already Subscribed' : 'Subscribe' }}
+    </button>
+
+  </div>
+
+</div>
+
+<!-- 📄 VIEW SUB -->
+<div class="active-subscription-wrapper">
+  <button class="active-btn" (click)="getActiveSubscription()">
+    📄 View My Subscription
+  </button>
+</div>
+
+<!-- ✅ ACTIVE SUB -->
+<div *ngIf="hasActiveSubscription && activeSubscription" class="active-subscription-card">
+
+  <h3>🎯 Your Active Plan</h3>
+
+  <p><strong>Name:</strong> {{ activeSubscription.planName }}</p>
+  <p><strong>Price:</strong> ₹{{ activeSubscription.price }}</p>
+  <p><strong>Start:</strong> {{ activeSubscription.startDate }}</p>
+  <p><strong>End:</strong> {{ activeSubscription.endDate }}</p>
+
+  <p><strong>Max Books:</strong> {{ activeSubscription.maxBooksAllowed }}</p>
+  <p><strong>Days per Book:</strong> {{ activeSubscription.maxDaysPerBook }}</p>
+
+</div>
+
+<!-- ❌ NO SUB -->
+<div *ngIf="noSubscriptionMessage && !hasActiveSubscription" class="no-data">
+  {{ noSubscriptionMessage }}
+</div>

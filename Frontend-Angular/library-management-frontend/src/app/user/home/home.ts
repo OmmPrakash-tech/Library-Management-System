@@ -23,4 +23,10 @@ export class Home {
     this.router.navigate(['/book']);       // ✅ Navigation logic
   }
 
+    // ✅ ADD THIS
+  goToSubscribe() {
+    this.router.navigate(['/subscription']);
+  }
+
+
 }

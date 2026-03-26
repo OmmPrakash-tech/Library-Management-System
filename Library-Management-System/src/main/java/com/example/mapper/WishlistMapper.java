@@ -16,26 +16,18 @@ public class WishlistMapper {
 
     public WishlistDTO toDTO(Wishlist wishlist) {
 
-        if (wishlist == null) {
-            return null;
-        }
+        if (wishlist == null) return null;
 
-        WishlistDTO dto = new WishlistDTO();
+        var user = wishlist.getUser();
+        var book = wishlist.getBook();
 
-        dto.setId(wishlist.getId());
-
-        if (wishlist.getUser() != null) {
-            dto.setUserId(wishlist.getUser().getId());
-            dto.setUserFullName(wishlist.getUser().getFullName());
-        }
-
-        if (wishlist.getBook() != null) {
-            dto.setBook(bookMapper.toDTO(wishlist.getBook()));
-        }
-
-        dto.setAddedAt(wishlist.getAddedAt());
-        dto.setNotes(wishlist.getNotes());
-
-        return dto;
+        return WishlistDTO.builder()
+                .id(wishlist.getId())
+                .userId(user != null ? user.getId() : null)
+                .userFullName(user != null ? user.getFullName() : null)
+                .book(book != null ? bookMapper.toDTO(book) : null)
+                .addedAt(wishlist.getAddedAt())
+                .notes(wishlist.getNotes())
+                .build();
     }
 }

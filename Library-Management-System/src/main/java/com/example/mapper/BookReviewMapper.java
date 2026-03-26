@@ -8,27 +8,29 @@ import com.example.payload.dto.BookReviewDTO;
 @Component
 public class BookReviewMapper {
 
-    public BookReviewDTO toDTO(BookReview bookReview) {
+    public BookReviewDTO toDTO(BookReview bookReview, Long currentUserId) {
 
         if (bookReview == null) {
             return null;
         }
 
+        var user = bookReview.getUser();
+        var book = bookReview.getBook();
+
         return BookReviewDTO.builder()
                 .id(bookReview.getId())
 
                 // User info
-                .userId(bookReview.getUser() != null ? bookReview.getUser().getId() : null)
-                .userName(bookReview.getUser() != null ? bookReview.getUser().getFullName() : null)
-                .userEmail(bookReview.getUser() != null ? bookReview.getUser().getEmail() : null)
+                .userId(user != null ? user.getId() : null)
+                .userName(user != null ? user.getFullName() : null)
 
                 // Book info
-                .bookId(bookReview.getBook() != null ? bookReview.getBook().getId() : null)
-                .bookTitle(bookReview.getBook() != null ? bookReview.getBook().getTitle() : null)
-                .bookAuthor(bookReview.getBook() != null ? bookReview.getBook().getAuthor() : null)
-                .bookIsbn(bookReview.getBook() != null ? bookReview.getBook().getIsbn() : null)
+                .bookId(book != null ? book.getId() : null)
+                .bookTitle(book != null ? book.getTitle() : null)
+                .bookAuthor(book != null ? book.getAuthor() : null)
+                .bookIsbn(book != null ? book.getIsbn() : null)
 
-                // Review details
+                // Review
                 .rating(bookReview.getRating())
                 .reviewText(bookReview.getReviewText())
                 .title(bookReview.getTitle())
@@ -36,6 +38,9 @@ public class BookReviewMapper {
                 // Audit
                 .createdAt(bookReview.getCreatedAt())
                 .updatedAt(bookReview.getUpdatedAt())
+
+                // 🔥 Frontend helper
+                .isOwner(user != null && user.getId().equals(currentUserId))
 
                 .build();
     }
