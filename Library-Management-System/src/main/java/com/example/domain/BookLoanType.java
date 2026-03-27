@@ -1,20 +1,29 @@
 package com.example.domain;
 
+/**
+ * Represents the type of action performed on a book loan.
+ */
 public enum BookLoanType {
 
     /**
- * Regular checkout (book loan initiated)
- */
-CHECKOUT,
+     * Initial checkout of a book.
+     */
+    CHECKOUT,
 
-/**
- * Book renewal (extending due date)
- */
-RENEWAL,
+    /**
+     * Renewal of an existing loan.
+     */
+    RENEWAL,
 
-/**
- * Book return (check-in)
- */
-RETURN
+    /**
+     * Book return (check-in).
+     */
+    RETURN;
 
+    /**
+     * Check if this action modifies loan duration.
+     */
+    public boolean affectsDueDate() {
+        return this == CHECKOUT || this == RENEWAL;
+    }
 }

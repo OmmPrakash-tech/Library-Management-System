@@ -10,15 +10,28 @@ import com.example.payload.response.PageResponse;
 
 public interface BookLoanService {
 
-    BookLoanDTO checkoutBook(Long userId, CheckoutRequest checkoutRequest);
+    // ================= CORE OPERATIONS =================
 
-    BookLoanDTO checkInBook(CheckinRequest checkinRequest);
+    BookLoanDTO checkoutBook(Long userId, CheckoutRequest request);
 
-    BookLoanDTO renewCheckout(RenewalRequest renewalRequest);
+    BookLoanDTO checkInBook(CheckinRequest request);
 
-    PageResponse<BookLoanDTO> getUserBookLoans(Long userId, BookLoanStatus status, int page, int size);
+    BookLoanDTO renewLoan(RenewalRequest request);
 
-    PageResponse<BookLoanDTO> getBookLoans(BookLoanSearchRequest request);
+    BookLoanDTO getLoanById(Long loanId);
+
+    // ================= FETCH =================
+
+    PageResponse<BookLoanDTO> getUserLoans(
+            Long userId,
+            BookLoanStatus status,
+            int page,
+            int size
+    );
+
+    PageResponse<BookLoanDTO> searchLoans(BookLoanSearchRequest request);
+
+    // ================= SYSTEM TASKS =================
 
     int markOverdueLoans();
 }

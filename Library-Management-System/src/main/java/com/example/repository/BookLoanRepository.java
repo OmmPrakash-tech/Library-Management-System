@@ -1,67 +1,107 @@
 package com.example.repository;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.domain.BookLoanStatus;
 import com.example.model.BookLoan;
-import com.example.model.User;
 
-public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
+public interface BookLoanRepository extends JpaRepository<BookLoan, Long>, JpaSpecificationExecutor<BookLoan> {
+
+    // ================= BASIC QUERIES =================
 
     Page<BookLoan> findByUserId(Long userId, Pageable pageable);
 
-    List<BookLoan> findByBookId(Long bookId);
+    Page<BookLoan> findByBookId(Long bookId, Pageable pageable);
 
-    Page<BookLoan> findByStatusAndUser(BookLoanStatus status, User user, Pageable pageable);
+    List<BookLoan> findByBookId(Long bookId);
 
     Page<BookLoan> findByStatus(BookLoanStatus status, Pageable pageable);
 
-    Page<BookLoan> findByBookId(Long bookId, Pageable pageable);
+    Page<BookLoan> findByStatusAndUserId(BookLoanStatus status, Long userId, Pageable pageable);
+
+    // ================= EXISTENCE CHECKS =================
+
+    boolean existsByUserIdAndBookIdAndStatus(
+            Long userId,
+            Long bookId,
+            BookLoanStatus status
+    );
 
     boolean existsByUserIdAndBookIdAndStatusIn(
             Long userId,
             Long bookId,
-            List<BookLoanStatus> statuses
+            Collection<BookLoanStatus> statuses
     );
 
-    @Query("SELECT COUNT(bl) FROM BookLoan bl WHERE bl.user.id = :userId " +
-           "AND bl.status IN ('CHECKED_OUT', 'OVERDUE')")
-    long countActiveBookLoansByUser(@Param("userId") Long userId);
+    // ================= COUNT QUERIES =================
 
-    @Query("SELECT COUNT(bl) FROM BookLoan bl WHERE bl.user.id = :userId " +
-           "AND bl.status = 'OVERDUE'")
-    long countOverdueBookLoansByUser(@Param("userId") Long userId);
+    @Query("""
+        SELECT COUNT(bl)
+        FROM BookLoan bl
+        WHERE bl.user.id = :userId
+        AND bl.status IN :activeStatuses
+    """)
+    long countActiveBookLoansByUser(
+            @Param("userId") Long userId,
+            @Param("activeStatuses") Collection<BookLoanStatus> activeStatuses
+    );
 
-    @Query("SELECT bl FROM BookLoan bl WHERE bl.dueDate < :currentDate " +
-           "AND bl.status IN ('CHECKED_OUT', 'OVERDUE')")
+    @Query("""
+        SELECT COUNT(bl)
+        FROM BookLoan bl
+        WHERE bl.user.id = :userId
+        AND bl.status = :status
+    """)
+    long countBookLoansByUserAndStatus(
+            @Param("userId") Long userId,
+            @Param("status") BookLoanStatus status
+    );
+
+    // ================= OVERDUE =================
+
+    @Query("""
+        SELECT bl
+        FROM BookLoan bl
+        WHERE bl.dueDate < :currentDate
+        AND bl.status IN :statuses
+    """)
     Page<BookLoan> findOverdueBookLoans(
             @Param("currentDate") LocalDate currentDate,
+            @Param("statuses") Collection<BookLoanStatus> statuses,
             Pageable pageable
     );
 
-    @Query("SELECT bl FROM BookLoan bl WHERE bl.checkoutDate BETWEEN :startDate AND :endDate")
-    Page<BookLoan> findBookLoansByDateRange(
+    // ================= DATE RANGE =================
+
+    @Query("""
+        SELECT bl
+        FROM BookLoan bl
+        WHERE bl.checkoutDate BETWEEN :startDate AND :endDate
+    """)
+    Page<BookLoan> findByCheckoutDateBetween(
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
             Pageable pageable
     );
 
-    @Query("SELECT bl FROM BookLoan bl " +
-           "JOIN FETCH bl.user JOIN FETCH bl.book " +
-           "WHERE bl.id = :id")
-    Optional<BookLoan> findByIdWithUserAndBook(@Param("id") Long id);
+    // ================= FETCH OPTIMIZATION =================
 
-        boolean existsByUserIdAndBookIdAndStatus(
-        Long userId,
-        Long bookId,
-        BookLoanStatus status
-);
+    @Query("""
+        SELECT bl
+        FROM BookLoan bl
+        JOIN FETCH bl.user
+        JOIN FETCH bl.book
+        WHERE bl.id = :id
+    """)
+    Optional<BookLoan> findByIdWithUserAndBook(@Param("id") Long id);
 }

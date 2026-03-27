@@ -17,53 +17,50 @@ public class BookLoanMapper {
             return null;
         }
 
-        BookLoanDTO dto = new BookLoanDTO();
-        dto.setId(bookLoan.getId());
+        return BookLoanDTO.builder()
+                .id(bookLoan.getId())
 
-        // User info
-        if (bookLoan.getUser() != null) {
-            dto.setUserId(bookLoan.getUser().getId());
-            dto.setUserName(bookLoan.getUser().getFullName());
-            dto.setUserEmail(bookLoan.getUser().getEmail());
-        }
+                // ================= USER =================
+                .userId(bookLoan.getUser() != null ? bookLoan.getUser().getId() : null)
+                .userName(bookLoan.getUser() != null ? bookLoan.getUser().getFullName() : null)
+                .userEmail(bookLoan.getUser() != null ? bookLoan.getUser().getEmail() : null)
 
-        // Book info
-        if (bookLoan.getBook() != null) {
-            dto.setBookId(bookLoan.getBook().getId());
-            dto.setBookTitle(bookLoan.getBook().getTitle());
-            dto.setBookIsbn(bookLoan.getBook().getIsbn());
-            dto.setBookAuthor(bookLoan.getBook().getAuthor());
-            dto.setBookCoverImage(bookLoan.getBook().getCoverImageUrl());
-        }
+                // ================= BOOK =================
+                .bookId(bookLoan.getBook() != null ? bookLoan.getBook().getId() : null)
+                .bookTitle(bookLoan.getBook() != null ? bookLoan.getBook().getTitle() : null)
+                .bookIsbn(bookLoan.getBook() != null ? bookLoan.getBook().getIsbn() : null)
+                .bookAuthor(bookLoan.getBook() != null ? bookLoan.getBook().getAuthor() : null)
+                .bookCoverImage(bookLoan.getBook() != null ? bookLoan.getBook().getCoverImageUrl() : null)
 
-        // Loan details
-        dto.setType(bookLoan.getType());
-        dto.setStatus(bookLoan.getStatus());
-        dto.setCheckoutDate(bookLoan.getCheckoutDate());
-        dto.setDueDate(bookLoan.getDueDate());
+                // ================= LOAN =================
+                .type(bookLoan.getType())
+                .status(bookLoan.getStatus())
+                .checkoutDate(bookLoan.getCheckoutDate())
+                .dueDate(bookLoan.getDueDate())
+                .returnDate(bookLoan.getReturnDate())
+                .renewalCount(bookLoan.getRenewalCount())
+                .maxRenewals(bookLoan.getMaxRenewals())
+                .notes(bookLoan.getNotes())
 
-        // Remaining days (safe + non-negative)
-        if (bookLoan.getDueDate() != null) {
-            long days = ChronoUnit.DAYS.between(LocalDate.now(), bookLoan.getDueDate());
-            dto.setRemainingDays(Math.max(days, 0L));
-        } else {
-            dto.setRemainingDays(0L);
-        }
+                // ================= CALCULATED =================
+                .remainingDays(calculateRemainingDays(bookLoan.getDueDate()))
+                .overdue(bookLoan.isOverdue())
+                .overdueDays(bookLoan.getOverdueDays())
+                .active(bookLoan.isActive())
+                .canRenew(bookLoan.canRenew())
 
-        dto.setReturnDate(bookLoan.getReturnDate());
-        dto.setRenewalCount(bookLoan.getRenewalCount());
-        dto.setMaxRenewals(bookLoan.getMaxRenewals());
-        dto.setNotes(bookLoan.getNotes());
+                // ================= AUDIT =================
+                .createdAt(bookLoan.getCreatedAt())
+                .updatedAt(bookLoan.getUpdatedAt())
 
-        // Computed fields
-        dto.setOverdue(bookLoan.isOverdue()); // ✅ FIXED
-        dto.setOverdueDays(bookLoan.getOverdueDays());
-        dto.setActive(bookLoan.isActive());
-        dto.setCanRenew(bookLoan.canRenew());
+                .build();
+    }
 
-        dto.setCreatedAt(bookLoan.getCreatedAt());
-        dto.setUpdatedAt(bookLoan.getUpdatedAt());
+    // ================= HELPER METHOD =================
+    private Integer calculateRemainingDays(LocalDate dueDate) {
+        if (dueDate == null) return 0;
 
-        return dto;
+        long days = ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
+        return (int) Math.max(days, 0);
     }
 }
