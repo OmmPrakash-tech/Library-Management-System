@@ -1,0 +1,66 @@
+<div class="issue-container">
+
+  <h2>📖 Pending Borrow Requests</h2>
+
+  <div *ngIf="pendingBooks.length === 0" class="empty">
+    No pending requests 🎉
+  </div>
+
+  <div class="list">
+
+    <div class="row" *ngFor="let book of pendingBooks">
+
+      <div class="info">
+        <h3>{{ book.title }}</h3>
+        <p>Author: {{ book.author }}</p>
+      </div>
+
+      <div class="actions">
+        <button class="confirm" (click)="openConfirmModal(book.id)">
+          Confirm
+        </button>
+
+        <button class="cancel" (click)="cancelBorrow(book.id)">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 🔥 MODAL -->
+<div class="modal" *ngIf="showModal">
+
+  <div class="modal-content">
+
+    <h2>📜 Terms & Agreement</h2>
+
+    <p>
+      I confirm that the book is in good condition with no damage,
+      no torn or missing pages. I agree to return the book properly.
+      If the book is lost or damaged, I will be responsible for paying the penalty.
+    </p>
+
+    <p>📅 Allowed Days: {{ getDaysFromPlan(activeSubscription?.planId) }}</p>
+
+    <div class="checkbox">
+      <input type="checkbox" [(ngModel)]="isChecked" />
+      <label>I agree to the terms</label>
+    </div>
+
+    <div class="actions">
+      <button class="agree" [disabled]="!isChecked" (click)="finalConfirm()">
+        I Agree
+      </button>
+
+      <button class="cancel" (click)="closeModal()">
+        Cancel
+      </button>
+    </div>
+
+  </div>
+
+</div>

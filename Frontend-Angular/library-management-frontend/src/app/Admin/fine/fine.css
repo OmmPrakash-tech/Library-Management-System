@@ -1,0 +1,103 @@
+/* 🌌 Background same as your dashboard */
+.fine-container {
+ 
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+/* Main Card */
+.fine-card {
+  width: 200%;
+  max-width: 2800px;
+  background: linear-gradient(145deg, #020617, #0a0f2c);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 50px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Left Image Section */
+.fine-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.fine-image img {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 15px;
+  border: 10px solid #cbd5f5;
+}
+
+/* Right Content */
+.fine-content {
+  flex: 1;
+  padding-left: 40px;
+  color: #e0f7ff;
+}
+
+/* Title */
+.title {
+  font-size: 48px;
+  color: #60a5fa;
+  margin-bottom: 20px;
+}
+
+/* Icon */
+.icon {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #22c55e;
+}
+
+/* Description */
+.description {
+  font-size: 18px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  color: #cbd5f5;
+}
+
+/* Button */
+.fine-btn {
+  margin-top: 20px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  color: white;
+
+  transition: all 0.3s ease;
+}
+
+.fine-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .fine-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .fine-content {
+    padding-left: 0;
+    margin-top: 30px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+}

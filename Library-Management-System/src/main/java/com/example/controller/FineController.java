@@ -26,57 +26,69 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/fines")
 public class FineController {
 
     private final FineService fineService;
 
     @PostMapping
-    public ResponseEntity<?> createFine(
-            @Valid @RequestBody CreateFineRequest fineRequest) {
+    public ResponseEntity<FineDTO> createFine(
+            @Valid @RequestBody CreateFineRequest request) {
 
-        FineDTO fineDTO = fineService.createFine(fineRequest);
-        return ResponseEntity.ok(fineDTO);
+        return ResponseEntity.ok(fineService.createFine(request));
     }
 
     @PostMapping("/{id}/pay")
-    public ResponseEntity<?> payFine(
-            @PathVariable Long id,
-            @RequestParam(required = false) String transactionId) {
+    public ResponseEntity<PaymentInitiateResponse> payFine(
+            @PathVariable Long id) {
 
-        PaymentInitiateResponse res = fineService.payFine(id, transactionId);
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(fineService.initiatePayment(id));
     }
 
-    @PostMapping("/waive")
-    public ResponseEntity<?> waiveFine(
-            @Valid @RequestBody WaiveFineRequest waiveFineRequest) {
+    @PostMapping("/{id}/confirm-payment")
+    public ResponseEntity<FineDTO> confirmPayment(
+            @PathVariable Long id,
+            @RequestParam Long amount,
+            @RequestParam String transactionId) {
 
-        FineDTO fineDTO = fineService.waiveFine(waiveFineRequest);
-        return ResponseEntity.ok(fineDTO);
+        return ResponseEntity.ok(
+                fineService.applyPayment(id, amount, transactionId)
+        );
+    }
+
+    @PostMapping("/{id}/waive")
+    public ResponseEntity<FineDTO> waiveFine(
+            @PathVariable Long id,
+            @Valid @RequestBody WaiveFineRequest request) {
+
+        return ResponseEntity.ok(fineService.waiveFine(id, request));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FineDTO> getFineById(@PathVariable Long id) {
+
+        return ResponseEntity.ok(fineService.getFineById(id));
     }
 
     @GetMapping("/my")
-    public ResponseEntity<?> getMyFines(
+    public ResponseEntity<List<FineDTO>> getMyFines(
             @RequestParam(required = false) FineStatus status,
             @RequestParam(required = false) FineType type) {
 
-        List<FineDTO> fines = fineService.getMyFines(status, type);
-        return ResponseEntity.ok(fines);
+        return ResponseEntity.ok(fineService.getMyFines(status, type));
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllFines(
+    public ResponseEntity<PageResponse<FineDTO>> getAllFines(
             @RequestParam(required = false) FineStatus status,
             @RequestParam(required = false) FineType type,
             @RequestParam(required = false) Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
 
-        PageResponse<FineDTO> fines =
-                fineService.getAllFines(status, type, userId, page, size);
-
-        return ResponseEntity.ok(fines);
+        return ResponseEntity.ok(
+                fineService.getAllFines(status, type, userId, page, size)
+        );
     }
 }

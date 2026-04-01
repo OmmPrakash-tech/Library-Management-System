@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import org.springframework.stereotype.Component;
 
+import com.example.domain.FineStatus;
 import com.example.model.Fine;
 import com.example.payload.dto.FineDTO;
 
@@ -36,10 +37,12 @@ public class FineMapper {
 
         dto.setType(fine.getType());
         dto.setAmount(fine.getAmount());
+        dto.setPaidAmount(fine.getPaidAmount());
+        dto.setAmountOutstanding(fine.getAmount() - fine.getPaidAmount());
 
         dto.setStatus(fine.getStatus());
         dto.setReason(fine.getReason());
-        dto.setNotes(fine.getNote());
+        dto.setNote(fine.getNote());
 
         // Waiver information
         if (fine.getWaivedBy() != null) {
@@ -62,6 +65,12 @@ public class FineMapper {
 
         dto.setCreatedAt(fine.getCreatedAt());
         dto.setUpdatedAt(fine.getUpdatedAt());
+
+        // Helper
+        dto.setPayable(
+            fine.getStatus() == FineStatus.PENDING ||
+            fine.getStatus() == FineStatus.PARTIALLY_PAID
+        );
 
         return dto;
     }

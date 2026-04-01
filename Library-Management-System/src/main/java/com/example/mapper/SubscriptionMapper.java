@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 
@@ -25,54 +26,63 @@ public class SubscriptionMapper {
     /**
      * Convert Subscription entity to DTO
      */
-    public SubscriptionDTO toDTO(Subscription subscription) {
-        if (subscription == null) {
-            return null;
-        }
 
-        SubscriptionDTO dto = new SubscriptionDTO();
-        dto.setId(subscription.getId());
 
-        // User information
-        if (subscription.getUser() != null) {
-            dto.setUserId(subscription.getUser().getId());
-            dto.setUserName(subscription.getUser().getFullName());
-            dto.setUserEmail(subscription.getUser().getEmail());
-        }
+public SubscriptionDTO toDTO(Subscription subscription) {
 
-        // Plan information
-        if (subscription.getPlan() != null) {
-            dto.setPlanId(subscription.getPlan().getId());
-        }
+    if (subscription == null) return null;
 
-        dto.setPlanName(subscription.getPlanName());
-        dto.setPlanCode(subscription.getPlanCode());
-        dto.setPrice(subscription.getPrice());
+    SubscriptionDTO dto = new SubscriptionDTO();
 
-        dto.setStartDate(subscription.getStartDate());
-        dto.setEndDate(subscription.getEndDate());
-        dto.setIsActive(subscription.getIsActive());
+    dto.setId(subscription.getId());
 
-        dto.setMaxBooksAllowed(subscription.getMaxBooksAllowed());
-        dto.setMaxDaysPerBook(subscription.getMaxDaysPerBook());
-
-        dto.setAutoRenew(subscription.getAutoRenew());
-
-        dto.setCancelledAt(subscription.getCancelledAt());
-        dto.setCancellationReason(subscription.getCancellationReason());
-
-        dto.setNotes(subscription.getNotes());
-
-        dto.setCreatedAt(subscription.getCreatedAt());
-        dto.setUpdatedAt(subscription.getUpdatedAt());
-
-        // Calculated fields
-        dto.setDaysRemaining(subscription.getDaysRemaining());
-        dto.setIsValid(subscription.isValid());
-        dto.setIsExpired(subscription.isExpired());
-
-        return dto;
+    // user
+    if (subscription.getUser() != null) {
+        dto.setUserId(subscription.getUser().getId());
+        dto.setUserName(subscription.getUser().getFullName());
+        dto.setUserEmail(subscription.getUser().getEmail());
     }
+
+    // plan
+    if (subscription.getPlan() != null) {
+        dto.setPlanId(subscription.getPlan().getId());
+    }
+
+    dto.setPlanName(subscription.getPlanName());
+    dto.setPlanCode(subscription.getPlanCode());
+    dto.setPrice(subscription.getPrice());
+
+    dto.setStartDate(subscription.getStartDate());
+    dto.setEndDate(subscription.getEndDate());
+
+    // 🔥 FIX: OVERRIDE ACTIVE LOGIC
+    boolean isActive = subscription.getEndDate() != null &&
+                       !subscription.getEndDate().isBefore(LocalDate.now());
+
+    dto.setIsActive(
+    subscription.getIsActive() && !subscription.isExpired()
+);
+
+    dto.setMaxBooksAllowed(subscription.getMaxBooksAllowed());
+    dto.setMaxDaysPerBook(subscription.getMaxDaysPerBook());
+
+    dto.setAutoRenew(subscription.getAutoRenew());
+
+    dto.setCancelledAt(subscription.getCancelledAt());
+    dto.setCancellationReason(subscription.getCancellationReason());
+
+    dto.setNotes(subscription.getNotes());
+
+    dto.setCreatedAt(subscription.getCreatedAt());
+    dto.setUpdatedAt(subscription.getUpdatedAt());
+
+    // calculated
+    dto.setDaysRemaining(subscription.getDaysRemaining());
+    dto.setIsValid(subscription.isValid());
+    dto.setIsExpired(subscription.isExpired());
+
+    return dto;
+}
 
     /**
      * Convert DTO to Subscription entity

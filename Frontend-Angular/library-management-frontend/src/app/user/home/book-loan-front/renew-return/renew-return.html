@@ -1,0 +1,69 @@
+<div class="main-container">
+  <h2>My Book Loans</h2>
+
+  <div *ngIf="loading" class="loading">
+    Loading...
+  </div>
+
+  <div *ngIf="!loading && loans.length === 0">
+    No borrowed books
+  </div>
+
+  <table *ngIf="!loading && loans.length > 0">
+    <thead>
+      <tr>
+        <th>Book Title</th>
+        <th>Due Date</th>
+        <th>Renewals</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let loan of loans">
+
+        <!-- Book -->
+        <td>{{ loan.bookTitle }}</td>
+
+        <!-- Due Date -->
+        <td [ngClass]="{ 'overdue': isOverdue(loan.dueDate) }">
+          {{ loan.dueDate | date:'mediumDate' }}
+        </td>
+
+        <!-- Renew Count -->
+        <td>
+          {{ loan.renewalCount }} / {{ loan.maxRenewals }}
+        </td>
+
+        <!-- Actions -->
+        <td>
+          <ng-container *ngIf="loan.status === 'CHECKED_OUT'; else noAction">
+
+            <div class="action-group">
+
+              <button 
+                class="renew-btn" 
+                (click)="renewBook(loan)"
+                [disabled]="loan.renewalCount >= loan.maxRenewals || !loan.canRenew">
+                Renew
+              </button>
+
+              <button 
+                class="return-btn" 
+                (click)="returnBook(loan)">
+                Return
+              </button>
+
+            </div>
+
+          </ng-container>
+
+          <ng-template #noAction>
+            <span class="returned-label">Returned</span>
+          </ng-template>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>

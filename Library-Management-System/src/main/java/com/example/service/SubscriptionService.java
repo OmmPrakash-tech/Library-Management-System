@@ -14,6 +14,10 @@ public interface SubscriptionService {
 
     SubscriptionDTO getUsersActiveSubscription();
 
+    List<SubscriptionDTO> getAllUsersSubscriptions();
+
+    List<SubscriptionDTO> getAllActiveSubscriptions();
+    
    // SubscriptionDTO getUsersActiveSubscription(Long userId);
 
     SubscriptionDTO cancelSubscription(Long subscriptionId, String reason);

@@ -38,6 +38,10 @@ public class Fine {
     @JoinColumn(nullable = false)
     private User user;
 
+    @Column(nullable = false)
+@Builder.Default
+private Long paidAmount = 0L;
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private BookLoan bookLoan;
@@ -83,23 +87,44 @@ public class Fine {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public void applyPayment(Long paymentAmount) {
+   public void applyPayment(Long paymentAmount) {
 
     if (paymentAmount == null || paymentAmount <= 0) {
         throw new IllegalArgumentException("Payment amount must be positive");
     }
 
-    // Update status based on amount paid
-    this.status = FineStatus.PAID;
-    this.paidAt = LocalDateTime.now();
+    if (this.status == FineStatus.WAIVED) {
+        throw new IllegalStateException("Cannot pay a waived fine");
+    }
+
+    long newPaidAmount = this.paidAmount + paymentAmount;
+
+    if (newPaidAmount > this.amount) {
+        throw new IllegalArgumentException("Payment exceeds fine amount");
+    }
+
+    this.paidAmount = newPaidAmount;
+
+    if (this.paidAmount.equals(this.amount)) {
+        this.status = FineStatus.PAID;
+        this.paidAt = LocalDateTime.now();
+    } else {
+        this.status = FineStatus.PARTIALLY_PAID;
+    }
 }
 
 public void waive(User admin, String reason) {
+
+    if (this.status == FineStatus.PAID) {
+        throw new IllegalStateException("Cannot waive a paid fine");
+    }
+
     this.status = FineStatus.WAIVED;
     this.waivedBy = admin;
     this.waivedAt = LocalDateTime.now();
     this.waiverReason = reason;
 }
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.mapper.SubscriptionMapper;
+import com.example.model.Subscription;
+import com.example.model.User;
 import com.example.payload.dto.SubscriptionDTO;
 import com.example.payload.response.ApiResponse;
 import com.example.payload.response.PaymentInitiateResponse;
+import com.example.repository.SubscriptionRepository;
 import com.example.service.SubscriptionService;
+import com.example.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +37,18 @@ import lombok.RequiredArgsConstructor;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final UserService userService;
+    private final SubscriptionRepository subscriptionRepository;
+    private final SubscriptionMapper subscriptionMapper;
+    
+
+@GetMapping("/all")
+public ResponseEntity<List<SubscriptionDTO>> getAllUsersSubscriptions() {
+
+    return ResponseEntity.ok(
+            subscriptionService.getAllUsersSubscriptions()
+    );
+}
 
 @PostMapping("/subscribe")
 public ResponseEntity<PaymentInitiateResponse> subscribe(
@@ -49,6 +67,8 @@ public ResponseEntity<Page<SubscriptionDTO>> getAllSubscriptions(
     return ResponseEntity.ok(subscriptionService.getAllSubscriptions(pageable));
 }
 
+
+
 @PostMapping("/admin/deactivate-expired")
 public ResponseEntity<ApiResponse> deactivateExpiredSubscriptions() {
 
@@ -57,18 +77,19 @@ public ResponseEntity<ApiResponse> deactivateExpiredSubscriptions() {
     return ResponseEntity.ok(new ApiResponse("Task done!", true));
 }
 
-@GetMapping("/user/active")
-public ResponseEntity<?> getActiveSubscription() {
+@GetMapping("/active")
+public ResponseEntity<?> getAllActiveSubscriptions() {
 
-    SubscriptionDTO subscription = subscriptionService.getUsersActiveSubscription();
+    List<SubscriptionDTO> subscriptions =
+            subscriptionService.getAllActiveSubscriptions();
 
-    if (subscription == null) {
+    if (subscriptions.isEmpty()) {
         return ResponseEntity.ok(
-                new ApiResponse("No active subscription", false)
+                new ApiResponse("No active subscriptions found", false)
         );
     }
 
-    return ResponseEntity.ok(subscription);
+    return ResponseEntity.ok(subscriptions);
 }
 
 @PatchMapping("/{subscriptionId}/cancel")
@@ -99,4 +120,20 @@ public ResponseEntity<?> assignSubscriptionsToUsers(
 
     return ResponseEntity.ok(result);
 }
+
+@GetMapping("/user/active")
+public ResponseEntity<?> getActiveSubscription() {
+
+    User user = userService.getCurrentUser();
+
+    Optional<Subscription> sub =
+            subscriptionRepository.findByUserAndIsActiveTrue(user);
+
+    if (sub.isEmpty()) {
+        return ResponseEntity.ok(null); // ✅ instead of error
+    }
+
+    return ResponseEntity.ok(subscriptionMapper.toDTO(sub.get()));
+}
+
 }

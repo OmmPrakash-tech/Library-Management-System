@@ -3,10 +3,13 @@ package com.example.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -208,10 +211,62 @@ public void deactivateExpiredSubscriptions() {
 @Override
 public Page<SubscriptionDTO> getAllSubscriptions(Pageable pageable) {
 
-    Page<Subscription> subscriptions = subscriptionRepository.findAll(pageable);
+    Page<Subscription> pageData =
+            subscriptionRepository.findInactiveSubscriptions(pageable);
 
-    return subscriptions.map(subscriptionMapper::toDTO);
+    List<Subscription> subscriptions = pageData.getContent();
+
+    // 🔥 REMOVE DUPLICATES → KEEP LATEST PER USER
+    Map<Long, Subscription> latestMap = new HashMap<>();
+
+    for (Subscription sub : subscriptions) {
+
+        Long userId = sub.getUser().getId();
+
+        if (!latestMap.containsKey(userId) ||
+            sub.getStartDate().isAfter(
+                latestMap.get(userId).getStartDate()
+            )) {
+
+            latestMap.put(userId, sub);
+        }
+    }
+
+    List<SubscriptionDTO> result = latestMap.values()
+            .stream()
+            .map(subscriptionMapper::toDTO)
+            .toList();
+
+    return new PageImpl<>(result, pageable, result.size());
 }
+
+
+
+public List<SubscriptionDTO> getAllActiveUsers() {
+
+    List<Subscription> subs = subscriptionRepository.findAll();
+
+    Map<Long, Subscription> latestMap = new HashMap<>();
+
+    for (Subscription sub : subs) {
+
+        Long userId = sub.getUser().getId();
+
+        if (!latestMap.containsKey(userId) ||
+            sub.getStartDate().isAfter(
+                latestMap.get(userId).getStartDate()
+            )) {
+
+            latestMap.put(userId, sub);
+        }
+    }
+
+    return latestMap.values().stream()
+            .filter(sub -> !sub.getEndDate().isBefore(LocalDate.now())) // ✅ ACTIVE
+            .map(subscriptionMapper::toDTO)
+            .toList();
+}
+
 
     // ================= BULK ASSIGN =================
 @Override
@@ -239,6 +294,44 @@ public List<SubscriptionDTO> assignSubscriptionsToUsers(List<SubscriptionDTO> dt
     }
 
     return result;
+}
+
+@Override
+public List<SubscriptionDTO> getAllUsersSubscriptions() {
+
+    List<Subscription> subscriptions = subscriptionRepository.findAll();
+
+    // Map to store latest subscription per user
+    Map<Long, Subscription> latestMap = new HashMap<>();
+
+    for (Subscription sub : subscriptions) {
+
+        Long userId = sub.getUser().getId();
+
+        if (!latestMap.containsKey(userId) ||
+            sub.getStartDate().isAfter(
+                latestMap.get(userId).getStartDate()
+            )) {
+
+            latestMap.put(userId, sub);
+        }
+    }
+
+    return latestMap.values().stream()
+            .map(subscriptionMapper::toDTO)
+            .toList();
+}
+
+@Override
+public List<SubscriptionDTO> getAllActiveSubscriptions() {
+
+    List<Subscription> subscriptions =
+            subscriptionRepository.findByIsActiveTrue();
+
+    return subscriptions.stream()
+            .filter(sub -> sub.getEndDate().isAfter(LocalDate.now())) // ✅ fix
+            .map(subscriptionMapper::toDTO)
+            .toList();
 }
 
 }

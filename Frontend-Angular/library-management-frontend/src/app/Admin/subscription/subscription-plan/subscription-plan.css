@@ -1,0 +1,143 @@
+/* 🌌 DARK BACKGROUND */
+.page {
+  padding: 20px 40px;
+  min-height: 100vh;
+  background: #020617;
+  color: #e0f7ff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+/* FORM */
+.form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+  background: #0b1220;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* FORM GROUP */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* LABEL */
+.form-group label {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* INPUT */
+.form-group input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #1e293b;
+  background: #020617;
+  color: #e0f7ff;
+}
+
+/* INPUT FOCUS */
+.form-group input:focus {
+  border: 1px solid #38bdf8;
+  outline: none;
+}
+
+/* CHECKBOX */
+.checkbox-group {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.checkbox-group label {
+  color: #94a3b8;
+}
+
+/* BUTTON */
+.form button {
+  grid-column: span 3;
+  padding: 12px;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.form button:hover {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  transform: scale(1.03);
+}
+
+/* TABLE */
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #020617;
+}
+
+/* HEADER */
+th {
+  background: #0f172a;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* CELLS */
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #1e293b;
+}
+
+/* HOVER */
+tr:hover {
+  background: #0b1220;
+}
+
+/* STATUS */
+.active {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.inactive {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+/* ACTION BUTTONS */
+td button {
+  margin: 0 4px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #0ea5e9;
+  color: white;
+  transition: 0.2s;
+}
+
+td button:hover {
+  background: #0284c7;
+}

@@ -8,7 +8,7 @@ import { Contact } from './pages/contact/contact';
 import { Library } from './pages/library/library';
 import { Signup } from './pages/signup/signup';
 import { Login } from './pages/login/login';
-
+ 
 import { Home as UserHome } from './user/home/home';
 import { Home as AdminHome } from './Admin/home/home';
 
@@ -27,7 +27,7 @@ import { ProfileView } from './user/profile-view/profile-view';
 
 import { AllUser } from './Admin/user/alluser/alluser';
 import { BookControl } from './Admin/book/book-control/book-control';
-
+  
 /* ✅ IMPORT EDIT USER */
 import { EditUser } from './Admin/user/alluser/edituser/edituser';
 import { GenreControl } from './Admin/genre/genre-control/genre-control';
@@ -37,6 +37,13 @@ import { PaymentComponent } from './payment/payment';
 import { SubscriptionComponent } from './user/home/subscribe/subscribe';
 import { WishlistComponent } from './user/home/wishlist/wishlist';
 import { BookViewComponent } from './user/home/book/view/view';
+import { BookLoanFrontComponent } from './user/home/book-loan-front/book-loan-front';
+import { IssueComponent } from './user/home/book-loan-front/issue/issue';
+import { RenewReturnComponent } from './user/home/book-loan-front/renew-return/renew-return';
+import { FineComponent } from './Admin/fine/fine';
+import { FineControllerPageComponent } from './Admin/fine/fine-controller/fine-controller';
+import { SubscriptionControllerComponent } from './Admin/subscription/subscription-contoll/subscription-contoll';
+import { SubscriptionPlanComponent } from './Admin/subscription/subscription-plan/subscription-plan';
 
 export const routes: Routes = [
 
@@ -122,6 +129,35 @@ export const routes: Routes = [
 
   { path: 'wishlist', component: WishlistComponent },
 
-{ path: 'book/:id', component: BookViewComponent }
+{ path: 'book/:id', component: BookViewComponent },
 
+{ path: 'book-loan-front', component: BookLoanFrontComponent },
+
+{
+    path: 'issue-book',
+    loadComponent: () =>
+      import('./user/home/book-loan-front/issue/issue')
+        .then(m => m.IssueComponent)
+  },
+
+  { path: 'renew-return', component: RenewReturnComponent },
+
+   // 🔹 Fine landing page
+  { path: 'fine', component: FineComponent },
+
+  // 🔹 Fine controller page (table page)
+  { path: 'fines', component: FineControllerPageComponent },
+
+  {
+    path: 'subscriptions',
+    component: SubscriptionControllerComponent
+  },
+
+{
+    path: 'subscription-plans',
+    component: SubscriptionPlanComponent
+  }
+
+
+  
 ];

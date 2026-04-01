@@ -6,7 +6,7 @@ import com.example.domain.FineStatus;
 import com.example.domain.FineType;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,54 +24,44 @@ public class FineDTO {
     private Long bookLoanId;
 
     private String bookTitle;
-
     private String bookIsbn;
 
     @NotNull(message = "User ID is mandatory")
     private Long userId;
 
     private String userName;
-
     private String userEmail;
 
     @NotNull(message = "Fine type is mandatory")
     private FineType type;
 
     @NotNull(message = "Fine amount is mandatory")
-    @PositiveOrZero(message = "Fine amount cannot be negative")
+    @Positive(message = "Fine amount must be greater than zero")
     private Long amount;
 
-    @PositiveOrZero(message = "Amount paid cannot be negative")
-    private Long amountPaid;
-
+    private Long paidAmount;
     private Long amountOutstanding;
 
-    @NotNull(message = "Fine status is mandatory")
     private FineStatus status;
 
     private String reason;
+    private String note;
 
-    private String notes;
-
-    // Waiver information
+    // Waiver
     private Long waivedByUserId;
-
     private String waivedByUserName;
-
     private LocalDateTime waivedAt;
-
     private String waiverReason;
 
-    // Payment information
+    // Payment
     private LocalDateTime paidAt;
-
     private Long processedByUserId;
-
     private String processedByUserName;
-
     private String transactionId;
 
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
+
+    // Helper
+    private boolean payable;
 }

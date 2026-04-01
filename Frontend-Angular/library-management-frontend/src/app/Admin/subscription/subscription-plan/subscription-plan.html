@@ -1,0 +1,125 @@
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h2>📊 Subscription Plans</h2>
+  </div>
+
+  <!-- FORM -->
+  <div class="form">
+
+<div class="form-group" *ngIf="form.id">
+  <label>Plan ID</label>
+  <input [value]="form.id" disabled>
+</div>
+
+    <div class="form-group">
+      <label>Plan Code</label>
+      <input [(ngModel)]="form.planCode" placeholder="e.g. BASIC_001">
+    </div>
+
+    <div class="form-group">
+      <label>Plan Name</label>
+      <input [(ngModel)]="form.name" placeholder="Enter plan name">
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <input [(ngModel)]="form.description" placeholder="Enter description">
+    </div>
+
+    <div class="form-group">
+      <label>Duration (Days)</label>
+      <input type="number" [(ngModel)]="form.durationDays" placeholder="e.g. 30">
+    </div>
+
+    <div class="form-group">
+      <label>Price (₹)</label>
+      <input type="number" [(ngModel)]="form.price" placeholder="e.g. 499">
+    </div>
+
+    <div class="form-group">
+      <label>Max Books Allowed</label>
+      <input type="number" [(ngModel)]="form.maxBooksAllowed" placeholder="e.g. 5">
+    </div>
+
+    <div class="form-group">
+      <label>Max Days Per Book</label>
+      <input type="number" [(ngModel)]="form.maxDaysPerBook" placeholder="e.g. 14">
+    </div>
+
+    <div class="form-group">
+      <label>Badge</label>
+      <input [(ngModel)]="form.badgeText" placeholder="e.g. Popular">
+    </div>
+
+    <div class="form-group">
+      <label>Admin Notes</label>
+      <input [(ngModel)]="form.adminNotes" placeholder="Internal notes">
+    </div>
+
+    <!-- CHECKBOXES -->
+    <div class="checkbox-group">
+      <label>
+        <input type="checkbox" [(ngModel)]="form.isActive">
+        Active
+      </label>
+
+      <label>
+        <input type="checkbox" [(ngModel)]="form.isFeatured">
+        Featured
+      </label>
+    </div>
+
+    <!-- BUTTON -->
+    <button (click)="savePlan()">
+      Create Plan
+    </button>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-container">
+    <table>
+
+      <thead>
+        <tr>
+            <th>ID</th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Duration</th>
+          <th>Books</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let plan of plans">
+
+            <td>{{ plan.id }}</td>
+          <td>{{ plan.planCode }}</td>
+          <td>{{ plan.name }}</td>
+          <td>₹{{ plan.price }}</td>
+          <td>{{ plan.durationDays }} days</td>
+          <td>{{ plan.maxBooksAllowed }}</td>
+
+          <td>
+            <span [class.active]="plan.isActive" [class.inactive]="!plan.isActive">
+              {{ plan.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+
+          <td>
+            <button (click)="editPlan(plan)">Edit</button>
+            <button (click)="deletePlan(plan.id)">Delete</button>
+          </td>
+
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>

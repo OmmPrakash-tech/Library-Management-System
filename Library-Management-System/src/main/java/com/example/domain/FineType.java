@@ -2,20 +2,18 @@ package com.example.domain;
 
 public enum FineType {
 
-    OVERDUE,
+    OVERDUE("Overdue"),
+    DAMAGE("Damage"),
+    LOSS("Loss"),
+    PROCESSING("Processing Fee");
 
-    /**
-     * Fine for damaged books
-     */
-    DAMAGE,
+    private final String displayName;
 
-    /**
-     * Fine for lost books (replacement cost)
-     */
-    LOSS,
+    FineType(String displayName) {
+        this.displayName = displayName;
+    }
 
-    /**
-     * Processing or administrative fees
-     */
-    PROCESSING
+    public String getDisplayName() {
+        return displayName;
+    }
 }

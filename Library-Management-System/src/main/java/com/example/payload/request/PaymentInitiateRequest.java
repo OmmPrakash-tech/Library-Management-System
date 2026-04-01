@@ -28,6 +28,8 @@ public class PaymentInitiateRequest {
 
     private Long fineId;
 
+    private Long amount;
+
     private Long subscriptionId;
 
     private String successUrl;

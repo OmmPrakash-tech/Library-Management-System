@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { SubscriptionControllerComponent } from './subscription-contoll/subscription-contoll';
+
 
 @Component({
   selector: 'app-subscription-hero',
@@ -10,9 +12,8 @@ export class SubscriptionHeroComponent {
 
   constructor(private router: Router) {}
 
-  goToSubscription() {
-    // 👉 tomorrow you can implement logic
-    this.router.navigate(['/subscription']);
-  }
+ goToSubscription() {
+  this.router.navigate(['/subscriptions']);
+}
 
 }

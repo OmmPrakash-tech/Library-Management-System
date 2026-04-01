@@ -2,20 +2,18 @@ package com.example.domain;
 
 public enum FineStatus {
 
-    PENDING,
+    PENDING("Pending"),
+    PARTIALLY_PAID("Partially Paid"),
+    PAID("Paid"),
+    WAIVED("Waived");
 
-    /**
-     * Fine has been partially paid
-     */
-    PARTIALLY_PAID,
+    private final String displayName;
 
-    /**
-     * Fine has been fully paid
-     */
-    PAID,
+    FineStatus(String displayName) {
+        this.displayName = displayName;
+    }
 
-    /**
-     * Fine has been waived by an administrator
-     */
-    WAIVED
+    public String getDisplayName() {
+        return displayName;
+    }
 }

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -53,54 +53,75 @@ public class FineServiceImpl implements FineService {
         this.paymentService = paymentService;
     }
 
-    @Override
-    public FineDTO createFine(CreateFineRequest request) {
+ @Override
+public FineDTO createFine(CreateFineRequest request) {
 
-        BookLoan bookLoan = bookLoanRepository.findById(request.getBookLoanId())
-                .orElseThrow(() -> new RuntimeException("Book loan not found"));
+    BookLoan bookLoan = bookLoanRepository.findById(request.getBookLoanId())
+            .orElseThrow(() -> new RuntimeException("Book loan not found"));
 
-        Fine fine = Fine.builder()
-                .bookLoan(bookLoan)
-                .user(bookLoan.getUser())
-                .type(request.getType())
-                .amount(request.getAmount())
-                .status(FineStatus.PENDING)
-                .reason(request.getReason())
-                .note(request.getNotes())
-                .build();
-
-        Fine savedFine = fineRepository.save(fine);
-
-        return fineMapper.toDTO(savedFine);
+    // Prevent duplicate fine
+    if (fineRepository.existsByBookLoanId(request.getBookLoanId())) {
+        throw new IllegalStateException("Fine already exists for this book loan");
     }
 
-    @Override
-    public PaymentInitiateResponse payFine(Long fineId, String transactionId) {
+    String reason = request.getReason() != null ? request.getReason().trim() : null;
+    String note = request.getNote() != null ? request.getNote().trim() : null;
 
-        Fine fine = fineRepository.findById(fineId)
-                .orElseThrow(() -> new RuntimeException("Fine not found"));
+    Fine fine = Fine.builder()
+            .bookLoan(bookLoan)
+            .user(bookLoan.getUser())
+            .type(request.getType())
+            .amount(request.getAmount())
+            .paidAmount(0L)
+            .status(FineStatus.PENDING)
+            .reason(reason)
+            .note(note)
+            .build();
 
-        if (fine.getStatus() == FineStatus.PAID) {
-            throw new RuntimeException("Fine already paid");
-        }
+    Fine savedFine = fineRepository.save(fine);
 
-        if (fine.getStatus() == FineStatus.WAIVED) {
-            throw new RuntimeException("Fine already waived");
-        }
+    return fineMapper.toDTO(savedFine);
+}
 
-        User user = userService.getCurrentUser();
+ @Override
+public PaymentInitiateResponse payFine(Long fineId) {
 
-PaymentInitiateRequest request = PaymentInitiateRequest.builder()
-        .fineId(fine.getId())
-        .paymentType(PaymentType.FINE)
-        .gateway(PaymentGateway.RAZORPAY)
-        .description("Library fine payment")
-        .build();
+    Fine fine = fineRepository.findById(fineId)
+            .orElseThrow(() -> new RuntimeException("Fine not found"));
 
-        return paymentService.initiatePayment(request);
+    if (fine.getStatus() == FineStatus.PAID) {
+        throw new IllegalStateException("Fine already paid");
     }
 
-    @Override
+    if (fine.getStatus() == FineStatus.WAIVED) {
+        throw new IllegalStateException("Fine already waived");
+    }
+
+    User user = userService.getCurrentUser();
+
+    // Optional: ownership check
+    if (!fine.getUser().getId().equals(user.getId())) {
+        throw new IllegalStateException("You are not allowed to pay this fine");
+    }
+
+    long remainingAmount = fine.getAmount() - fine.getPaidAmount();
+
+    if (remainingAmount <= 0) {
+        throw new IllegalStateException("No remaining amount to pay");
+    }
+
+    PaymentInitiateRequest request = PaymentInitiateRequest.builder()
+            .fineId(fine.getId())
+            .paymentType(PaymentType.FINE)
+            .gateway(PaymentGateway.RAZORPAY)
+            .amount(remainingAmount)
+            .description("Payment for fine ID: " + fine.getId())
+            .build();
+
+    return paymentService.initiatePayment(request);
+}
+
+    
     public void markFineAsPaid(Long fineId, Long amount, String transactionId) {
 
         Fine fine = fineRepository.findById(fineId)
@@ -115,93 +136,177 @@ PaymentInitiateRequest request = PaymentInitiateRequest.builder()
         fineRepository.save(fine);
     }
 
-    @Override
-    public FineDTO waiveFine(WaiveFineRequest request) {
+@Override
+public FineDTO waiveFine(Long fineId, WaiveFineRequest request) {
 
-        Fine fine = fineRepository.findById(request.getFineId())
-                .orElseThrow(() -> new RuntimeException("Fine not found"));
+    Fine fine = fineRepository.findById(fineId)
+            .orElseThrow(() -> new RuntimeException("Fine not found"));
 
-        if (fine.getStatus() == FineStatus.WAIVED) {
-            throw new RuntimeException("Fine already waived");
-        }
-
-        if (fine.getStatus() == FineStatus.PAID) {
-            throw new RuntimeException("Fine already paid and cannot be waived");
-        }
-
-        User admin = userService.getCurrentUser();
-
-        fine.waive(admin, request.getReason());
-
-        Fine savedFine = fineRepository.save(fine);
-
-        return fineMapper.toDTO(savedFine);
+    if (fine.getStatus() == FineStatus.WAIVED) {
+        throw new IllegalStateException("Fine already waived");
     }
 
-    @Override
-    public List<FineDTO> getMyFines(FineStatus status, FineType type) {
-
-        User user = userService.getCurrentUser();
-        List<Fine> fines;
-
-        if (status != null && type != null) {
-
-            fines = fineRepository.findByUserId(user.getId())
-                    .stream()
-                    .filter(f -> f.getStatus() == status && f.getType() == type)
-                    .collect(Collectors.toList());
-
-        } else if (status != null) {
-
-            fines = fineRepository.findByUserId(user.getId())
-                    .stream()
-                    .filter(f -> f.getStatus() == status)
-                    .collect(Collectors.toList());
-
-        } else if (type != null) {
-
-            fines = fineRepository.findByUserIdAndType(user.getId(), type);
-
-        } else {
-
-            fines = fineRepository.findByUserId(user.getId());
-        }
-
-        return fines.stream()
-                .map(fineMapper::toDTO)
-                .collect(Collectors.toList());
+    if (fine.getStatus() == FineStatus.PAID) {
+        throw new IllegalStateException("Fine already paid and cannot be waived");
     }
 
-    @Override
-    public PageResponse<FineDTO> getAllFines(FineStatus status, FineType type, Long userId, int page, int size) {
+    User admin = userService.getCurrentUser();
 
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by("createdAt").descending()
-        );
+    // Optional: role check
+    // if (!admin.getRole().equals(Role.ADMIN)) {
+    //     throw new IllegalStateException("Only admin can waive fines");
+    // }
 
-        Page<Fine> finePage = fineRepository.findAllWithFilters(
-                userId,
-                status,
-                type,
-                pageable
-        );
+    String reason = request.getReason().trim();
 
-        List<FineDTO> fineDTOs = finePage.getContent()
-                .stream()
-                .map(fineMapper::toDTO)
-                .collect(Collectors.toList());
+    fine.waive(admin, reason);
 
-        return new PageResponse<>(
-                fineDTOs,
-                finePage.getNumber(),
-                finePage.getSize(),
-                finePage.getTotalElements(),
-                finePage.getTotalPages(),
-                finePage.isLast(),
-                finePage.isFirst(),
-                finePage.isEmpty()
-        );
+    Fine savedFine = fineRepository.save(fine);
+
+    return fineMapper.toDTO(savedFine);
+}
+
+@Override
+public List<FineDTO> getMyFines(FineStatus status, FineType type) {
+
+    User user = userService.getCurrentUser();
+
+    List<Fine> fines = fineRepository.findMyFinesWithFilters(
+            user.getId(),
+            status,
+            type
+    );
+
+    return fines.stream()
+            .map(fineMapper::toDTO)
+            .collect(Collectors.toList());
+}
+
+@Override
+public PageResponse<FineDTO> getAllFines(
+        FineStatus status,
+        FineType type,
+        Long userId,
+        int page,
+        int size
+) {
+
+    int validPage = Math.max(page, 0);
+    int validSize = Math.min(Math.max(size, 1), 50);
+
+    Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+    Pageable pageable = PageRequest.of(validPage, validSize, sort);
+
+    Page<Fine> finePage = fineRepository.findAllWithFilters(
+            userId,
+            status,
+            type,
+            pageable
+    );
+
+    List<FineDTO> fineDTOs = finePage.getContent()
+            .stream()
+            .map(fineMapper::toDTO)
+            .toList();
+
+    return new PageResponse<>(
+            fineDTOs,
+            finePage.getNumber(),
+            finePage.getSize(),
+            finePage.getTotalElements(),
+            finePage.getTotalPages(),
+            finePage.isLast(),
+            finePage.isFirst(),
+            finePage.isEmpty()
+    );
+}
+
+@Override
+public PaymentInitiateResponse initiatePayment(Long fineId) {
+
+    Fine fine = fineRepository.findById(fineId)
+            .orElseThrow(() -> new RuntimeException("Fine not found"));
+
+    // Status validation
+    if (fine.getStatus() == FineStatus.PAID) {
+        throw new IllegalStateException("Fine already paid");
     }
+
+    if (fine.getStatus() == FineStatus.WAIVED) {
+        throw new IllegalStateException("Fine already waived");
+    }
+
+    User user = userService.getCurrentUser();
+
+    // Ownership check (important)
+    if (!fine.getUser().getId().equals(user.getId())) {
+        throw new IllegalStateException("You are not allowed to pay this fine");
+    }
+
+    long remainingAmount = fine.getAmount() - fine.getPaidAmount();
+
+    if (remainingAmount <= 0) {
+        throw new IllegalStateException("No remaining amount to pay");
+    }
+
+    PaymentInitiateRequest request = PaymentInitiateRequest.builder()
+            .fineId(fine.getId())
+            .paymentType(PaymentType.FINE)
+            .gateway(PaymentGateway.RAZORPAY)
+            .amount(remainingAmount)
+            .description("Payment for fine ID: " + fine.getId())
+            .build();
+
+    return paymentService.initiatePayment(request);
+}
+
+@Override
+public FineDTO applyPayment(Long fineId, Long amount, String transactionId) {
+
+    Fine fine = fineRepository.findById(fineId)
+            .orElseThrow(() -> new RuntimeException("Fine not found"));
+
+    // Validate fine state
+    if (fine.getStatus() == FineStatus.WAIVED) {
+        throw new IllegalStateException("Cannot pay a waived fine");
+    }
+
+    if (fine.getStatus() == FineStatus.PAID) {
+        throw new IllegalStateException("Fine is already fully paid");
+    }
+
+    // Validate amount
+    if (amount == null || amount <= 0) {
+        throw new IllegalArgumentException("Payment amount must be positive");
+    }
+
+    long remainingAmount = fine.getAmount() - fine.getPaidAmount();
+
+    if (amount > remainingAmount) {
+        throw new IllegalArgumentException("Payment exceeds remaining fine amount");
+    }
+
+    // Apply payment using entity logic
+    fine.applyPayment(amount);
+
+    // Set transaction details
+    fine.setTransactionId(transactionId);
+    fine.setProcessedBy(userService.getCurrentUser());
+
+    Fine savedFine = fineRepository.save(fine);
+
+    return fineMapper.toDTO(savedFine);
+}
+
+
+
+@Override
+public FineDTO getFineById(Long fineId) {
+
+    Fine fine = fineRepository.findById(fineId)
+            .orElseThrow(() -> new RuntimeException("Fine not found"));
+
+    return fineMapper.toDTO(fine);
+}
 }

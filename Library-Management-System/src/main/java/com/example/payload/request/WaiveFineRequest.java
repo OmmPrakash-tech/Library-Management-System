@@ -1,7 +1,7 @@
 package com.example.payload.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class WaiveFineRequest {
 
-    @NotNull(message = "Fine ID is mandatory")
-private Long fineId;
-
-@NotBlank(message = "Waiver reason is mandatory")
-private String reason;
-
+    @NotBlank(message = "Waiver reason is mandatory")
+    @Size(max = 500, message = "Reason cannot exceed 500 characters")
+    private String reason;
 }

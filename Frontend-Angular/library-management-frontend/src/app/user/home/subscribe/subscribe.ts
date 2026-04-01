@@ -75,45 +75,40 @@ export class SubscriptionComponent implements OnInit {
   }
 
   // ================= GET ACTIVE =================
-  getActiveSubscription() {
+getActiveSubscription() {
 
-    this.activeSubscription = null;
-    this.noSubscriptionMessage = '';
-    this.hasActiveSubscription = false;
+  this.activeSubscription = null;
+  this.noSubscriptionMessage = '';
+  this.hasActiveSubscription = false;
 
-    this.http.get(this.activeApi).subscribe({
-      next: (res: any) => {
+  this.http.get(this.activeApi).subscribe({
+    next: (res: any) => {
 
-        console.log("ACTIVE RESPONSE:", res);
+      console.log("ACTIVE RESPONSE:", res);
 
-        // ❌ No subscription
-        if (res.success === false) {
-          this.hasActiveSubscription = false;
-          this.activeSubscription = null;
-          this.noSubscriptionMessage = res.message;
-        }
-
-        // ✅ Has subscription
-        else if (res && res.planName) {
-          this.hasActiveSubscription = true;
-          this.activeSubscription = res;
-          this.noSubscriptionMessage = '';
-        }
-
-        // ❌ fallback
-        else {
-          this.hasActiveSubscription = false;
-          this.activeSubscription = null;
-        }
-
-        this.cdr.detectChanges();
-      },
-
-      error: () => {
+      // ✅ NO SUBSCRIPTION
+      if (!res) {
         this.hasActiveSubscription = false;
-        this.noSubscriptionMessage = 'Failed to load subscription';
-        this.cdr.detectChanges();
+        this.activeSubscription = null;
+        this.noSubscriptionMessage = 'No active subscription';
       }
-    });
-  }
+
+      // ✅ HAS SUBSCRIPTION
+      else {
+        this.hasActiveSubscription = true;
+        this.activeSubscription = res;
+        this.noSubscriptionMessage = '';
+      }
+
+      this.cdr.detectChanges();
+    },
+
+    error: (err) => {
+      console.error("ACTIVE ERROR:", err);
+      this.hasActiveSubscription = false;
+      this.noSubscriptionMessage = 'Failed to load subscription';
+      this.cdr.detectChanges();
+    }
+  });
+}
 }

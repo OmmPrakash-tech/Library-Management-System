@@ -1,0 +1,93 @@
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h2>📦 Subscription Management</h2>
+
+    <div class="header-actions">
+      <button class="btn-plan" (click)="goToPlans()">Plans</button>
+      <button class="btn-danger" (click)="deactivateExpired()">Deactivate Expired</button>
+    </div>
+  </div>
+
+  <!-- SUBSCRIBE FORM -->
+  <div class="form">
+    <div class="form-group">
+      <label>User ID</label>
+      <input type="number" [(ngModel)]="subscribeData.userId" placeholder="Enter user ID">
+    </div>
+
+    <div class="form-group">
+      <label>Plan ID</label>
+      <input type="number" [(ngModel)]="subscribeData.planId" placeholder="Enter plan ID">
+    </div>
+
+    <button (click)="subscribe()">Subscribe</button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button (click)="setFilter('ALL')">All</button>
+    <button (click)="setFilter('ACTIVE')">Active</button>
+    <button (click)="setFilter('INACTIVE')">Inactive</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-container">
+    <table>
+
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Plan</th>
+          <th>Price</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Status</th>
+          <th>Days</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let sub of subscriptions">
+
+          <td>{{ sub.userName }}</td>
+          <td>{{ sub.userEmail }}</td>
+          <td>{{ sub.planName }}</td>
+          <td>₹{{ sub.price }}</td>
+          <td>{{ sub.startDate }}</td>
+          <td>{{ sub.endDate }}</td>
+
+          <td>
+            <span 
+  [class.active]="sub.isActive && !sub.isExpired"
+  [class.inactive]="!sub.isActive || sub.isExpired"
+>
+  {{ (sub.isActive && !sub.isExpired) ? 'Active' : 'Inactive' }}
+</span>
+          </td>
+
+          <td>{{ sub.daysRemaining }}</td>
+
+          <td>
+            <button *ngIf="!sub.isActive"
+                    (click)="activate(sub.id)">
+              Activate
+            </button>
+
+            <button *ngIf="sub.isActive"
+                    class="btn-danger"
+                    (click)="cancel(sub.id)">
+              Cancel
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>

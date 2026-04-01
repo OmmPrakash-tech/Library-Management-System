@@ -12,22 +12,28 @@ import com.example.payload.response.PaymentInitiateResponse;
 
 public interface FineService {
 
-    FineDTO createFine(CreateFineRequest createFineRequest);
+    FineDTO createFine(CreateFineRequest request);
 
-PaymentInitiateResponse payFine(Long fineId, String transactionId);
+    PaymentInitiateResponse payFine(Long fineId);
 
-void markFineAsPaid(Long fineId, Long amount, String transactionId);
+    // Payment
+    PaymentInitiateResponse initiatePayment(Long fineId);
 
-FineDTO waiveFine(WaiveFineRequest waiveFineRequest);
+    FineDTO applyPayment(Long fineId, Long amount, String transactionId);
 
-List<FineDTO> getMyFines(FineStatus status, FineType type);
+    // Waiver
+    FineDTO waiveFine(Long fineId, WaiveFineRequest request);
 
-PageResponse<FineDTO> getAllFines(
-        FineStatus status,
-        FineType type,
-        Long userId,
-        int page,
-        int size
-);
+    // Fetch
+    FineDTO getFineById(Long fineId);
 
+    List<FineDTO> getMyFines(FineStatus status, FineType type);
+
+    PageResponse<FineDTO> getAllFines(
+            FineStatus status,
+            FineType type,
+            Long userId,
+            int page,
+            int size
+    );
 }

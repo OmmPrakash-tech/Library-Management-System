@@ -1,0 +1,136 @@
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>📊 Fine Management</h1>
+    <p>Manage all user fines</p>
+  </div>
+
+  <!-- CREATE FINE -->
+  <div class="card">
+    <h2>Create Fine</h2>
+
+    <div class="form">
+      <!-- ✅ FIXED: use bookLoanId instead of userId -->
+      <input 
+        type="number" 
+        placeholder="Book Loan ID" 
+        [(ngModel)]="newFine.bookLoanId"
+      >
+
+      <!-- ✅ FIXED: use note instead of bookTitle -->
+      <input 
+        type="text" 
+        placeholder="Note" 
+        [(ngModel)]="newFine.note"
+      >
+
+      <select [(ngModel)]="newFine.type">
+        <option value="">Select Type</option>
+        <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+      </select>
+
+      <input 
+        type="number" 
+        placeholder="Amount" 
+        [(ngModel)]="newFine.amount"
+      >
+
+      <button (click)="createFine()">➕ Create Fine</button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <h2>All Fines</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Loan ID</th> <!-- ✅ ADDED -->
+          <th>User</th>
+          <th>Email</th>
+          <th>Book</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Paid</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let fine of fines">
+
+          <!-- ✅ SHOW BOOK LOAN ID -->
+          <td>{{ fine.bookLoanId }}</td>
+
+          <td>{{ fine.userName }}</td>
+          <td>{{ fine.userEmail }}</td>
+          <td>{{ fine.bookTitle }}</td>
+          <td>{{ fine.type }}</td>
+          <td>₹{{ fine.amount }}</td>
+          <td>₹{{ fine.paidAmount }}</td>
+
+          <td>
+            <span class="status" [ngClass]="fine.status.toLowerCase()">
+              {{ fine.status }}
+            </span>
+          </td>
+
+          <td>
+
+            <!-- ✅ VIEW BUTTON -->
+            <button class="view-btn" (click)="viewFine(fine)">
+              <span class="icon">👁</span>
+              <span>View</span>
+            </button>
+
+            <!-- ✅ WAIVE BUTTON FIXED -->
+            <button 
+              *ngIf="fine.status !== 'PAID' && fine.status !== 'WAIVED'"
+              class="waive"
+              (click)="waiveFine(fine.id)">
+              ❌ Waive
+            </button>
+
+          </td>
+
+        </tr>
+
+        <!-- EMPTY STATE -->
+        <tr *ngIf="fines.length === 0">
+          <td colspan="9" class="no-data">No fines available</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" *ngIf="selectedFine">
+    <div class="modal-content">
+
+      <h2>Fine Details</h2>
+
+      <!-- ✅ IMPORTANT DETAILS -->
+      <p><b>Book Loan ID:</b> {{ selectedFine.bookLoanId }}</p>
+      <p><b>User:</b> {{ selectedFine.userName }}</p>
+      <p><b>Email:</b> {{ selectedFine.userEmail }}</p>
+      <p><b>Book:</b> {{ selectedFine.bookTitle }}</p>
+      <p><b>Type:</b> {{ selectedFine.type }}</p>
+      <p><b>Amount:</b> ₹{{ selectedFine.amount }}</p>
+      <p><b>Paid:</b> ₹{{ selectedFine.paidAmount }}</p>
+      <p><b>Status:</b> {{ selectedFine.status }}</p>
+
+      <!-- OPTIONAL -->
+      <p *ngIf="selectedFine.waiverReason">
+        <b>Waiver Reason:</b> {{ selectedFine.waiverReason }}
+      </p>
+
+      <button (click)="selectedFine = null">Close</button>
+
+    </div>
+  </div>
+
+</div>
