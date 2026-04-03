@@ -37,7 +37,9 @@
 
         <!-- 🎯 Actions -->
         <td>
-          <ng-container *ngIf="loan.status === 'CHECKED_OUT'; else noAction">
+
+          <!-- ✅ CHECKED OUT / OVERDUE -->
+          <ng-container *ngIf="loan.status === 'CHECKED_OUT' || loan.status === 'OVERDUE'; else otherState">
 
             <div class="action-group">
               <button 
@@ -56,9 +58,16 @@
 
           </ng-container>
 
-          <!-- ✅ Returned + Review -->
-          <ng-template #noAction>
-            <div class="action-inline">
+          <!-- 🔁 OTHER STATES -->
+          <ng-template #otherState>
+
+            <!-- 🟡 RETURN REQUESTED -->
+            <div *ngIf="loan.status === 'RETURN_REQUESTED'" class="action-inline">
+              <span class="requested-label">Request Sent ⏳</span>
+            </div>
+
+            <!-- ✅ RETURNED -->
+            <div *ngIf="loan.status === 'RETURNED'" class="action-inline">
               <span class="returned-label">Returned</span>
 
               <button 
@@ -67,7 +76,9 @@
                 Review
               </button>
             </div>
+
           </ng-template>
+
         </td>
 
       </tr>

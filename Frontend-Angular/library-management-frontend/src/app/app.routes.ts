@@ -46,6 +46,7 @@ import { SubscriptionControllerComponent } from './Admin/subscription/subscripti
 import { SubscriptionPlanComponent } from './Admin/subscription/subscription-plan/subscription-plan';
 import { ReviewUserComponent } from './user/home/book-loan-front/renew-return/review-user/review-user';
 import { FineUserComponent } from './user/home/book-loan-front/fine-user/fine-user';
+import { BookLoanControlComponent } from './Admin/book-loan/book-loan-control/book-loan-control';
 
 export const routes: Routes = [
 
@@ -168,6 +169,11 @@ export const routes: Routes = [
 {
     path: 'my-fines',
     component: FineUserComponent
+  },
+
+{
+    path: 'book-loan-control',
+    component: BookLoanControlComponent
   }
 
   

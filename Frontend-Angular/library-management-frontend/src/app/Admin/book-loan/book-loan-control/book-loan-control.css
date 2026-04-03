@@ -1,0 +1,209 @@
+/* 🌌 PAGE BACKGROUND */
+.page {
+  padding: 50px;
+  background: linear-gradient(135deg, #020617, #020c1b, #000814);
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+}
+
+/* 🔷 HEADER */
+.header h1 {
+  font-size: 42px;
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: #cbd5f5;
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+/* 📦 TABLE CONTAINER */
+.table-container {
+  background: #0b1220;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* 📊 TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 15px;
+  background: transparent; /* 🔥 important */
+}
+
+/* 🔥 HEADER GRADIENT */
+thead {
+  background: linear-gradient(90deg, #7c3aed, #2563eb);
+}
+
+th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 15px;
+  color: #e0f2fe;
+}
+
+/* 📄 ROWS */
+tbody tr {
+  background: #1e293b;  /* dark rows */
+  transition: 0.3s;
+}
+
+/* alternating rows */
+tbody tr:nth-child(even) {
+  background: #0f172a;
+}
+
+/* cells */
+td {
+  padding: 16px;
+  border-top: 1px solid #334155;
+  color: #e2e8f0;  /* 🔥 FIXED visibility */
+  font-size: 14px;
+}
+
+/* ✨ hover */
+tbody tr:hover {
+  background: #334155;
+}
+
+/* 🟢 STATUS BADGES */
+.status {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* issued */
+.issued {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+
+/* returned */
+.returned {
+  background: #064e3b;
+  color: #6ee7b7;
+}
+
+/* overdue */
+.overdue {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+/* 🔘 BUTTONS */
+.btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 10px;
+  margin-right: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* return button */
+.return {
+  background: #22c55e;
+  color: black;
+}
+
+.return:hover {
+  background: #16a34a;
+  transform: scale(1.05);
+}
+
+/* delete button */
+.delete {
+  background: #ef4444;
+  color: white;
+}
+
+/* 🔷 HEADER ROW */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+/* 🔘 TOP BUTTON */
+.btn-top {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+
+  transition: 0.3s;
+}
+
+/* ✨ HOVER */
+.btn-top:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(34,197,94,0.4);
+}
+
+.delete:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* 🟡 RETURN REQUEST STATUS */
+.request {
+  background: #f59e0b;
+  color: black;
+}
+
+/* 🟢 APPROVE BUTTON */
+.approve {
+  background: #22c55e;
+  color: black;
+}
+
+.approve:hover {
+  background: #16a34a;
+  transform: scale(1.05);
+}
+
+/* 🟢 ISSUED */
+.issued {
+  background: #1e40af;
+  color: #93c5fd;
+}
+
+/* 🟢 RETURNED */
+.returned {
+  background: #065f46;
+  color: #6ee7b7;
+}
+
+/* 🟡 REQUEST */
+.request {
+  background: #f59e0b;
+  color: black;
+}
+
+/* 🔴 OVERDUE */
+.overdue {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+/* ROW HIGHLIGHT */
+.request-row {
+  background: rgba(245, 158, 11, 0.08);
+}

@@ -77,6 +77,8 @@ public class BookLoan {
 
     private LocalDate returnDate;
 
+    private boolean returnRequested;
+
     // ================= RENEWAL =================
     @Column(nullable = false)
     private Integer renewalCount = 0;

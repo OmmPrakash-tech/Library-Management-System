@@ -1,0 +1,108 @@
+<div class="page">
+
+  <!-- 🔷 HEADER -->
+  <div class="header">
+
+    <div class="header-row">
+      <div>
+        <h1>Manage Book Loans 📚</h1>
+        <p>Track issued books, returns, and overdue records.</p>
+      </div>
+
+      <!-- 🔘 TOGGLE BUTTON -->
+      <button class="btn-top" (click)="toggleRequests()">
+        {{ showRequests ? 'Show All Loans' : 'Show Return Requests' }}
+      </button>
+    </div>
+
+  </div>
+
+  <!-- 📦 TABLE -->
+  <div class="table-container">
+
+    <!-- 🔄 LOADING -->
+    <div *ngIf="loading" class="loading">
+      Loading...
+    </div>
+
+    <!-- ❌ EMPTY -->
+    <div *ngIf="!loading && loans.length === 0" class="empty">
+      No data available
+    </div>
+
+    <!-- ✅ TABLE -->
+    <table *ngIf="!loading && loans.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Book</th>
+          <th>User</th>
+          <th>Checkout</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Overdue</th>
+          <th *ngIf="showRequests">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let loan of loans"
+            [ngClass]="{ 'request-row': loan.status === 'RETURN_REQUESTED' }">
+
+          <!-- DATA -->
+          <td>{{ loan.id }}</td>
+          <td>{{ loan.bookTitle }}</td>
+          <td>{{ loan.userName }}</td>
+          <td>{{ loan.checkoutDate | date:'mediumDate' }}</td>
+          <td>{{ loan.dueDate | date:'mediumDate' }}</td>
+
+          <!-- ✅ STATUS (FIXED) -->
+          <td>
+            <span 
+              class="status"
+              [ngClass]="{
+                'issued': loan.status === 'CHECKED_OUT',
+                'returned': loan.status === 'RETURNED',
+                'request': loan.status === 'RETURN_REQUESTED'
+              }">
+
+              {{
+                loan.status === 'CHECKED_OUT' ? 'Issued' :
+                loan.status === 'RETURNED' ? 'Returned' :
+                loan.status === 'RETURN_REQUESTED' ? 'Requested' :
+                loan.status
+              }}
+
+            </span>
+          </td>
+
+          <!-- OVERDUE -->
+          <td>
+            <span 
+              class="status"
+              [ngClass]="{
+                'overdue': loan.overdue,
+                'returned': !loan.overdue
+              }">
+              {{ loan.overdue ? 'Yes' : 'No' }}
+            </span>
+          </td>
+
+          <!-- APPROVE -->
+          <td *ngIf="showRequests">
+            <button 
+              class="btn approve"
+              (click)="approveReturn(loan.id, loan.status)"
+              [disabled]="loan.status !== 'RETURN_REQUESTED'">
+              Approve
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

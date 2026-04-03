@@ -7,12 +7,13 @@ import { Book } from '../book/book';
 import { GenreComponent } from '../genre/genre';
 import { SubscriptionHeroComponent } from '../subscription/subscription';
 import { FineComponent } from '../fine/fine';
+import { BookLoanComponent } from '../book-loan/book-loan';
 
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule, Navbar, Hero, User, Book, GenreComponent, SubscriptionHeroComponent, FineComponent],
+  imports: [CommonModule, Navbar, Hero, User, Book, GenreComponent, SubscriptionHeroComponent, FineComponent, BookLoanComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })

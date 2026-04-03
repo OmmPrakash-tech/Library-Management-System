@@ -423,5 +423,123 @@ public BookLoanDTO getLoanById(Long loanId) {
     return mapper.toDTO(loan);
 }
 
+public PageResponse<BookLoanDTO> getAllLoans(BookLoanStatus status, int page, int size) {
+
+    Pageable pageable = PageRequest.of(page, size);
+
+    Page<BookLoan> loanPage = bookLoanRepository.findAllLoans(status, pageable);
+
+    return PageResponse.from(
+            loanPage.map(mapper::toDTO)
+    );
+}
+
+
+@Override
+public PageResponse<BookLoanDTO> getReturnRequests() {
+
+    List<BookLoan> loans = bookLoanRepository
+            .findByStatus(BookLoanStatus.RETURN_REQUESTED); // ✅ FIXED ENUM
+
+    List<BookLoanDTO> dtoList = loans.stream()
+            .map(loan -> mapToDTO(loan)) // ✅ FIXED
+            .toList();
+
+    return PageResponse.<BookLoanDTO>builder()
+            .content(dtoList)
+            .pageNumber(0)
+            .pageSize(dtoList.size())
+            .totalElements(dtoList.size())
+            .totalPages(1)
+            .last(true)
+            .first(true)
+            .build();
+}
+
+private BookLoanDTO mapToDTO(BookLoan loan) {
+
+    if (loan == null) return null;
+
+    return BookLoanDTO.builder()
+            .id(loan.getId())
+
+            // 👤 USER
+            .userId(loan.getUser().getId())
+            .userName(loan.getUser().getFullName())
+            .userEmail(loan.getUser().getEmail())
+
+            // 📚 BOOK
+            .bookId(loan.getBook().getId())
+            .bookTitle(loan.getBook().getTitle())
+            .bookIsbn(loan.getBook().getIsbn())
+            .bookAuthor(loan.getBook().getAuthor())
+            .bookCoverImage(loan.getBook().getCoverImageUrl())
+
+            // 📦 LOAN
+            .type(loan.getType())
+            .status(loan.getStatus())
+
+            .checkoutDate(loan.getCheckoutDate())
+            .dueDate(loan.getDueDate())
+            .remainingDays(
+                loan.getDueDate() != null
+                    ? (int) java.time.temporal.ChronoUnit.DAYS
+                        .between(java.time.LocalDate.now(), loan.getDueDate())
+                    : null
+            )
+
+            .returnDate(loan.getReturnDate())
+
+            .renewalCount(loan.getRenewalCount())
+            .maxRenewals(loan.getMaxRenewals())
+
+            // 💰 FINE (optional for now)
+            .fineAmount(null)
+            .finePaid(false)
+
+            // FLAGS
+            .overdue(loan.isOverdue())
+            .overdueDays(loan.getOverdueDays())
+            .active(loan.isActive())
+            .canRenew(loan.canRenew())
+
+            // EXTRA
+            .notes(loan.getNotes())
+
+            .createdAt(loan.getCreatedAt())
+            .updatedAt(loan.getUpdatedAt())
+
+            .build();
+}
+
+@Override
+public void approveReturn(Long id) {
+
+    BookLoan loan = bookLoanRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+    if (loan.getStatus() != BookLoanStatus.RETURN_REQUESTED) {
+        throw new RuntimeException("No return request found");
+    }
+
+    loan.markAsReturned(); // ✅ USE YOUR ENTITY METHOD
+
+    bookLoanRepository.save(loan);
+}
+
+@Override
+public void requestReturn(Long bookLoanId) {
+
+    BookLoan loan = bookLoanRepository.findById(bookLoanId)
+            .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+    if (loan.getStatus() != BookLoanStatus.CHECKED_OUT) {
+        throw new RuntimeException("Invalid request");
+    }
+
+    loan.setStatus(BookLoanStatus.RETURN_REQUESTED); // ✅ IMPORTANT
+
+    bookLoanRepository.save(loan);
+}
 
 }

@@ -104,4 +104,17 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long>, JpaSp
         WHERE bl.id = :id
     """)
     Optional<BookLoan> findByIdWithUserAndBook(@Param("id") Long id);
+
+
+    @Query("""
+    SELECT bl FROM BookLoan bl
+    WHERE (:status IS NULL OR bl.status = :status)
+""")
+Page<BookLoan> findAllLoans(
+        @Param("status") BookLoanStatus status,
+        Pageable pageable);
+
+
+List<BookLoan> findByStatus(BookLoanStatus status);
+
 }

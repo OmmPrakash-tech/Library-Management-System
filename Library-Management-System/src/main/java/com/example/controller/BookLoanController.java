@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.domain.BookLoanStatus;
 import com.example.model.User;
 import com.example.payload.dto.BookLoanDTO;
+import com.example.payload.dto.ReturnRequestDTO;
+
 import com.example.payload.request.BookLoanSearchRequest;
 import com.example.payload.request.CheckinRequest;
 import com.example.payload.request.CheckoutRequest;
@@ -117,6 +121,35 @@ public class BookLoanController {
         );
     }
 
+    @PostMapping("/return-request")
+public ResponseEntity<?> requestReturn(@RequestBody ReturnRequestDTO dto) {
+
+    bookLoanService.requestReturn(dto.getBookLoanId());
+
+    return ResponseEntity.ok(Map.of(
+    "message", "Return request sent",
+    "success", true
+));
+}
+
+@GetMapping("/return-requests")
+public ResponseEntity<PageResponse<BookLoanDTO>> getReturnRequests() {
+
+    PageResponse<BookLoanDTO> response = bookLoanService.getReturnRequests();
+
+    return ResponseEntity.ok(response);
+}
+
+@PostMapping("/approve-return/{id}")
+public ResponseEntity<ApiResponse> approveReturn(@PathVariable Long id) {
+
+    bookLoanService.approveReturn(id);
+
+    return ResponseEntity.ok(
+        new ApiResponse("Book returned successfully", true)
+    );
+}
+
     // ================= GET BY ID =================
     @GetMapping("/{loanId}")
     public ResponseEntity<BookLoanDTO> getLoanById(
@@ -137,6 +170,18 @@ public class BookLoanController {
                 new ApiResponse("Updated " + count + " overdue loans", true)
         );
     }
+
+    // ================= GET ALL LOANS (ADMIN) =================
+@GetMapping("/all")
+public ResponseEntity<PageResponse<BookLoanDTO>> getAllLoans(
+        @RequestParam(required = false) BookLoanStatus status,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "40") int size) {
+
+    return ResponseEntity.ok(
+            bookLoanService.getAllLoans(status, page, size)
+    );
+}
 
     // ================= HELPER =================
  private Long getCurrentUserId() {

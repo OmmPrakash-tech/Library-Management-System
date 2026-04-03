@@ -129,28 +129,37 @@ renewBook(loan: any) {
   // ✅ Return Book
 returnBook(loan: any) {
 
-  if (loan.status !== 'CHECKED_OUT') {
+  if (loan.status === 'RETURNED') {
     alert("Book already returned!");
     return;
   }
 
-  if (!confirm('Are you sure to return this book?')) return;
+  if (loan.status === 'RETURN_REQUESTED') {
+    alert("Return already requested!");
+    return;
+  }
+
+  if (loan.status !== 'CHECKED_OUT' && loan.status !== 'OVERDUE') {
+    alert("Invalid return state!");
+    return;
+  }
+
+  if (!confirm('Send return request?')) return;
 
   const body = {
-    bookLoanId: loan.id,      // ✅ correct field name
-    condition: "RETURNED",    // ✅ required
-    notes: "Finished reading" // ✅ optional (you can customize)
+    bookLoanId: loan.id,
+    notes: "User requested return"
   };
 
-  this.http.post(`${this.BASE_URL}/checkin`, body, this.getHeaders())
+  this.http.post(`${this.BASE_URL}/return-request`, body, this.getHeaders())
     .subscribe({
       next: () => {
-        alert('Book returned successfully');
+        alert('Return request sent to admin');
         this.fetchLoans();
       },
       error: (err) => {
-        console.error('Return failed:', err);
-        alert(err.error?.message || 'Return failed');
+        console.error('Request failed:', err);
+        alert(err.error?.message || 'Request failed');
       }
     });
 }

@@ -34,4 +34,12 @@ public interface BookLoanService {
     // ================= SYSTEM TASKS =================
 
     int markOverdueLoans();
+
+    void requestReturn(Long bookLoanId); // ✅ ADD THIS
+
+PageResponse<BookLoanDTO> getReturnRequests();
+
+void approveReturn(Long id);
+
+    PageResponse<BookLoanDTO> getAllLoans(BookLoanStatus status, int page, int size);
 }
