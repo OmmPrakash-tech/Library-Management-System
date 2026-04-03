@@ -44,6 +44,8 @@ import { FineComponent } from './Admin/fine/fine';
 import { FineControllerPageComponent } from './Admin/fine/fine-controller/fine-controller';
 import { SubscriptionControllerComponent } from './Admin/subscription/subscription-contoll/subscription-contoll';
 import { SubscriptionPlanComponent } from './Admin/subscription/subscription-plan/subscription-plan';
+import { ReviewUserComponent } from './user/home/book-loan-front/renew-return/review-user/review-user';
+import { FineUserComponent } from './user/home/book-loan-front/fine-user/fine-user';
 
 export const routes: Routes = [
 
@@ -156,8 +158,17 @@ export const routes: Routes = [
 {
     path: 'subscription-plans',
     component: SubscriptionPlanComponent
-  }
+  },
 
+  {
+  path: 'review-user/:bookId',
+  component: ReviewUserComponent
+},
+
+{
+    path: 'my-fines',
+    component: FineUserComponent
+  }
 
   
 ];

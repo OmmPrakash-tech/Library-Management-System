@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-renew-return',
@@ -19,7 +20,8 @@ export class RenewReturnComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -157,4 +159,9 @@ returnBook(loan: any) {
   isOverdue(date: string): boolean {
     return new Date(date) < new Date();
   }
+
+  goToReview(bookId: number) {
+  this.router.navigate(['/review-user', bookId]);
+}
+
 }

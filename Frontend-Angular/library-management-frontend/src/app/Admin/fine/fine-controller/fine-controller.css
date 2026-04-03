@@ -79,34 +79,32 @@ table {
 }
 
 thead {
-  background: #1e293b;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
 }
 
 th {
   padding: 14px;
-  font-size: 14px;
-  text-transform: uppercase;
-  color: #94a3b8;
-  letter-spacing: 1px;
+  color: white;
 }
 
 td {
   padding: 14px;
   text-align: center;
+  color: #e2e8f0;
 }
 
-/* 🔄 ROW STYLING */
+/* ✅ FIXED ROW COLORS */
 tbody tr {
-  transition: 0.3s;
-}
-
-tbody tr:nth-child(even) {
   background: #020617;
 }
 
+tbody tr:nth-child(even) {
+  background: #0f172a;
+}
+
+/* ✨ Hover */
 tbody tr:hover {
   background: #1e293b;
-  transform: scale(1.01);
 }
 
 /* 🎯 STATUS BADGES */

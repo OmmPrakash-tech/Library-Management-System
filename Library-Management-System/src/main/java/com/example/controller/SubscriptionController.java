@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -136,4 +137,14 @@ public ResponseEntity<?> getActiveSubscription() {
     return ResponseEntity.ok(subscriptionMapper.toDTO(sub.get()));
 }
 
+@PostMapping("/subscribenew")
+public ResponseEntity<SubscriptionDTO> subscribeUser(
+        @RequestBody Map<String, Long> request) {
+
+    Long userId = request.get("userId");
+    Long planId = request.get("planId");
+
+    return ResponseEntity.ok(
+            subscriptionService.subscribeUser(userId, planId));
+}
 }

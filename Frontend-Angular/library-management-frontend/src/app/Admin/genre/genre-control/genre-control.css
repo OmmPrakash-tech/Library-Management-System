@@ -1,3 +1,4 @@
+/* MAIN CONTAINER */
 .controller-container {
   width: 100%;
   max-width: 1400px;
@@ -10,19 +11,19 @@
 }
 
 /* TITLE */
-h2 {
+.controller-container h2 {
   margin-bottom: 20px;
 }
 
 /* FORM */
-.form-section {
+.controller-container .form-section {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
 
-.form-section input {
+.controller-container .form-section input {
   padding: 10px;
   border-radius: 8px;
   border: none;
@@ -31,11 +32,11 @@ h2 {
   outline: none;
 }
 
-.form-section input:focus {
+.controller-container .form-section input:focus {
   box-shadow: 0 0 5px #6366f1;
 }
 
-.form-section button {
+.controller-container .form-section button {
   padding: 10px 15px;
   border-radius: 8px;
   border: none;
@@ -45,21 +46,21 @@ h2 {
   transition: 0.3s;
 }
 
-.form-section button:hover {
+.controller-container .form-section button:hover {
   transform: scale(1.05);
 }
 
 /* RESET BUTTON */
-.reset-btn {
+.controller-container .reset-btn {
   background: #475569 !important;
 }
 
-.reset-btn:hover {
+.controller-container .reset-btn:hover {
   background: #64748b !important;
 }
 
 /* SEARCH */
-.search-bar input {
+.controller-container .search-bar input {
   padding: 10px;
   width: 300px;
   border-radius: 8px;
@@ -69,34 +70,35 @@ h2 {
 }
 
 /* TABLE */
-table {
+.controller-container table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
 
-th, td {
+.controller-container th,
+.controller-container td {
   padding: 12px 15px;
   border-bottom: 1px solid #334155;
   text-align: left;
 }
 
-th {
+.controller-container th {
   color: #38bdf8;
   font-weight: 600;
 }
 
-td {
+.controller-container td {
   color: #e2e8f0;
 }
 
 /* ACTIONS */
-.actions {
+.controller-container .actions {
   display: flex;
   gap: 10px;
 }
 
-.actions button {
+.controller-container .actions button {
   border: none;
   padding: 6px 10px;
   border-radius: 6px;
@@ -105,55 +107,52 @@ td {
 }
 
 /* BUTTON COLORS */
-.actions button:nth-child(1) {
-  background: #3b82f6; /* Edit */
+.controller-container .actions button:nth-child(1) {
+  background: #3b82f6;
 }
 
-.actions button:nth-child(2) {
-  background: #ef4444; /* Delete */
+.controller-container .actions button:nth-child(2) {
+  background: #ef4444;
 }
 
-.actions button:nth-child(3) {
-  background: #f97316; /* Hard delete */
+.controller-container .actions button:nth-child(3) {
+  background: #f97316;
 }
 
-.actions button:hover {
+.controller-container .actions button:hover {
   transform: scale(1.1);
 }
 
 /* HOVER ROW */
-tr:hover {
+.controller-container tr:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
 /* NO DATA */
-.no-data {
+.controller-container .no-data {
   text-align: center;
   margin-top: 20px;
 }
 
 /* ================= TREE ================= */
 
-.tree-section {
+.controller-container .tree-section {
   margin-top: 40px;
 }
 
-/* TREE ROOT */
-.tree {
+.controller-container .tree {
   list-style: none;
   padding-left: 0;
 }
 
-/* TREE ITEMS */
-.tree li {
+.controller-container .tree li {
   margin: 6px 0;
   padding-left: 20px;
   position: relative;
   color: #e2e8f0;
 }
 
-/* VERTICAL LINE */
-.tree li::before {
+.controller-container .tree li::before {
   content: '';
   position: absolute;
   top: 0;
@@ -162,8 +161,7 @@ tr:hover {
   height: 100%;
 }
 
-/* HORIZONTAL LINE */
-.tree li::after {
+.controller-container .tree li::after {
   content: '';
   position: absolute;
   top: 12px;
@@ -172,13 +170,35 @@ tr:hover {
   width: 10px;
 }
 
-/* LAST CHILD FIX */
-.tree li:last-child::before {
+.controller-container .tree li:last-child::before {
   height: 12px;
 }
 
-/* SUB TREE */
-.tree ul {
+.controller-container .tree ul {
   list-style: none;
   padding-left: 20px;
+}
+
+.controller-container table {
+  background: #020617; /* dark background */
+}
+
+.controller-container th {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  color: white;
+}
+
+.controller-container td {
+  color: #e2e8f0;
+  background: #020617;
+}
+
+/* Alternate row shading */
+.controller-container tr:nth-child(even) td {
+  background: #0f172a;
+}
+
+/* Hover effect */
+.controller-container tr:hover td {
+  background: rgba(99, 102, 241, 0.2);
 }

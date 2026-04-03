@@ -17,6 +17,8 @@ public interface SubscriptionService {
     List<SubscriptionDTO> getAllUsersSubscriptions();
 
     List<SubscriptionDTO> getAllActiveSubscriptions();
+
+    SubscriptionDTO subscribeUser(Long userId, Long planId);
     
    // SubscriptionDTO getUsersActiveSubscription(Long userId);
 

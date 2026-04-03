@@ -1,0 +1,110 @@
+<div class="review-container">
+
+  <!-- 🔝 HEADER -->
+  <div class="header-row">
+    <h2>Write a Review</h2>
+
+    <button class="my-review-btn" (click)="getMyReviews()">
+      My Reviews
+    </button>
+  </div>
+
+  <!-- ✅ MY REVIEWS SECTION -->
+  <div *ngIf="myReviews.length > 0" class="review-list">
+
+    <h3>My Reviews</h3>
+
+    <div *ngFor="let r of myReviews" class="review-card">
+
+      <!-- 📘 Book Info -->
+      <div class="book-info">
+        <h4>{{ r.bookTitle }}</h4>
+        <p class="author">by {{ r.bookAuthor }}</p>
+      </div>
+
+      <!-- ⭐ Rating -->
+      <div class="stars">
+        <span *ngFor="let s of [1,2,3,4,5]">
+          {{ s <= r.rating ? '⭐' : '☆' }}
+        </span>
+      </div>
+
+      <!-- 🏷 Review Title -->
+      <h5 class="review-title">{{ r.title }}</h5>
+
+      <!-- 📝 Review Text -->
+      <p class="review-text">{{ r.reviewText }}</p>
+
+      <!-- 🕒 Date -->
+      <p class="review-date">
+        Reviewed on {{ r.createdAt | date:'medium' }}
+      </p>
+
+      <!-- ✏️ EDIT BUTTON -->
+      <button 
+        class="edit-btn"
+        (click)="editReview(r)">
+        Edit ✏️
+      </button>
+
+    </div>
+  </div>
+
+  <!-- 🚫 ALREADY REVIEWED MESSAGE -->
+  <div *ngIf="alreadyReviewed && !isEditMode" class="reviewed-badge" style="margin-bottom: 15px;">
+    You have already reviewed this book ✔
+  </div>
+
+  <!-- ⭐ STAR RATING -->
+  <div class="form-group">
+    <label>Rating</label>
+
+    <div class="star-rating" [class.disabled]="alreadyReviewed && !isEditMode">
+      <span 
+        *ngFor="let star of [1,2,3,4,5]" 
+        (click)="setRating(star)"
+        [class.active]="star <= review.rating">
+        ⭐
+      </span>
+    </div>
+  </div>
+
+  <!-- 🏷 Title -->
+  <div class="form-group">
+    <label>Title</label>
+    <input 
+      type="text" 
+      [(ngModel)]="review.title" 
+      [disabled]="alreadyReviewed && !isEditMode"
+      placeholder="Enter review title" />
+  </div>
+
+  <!-- 📝 Review -->
+  <div class="form-group">
+    <label>Review</label>
+    <textarea 
+      [(ngModel)]="review.reviewText"
+      [disabled]="alreadyReviewed && !isEditMode"
+      rows="5"
+      placeholder="Write your review...">
+    </textarea>
+  </div>
+
+  <!-- 🚀 BUTTONS -->
+  <div class="button-group">
+
+    <button 
+      class="submit-btn" 
+      (click)="isEditMode ? updateReview() : submitReview()"
+      [disabled]="alreadyReviewed && !isEditMode">
+      
+      {{ isEditMode ? 'Update Review' : 'Submit Review' }}
+    </button>
+
+    <button class="cancel-btn" (click)="goBack()">
+      Cancel
+    </button>
+
+  </div>
+
+</div>

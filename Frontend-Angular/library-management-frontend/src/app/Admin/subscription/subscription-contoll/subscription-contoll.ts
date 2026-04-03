@@ -90,7 +90,7 @@ export class SubscriptionControllerComponent implements OnInit {
     }
 
     this.http.post(
-      'http://localhost:5050/api/subscriptions/subscribe',
+      'http://localhost:5050/api/subscriptions/subscribenew',
       this.subscribeData,
       { headers: this.getAuthHeaders() }
     ).subscribe({
@@ -138,29 +138,33 @@ export class SubscriptionControllerComponent implements OnInit {
   }
 
   // ✅ CANCEL SUBSCRIPTION
-  cancel(id: number) {
-    const reason = prompt("Enter reason for cancellation");
+cancel(id: number) {
+  const reason = prompt("Enter reason for cancellation");
 
-    this.http.patch(
-      `http://localhost:5050/api/subscriptions/${id}/cancel`,
-      null,
-      {
-        params: {
-          reason: reason || ''
-        },
-        headers: this.getAuthHeaders()
-      }
-    ).subscribe({
-      next: () => {
-        alert('Cancelled successfully ❌');
-        this.loadSubscriptions();
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Cancellation failed ❌');
-      }
-    });
+  let params: any = {};
+
+  if (reason && reason.trim() !== '') {
+    params.reason = reason;
   }
+
+  this.http.patch(
+    `http://localhost:5050/api/subscriptions/${id}/cancel`,
+    {},
+    {
+      params: params,
+      headers: this.getAuthHeaders()
+    }
+  ).subscribe({
+    next: () => {
+      alert('Cancelled successfully ❌');
+      this.loadSubscriptions();
+    },
+    error: (err) => {
+      console.error(err);
+      alert('Cancellation failed ❌');
+    }
+  });
+}
 
   // ✅ DEACTIVATE EXPIRED
   deactivateExpired() {

@@ -1,11 +1,11 @@
 <div class="main-container">
-  <h2>My Book Loans</h2>
+  <h2 class="title">My Book Loans</h2>
 
   <div *ngIf="loading" class="loading">
     Loading...
   </div>
 
-  <div *ngIf="!loading && loans.length === 0">
+  <div *ngIf="!loading && loans.length === 0" class="empty">
     No borrowed books
   </div>
 
@@ -22,44 +22,51 @@
     <tbody>
       <tr *ngFor="let loan of loans">
 
-        <!-- Book -->
-        <td>{{ loan.bookTitle }}</td>
+        <!-- 📘 Book -->
+        <td class="book-title">{{ loan.bookTitle }}</td>
 
-        <!-- Due Date -->
+        <!-- 📅 Due Date -->
         <td [ngClass]="{ 'overdue': isOverdue(loan.dueDate) }">
           {{ loan.dueDate | date:'mediumDate' }}
         </td>
 
-        <!-- Renew Count -->
-        <td>
+        <!-- 🔁 Renew -->
+        <td class="renew-cell">
           {{ loan.renewalCount }} / {{ loan.maxRenewals }}
         </td>
 
-        <!-- Actions -->
+        <!-- 🎯 Actions -->
         <td>
           <ng-container *ngIf="loan.status === 'CHECKED_OUT'; else noAction">
 
             <div class="action-group">
-
               <button 
-                class="renew-btn" 
+                class="btn renew-btn" 
                 (click)="renewBook(loan)"
                 [disabled]="loan.renewalCount >= loan.maxRenewals || !loan.canRenew">
                 Renew
               </button>
 
               <button 
-                class="return-btn" 
+                class="btn return-btn" 
                 (click)="returnBook(loan)">
                 Return
               </button>
-
             </div>
 
           </ng-container>
 
+          <!-- ✅ Returned + Review -->
           <ng-template #noAction>
-            <span class="returned-label">Returned</span>
+            <div class="action-inline">
+              <span class="returned-label">Returned</span>
+
+              <button 
+                class="btn review-btn"
+                (click)="goToReview(loan.bookId)">
+                Review
+              </button>
+            </div>
           </ng-template>
         </td>
 

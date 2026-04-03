@@ -159,3 +159,90 @@ button:hover {
   margin-top: 20px;
   color: #94a3b8;
 }
+
+.action-inline {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space between Returned & button */
+}
+
+.returned-label {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.review-btn {
+  padding: 6px 12px;
+  background-color: #e5e7eb;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.review-btn:hover {
+  background-color: #d1d5db;
+}
+
+/* 🎯 ACTION GROUP (CHECKED OUT) */
+.action-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+
+/* 🎯 RETURNED + REVIEW ALIGNMENT */
+.action-inline {
+  display: flex;
+  justify-content: center;   /* center inside column */
+  align-items: center;       /* vertical alignment */
+  gap: 14px;
+  width: 100%;
+}
+
+/* ✅ RETURNED LABEL (SLIGHT POLISH) */
+.returned-label {
+  color: #22c55e;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap; /* prevents breaking */
+}
+
+/* 🔘 COMMON BUTTON FIX (CONSISTENT SIZE) */
+button {
+  min-width: 100px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+/* 🌈 REVIEW BUTTON (GRADIENT ADDED 🔥) */
+.review-btn {
+  background: linear-gradient(45deg, #06b6d4, #3b82f6);
+  color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* ✨ REVIEW HOVER */
+.review-btn:hover {
+  background: linear-gradient(45deg, #0891b2, #2563eb);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
+}
+
+/* 🔧 FIX TABLE CELL CENTER ALIGNMENT */
+td:nth-child(4) {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 🧠 OPTIONAL: SMOOTH ROW ALIGNMENT */
+tr td {
+  height: 60px;
+}

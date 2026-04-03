@@ -1,0 +1,64 @@
+<div class="container">
+
+  <h2>📚 My Fines</h2>
+
+  <!-- 🔄 Loading -->
+  <div *ngIf="loading" class="loading">
+    Loading fines...
+  </div>
+
+  <!-- ❌ Error -->
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <!-- ✅ Table -->
+  <table *ngIf="!loading && fines.length > 0">
+    <thead>
+      <tr>
+        <th>Book</th>
+        <th>Type</th>
+        <th>Total</th>
+        <th>Paid</th>
+        <th>Outstanding</th>
+        <th>Status</th>
+        <th>Reason</th>
+        <th>Note</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let fine of fines">
+        <td>
+          <strong>{{ fine.bookTitle }}</strong><br>
+          <small>{{ fine.bookIsbn }}</small>
+        </td>
+
+        <td>{{ fine.type }}</td>
+        <td>₹{{ fine.amount }}</td>
+        <td>₹{{ fine.paidAmount }}</td>
+        <td>₹{{ fine.amountOutstanding }}</td>
+
+        <td>
+          <span [ngClass]="getStatusClass(fine.status)">
+            {{ fine.status }}
+          </span>
+        </td>
+
+        <td>{{ fine.reason }}</td>
+        <td>{{ fine.note }}</td>
+
+        <td>
+          {{ fine.createdAt | date:'short' }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 🚫 No Data -->
+  <div *ngIf="!loading && fines.length === 0" class="no-data">
+    No fines found.
+  </div>
+
+</div>

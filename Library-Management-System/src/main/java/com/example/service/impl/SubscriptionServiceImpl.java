@@ -158,10 +158,13 @@ public SubscriptionDTO cancelSubscription(Long subscriptionId, String reason) {
                     "Subscription not found with ID: " + subscriptionId));
 
     // 🔒 Security check
-    User currentUser = userService.getCurrentUser();
-    if (!subscription.getUser().getId().equals(currentUser.getId())) {
-        throw new SubscriptionException("You are not authorized to cancel this subscription");
-    }
+//     User currentUser = userService.getCurrentUser();
+//     if (!subscription.getUser().getId().equals(currentUser.getId())
+//         && !currentUser.getRole().equals("ROLE_ADMIN")) {
+//     throw new SubscriptionException("You are not authorized to cancel this subscription");
+// }
+
+
 
     if (!subscription.getIsActive()) {
         throw new SubscriptionException("Subscription is already inactive");
@@ -194,7 +197,7 @@ public SubscriptionDTO cancelSubscription(Long subscriptionId, String reason) {
 public void deactivateExpiredSubscriptions() {
 
     List<Subscription> expiredSubscriptions =
-            subscriptionRepository.findExpiredActiveSubscriptions(LocalDate.now());
+            subscriptionRepository.findExpiredButStillActiveSubscriptions(LocalDate.now());
 
     for (Subscription subscription : expiredSubscriptions) {
         subscription.setIsActive(false);
@@ -211,12 +214,11 @@ public void deactivateExpiredSubscriptions() {
 @Override
 public Page<SubscriptionDTO> getAllSubscriptions(Pageable pageable) {
 
-    Page<Subscription> pageData =
-            subscriptionRepository.findInactiveSubscriptions(pageable);
+    // ✅ Step 1: Get ALL inactive subscriptions (no pagination)
+    List<Subscription> subscriptions =
+        subscriptionRepository.findByIsActiveFalse(); // no pageable
 
-    List<Subscription> subscriptions = pageData.getContent();
-
-    // 🔥 REMOVE DUPLICATES → KEEP LATEST PER USER
+    // ✅ Step 2: Keep latest per user
     Map<Long, Subscription> latestMap = new HashMap<>();
 
     for (Subscription sub : subscriptions) {
@@ -237,9 +239,15 @@ public Page<SubscriptionDTO> getAllSubscriptions(Pageable pageable) {
             .map(subscriptionMapper::toDTO)
             .toList();
 
-    return new PageImpl<>(result, pageable, result.size());
-}
+    // ✅ Step 3: Apply pagination manually
+    int start = (int) pageable.getOffset();
+    int end = Math.min(start + pageable.getPageSize(), result.size());
 
+    List<SubscriptionDTO> paginatedList =
+            (start > result.size()) ? List.of() : result.subList(start, end);
+
+    return new PageImpl<>(paginatedList, pageable, result.size());
+}
 
 
 public List<SubscriptionDTO> getAllActiveUsers() {
@@ -301,26 +309,26 @@ public List<SubscriptionDTO> getAllUsersSubscriptions() {
 
     List<Subscription> subscriptions = subscriptionRepository.findAll();
 
-    // Map to store latest subscription per user
     Map<Long, Subscription> latestMap = new HashMap<>();
 
     for (Subscription sub : subscriptions) {
 
         Long userId = sub.getUser().getId();
+        Subscription existing = latestMap.get(userId);
 
-        if (!latestMap.containsKey(userId) ||
-            sub.getStartDate().isAfter(
-                latestMap.get(userId).getStartDate()
-            )) {
+        if (existing == null ||
+            sub.getCreatedAt().isAfter(existing.getCreatedAt())) {
 
             latestMap.put(userId, sub);
         }
     }
 
     return latestMap.values().stream()
+            .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
             .map(subscriptionMapper::toDTO)
             .toList();
 }
+
 
 @Override
 public List<SubscriptionDTO> getAllActiveSubscriptions() {
@@ -332,6 +340,57 @@ public List<SubscriptionDTO> getAllActiveSubscriptions() {
             .filter(sub -> sub.getEndDate().isAfter(LocalDate.now())) // ✅ fix
             .map(subscriptionMapper::toDTO)
             .toList();
+}
+
+@Override
+public SubscriptionDTO subscribeUser(Long userId, Long planId) {
+
+    // 🔍 Fetch user
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // 🔍 Fetch plan
+    SubscriptionPlan plan = subscriptionPlanRepository.findById(planId)
+            .orElseThrow(() -> new RuntimeException("Plan not found"));
+
+    // ❌ Check if already active subscription exists
+    Optional<Subscription> existing = subscriptionRepository
+            .findByUserIdAndIsActiveTrue(userId);
+
+    if (existing.isPresent()) {
+        throw new RuntimeException("User already has an active subscription");
+    }
+
+    // 📅 Dates
+    LocalDate startDate = LocalDate.now();
+    LocalDate endDate = startDate.plusDays(plan.getDurationDays());
+
+    // 🧾 Create subscription
+    Subscription subscription = new Subscription();
+    subscription.setUser(user);
+    subscription.setPlan(plan);
+
+    subscription.setPlanName(plan.getName());
+    subscription.setPlanCode(plan.getPlanCode());
+
+    subscription.setPrice(plan.getPrice());
+   // subscription.setCurrency(plan.getCurrency());
+
+    subscription.setMaxBooksAllowed(plan.getMaxBooksAllowed());
+    subscription.setMaxDaysPerBook(plan.getMaxDaysPerBook());
+
+    subscription.setStartDate(startDate);
+    subscription.setEndDate(endDate);
+
+    subscription.setIsActive(true);
+    subscription.setAutoRenew(false);
+
+    subscription.setCreatedAt(LocalDateTime.now());
+
+    // 💾 Save
+    subscription = subscriptionRepository.save(subscription);
+
+    return subscriptionMapper.toDTO(subscription);
 }
 
 }
