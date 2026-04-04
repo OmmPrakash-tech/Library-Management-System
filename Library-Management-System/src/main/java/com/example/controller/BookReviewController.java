@@ -184,4 +184,14 @@ public ResponseEntity<List<Object[]>> getRatingBreakdown(@PathVariable Long book
     );
 }
 
+@GetMapping
+public ResponseEntity<PageResponse<BookReviewDTO>> getAllReviews(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "100") int size) {
+
+    return ResponseEntity.ok(
+            bookReviewService.getAllReviews(page, size)
+    );
+}
+
 }

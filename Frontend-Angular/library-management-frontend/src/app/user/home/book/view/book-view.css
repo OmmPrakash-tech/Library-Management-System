@@ -49,3 +49,155 @@ button {
   background: #64748b;
   color: white;
 }
+
+/* ⭐ REVIEWS SECTION */
+.reviews-section {
+  margin-top: 40px;
+  padding: 20px;
+  background: #020617;
+  border-radius: 10px;
+}
+
+.reviews-section h2 {
+  color: #38bdf8;
+  margin-bottom: 20px;
+}
+
+/* ❌ no reviews */
+.no-reviews {
+  color: gray;
+  text-align: center;
+}
+
+/* 📦 card */
+.review-card {
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* top row */
+.review-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.user {
+  color: #94a3b8;
+}
+
+.rating {
+  color: #facc15;
+}
+
+/* title */
+.review-title {
+  margin: 5px 0;
+  color: #38bdf8;
+}
+
+/* text */
+.review-text {
+  margin: 8px 0;
+}
+
+/* date */
+.review-date {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* Layout */
+.view-container {
+  display: flex;
+  gap: 30px;
+  padding: 20px;
+  background: #020617;
+  color: #e2e8f0;
+}
+
+/* Image */
+.image-section img {
+  width: 300px;
+  border-radius: 10px;
+}
+
+/* Details */
+.details-section {
+  flex: 1;
+}
+
+/* Status */
+.available {
+  color: #22c55e;
+}
+
+.out {
+  color: #ef4444;
+}
+
+/* Progress */
+.progress-container {
+  background: #1e293b;
+  height: 8px;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #22c55e;
+}
+
+/* Buttons */
+.actions {
+  margin-top: 15px;
+}
+
+button {
+  margin-right: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.borrow-btn {
+  background: #38bdf8;
+}
+
+.wishlist-btn {
+  background: #facc15;
+}
+
+.back-btn {
+  background: #64748b;
+}
+
+/* ⭐ Reviews */
+.reviews-section {
+  margin: 20px;
+  padding: 20px;
+  background: #020617;
+}
+
+.review-card {
+  background: #0f172a;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.review-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rating {
+  color: #facc15;
+}
+
+.review-title {
+  color: #38bdf8;
+}

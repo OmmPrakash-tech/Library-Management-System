@@ -18,4 +18,9 @@ export class Navbar {
     // Navigate to login page
     this.router.navigate(['/login']);
   }
+
+  goToReviews() {
+  this.router.navigate(['/reviews']); // 🔥 your reviews route
+}
+
 }

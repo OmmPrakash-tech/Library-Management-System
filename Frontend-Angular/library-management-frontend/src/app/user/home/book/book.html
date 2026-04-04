@@ -2,32 +2,93 @@
 
   <h1 class="title">📚 Available Books</h1>
 
-  <!-- 🔍 SEARCH -->
   <div class="search-box">
-    <input [(ngModel)]="searchText" placeholder="Search books..." />
-    <button (click)="searchBooks()">Search</button>
-    <button (click)="loadBooks()">Reset</button>
+
+    <!-- ✅ FIXED INPUT -->
+    <input 
+      [(ngModel)]="searchText" 
+      placeholder="🔍 Search books..."
+      (keyup.enter)="searchBooks()" 
+    />
+
+    <!-- ✅ FIXED SELECT -->
+    <div class="filter-wrapper">
+      <label class="filter-label">📂 Genre</label>
+
+      <div class="custom-select">
+        <select 
+          [(ngModel)]="selectedGenre"
+          (change)="searchBooks()"
+        >
+          <option [ngValue]="null">All Genres</option>
+
+          <option *ngFor="let g of genres" [ngValue]="g.id">
+            {{ g.name }}
+          </option>
+
+        </select>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="btn-group">
+      <button (click)="searchBooks()">🔍 Search</button>
+      <button (click)="searchText=''; selectedGenre=null; loadBooks()">
+        🔄 Reset
+      </button>
+    </div>
+
   </div>
 
+  <!-- NO RESULTS -->
+  <div *ngIf="noResults" class="no-result">
+    😔 No books found for your search
+  </div>
+
+  <!-- BOOK GRID -->
   <div class="book-grid">
 
     <div class="book-card" *ngFor="let book of books">
 
-      <img [src]="book.image || 'https://picsum.photos/300/200?random=' + book.id" />
+      <img 
+        [src]="book.coverImageUrl || 'https://picsum.photos/300/200?random=' + book.id" 
+      />
 
       <div class="book-info">
         <h3>{{ book.title }}</h3>
         <p class="author">by {{ book.author }}</p>
 
+        <p class="copies">
+          Available: {{ book.availableCopies }} / {{ book.totalCopies }}
+        </p>
+
+        <p 
+          class="status"
+          [ngClass]="{
+            'available': book.availableCopies > 0,
+            'out': book.availableCopies === 0
+          }">
+          {{ book.availableCopies > 0 ? 'Available' : 'Out of Stock' }}
+        </p>
+
         <div class="actions">
-<button (click)="borrowBook(book)">Borrow</button>
-            <!-- ✅ VIEW BUTTON -->
-  <button (click)="viewBook(book.id)" class="view-btn">
-    View
-  </button>
-  
-<button (click)="addToWishlist(book.id)">Wishlist</button>       
- </div>
+
+          <button 
+            (click)="borrowBook(book)"
+            [disabled]="book.availableCopies === 0">
+            📚 Borrow
+          </button>
+
+          <button (click)="viewBook(book.id)">
+            👁 View
+          </button>
+
+          <button (click)="addToWishlist(book.id)">
+            ❤️ Wishlist
+          </button>
+
+        </div>
+
       </div>
 
     </div>

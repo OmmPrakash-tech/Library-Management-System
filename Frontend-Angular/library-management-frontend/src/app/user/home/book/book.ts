@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BookService } from './bookService';
 import { FormsModule } from '@angular/forms';
@@ -6,19 +6,23 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BookLoanService } from '../book-loan-front/book-loan.service';
 
-
 @Component({
   selector: 'app-book',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './book.html',
   styleUrls: ['./book.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush   // ✅ ADDED
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Book implements OnInit {
 
   books: any[] = [];
+  genres: any[] = [];              // ✅ NEW (dynamic genres)
+
   searchText: string = '';
+  selectedGenre: number | null = null;
+
+  noResults: boolean = false;
 
   private baseUrl = 'http://localhost:5050/api/wishlist';
 
@@ -26,49 +30,70 @@ export class Book implements OnInit {
     private bookService: BookService,
     private router: Router,
     private http: HttpClient,
-    private loanService: BookLoanService
+    private loanService: BookLoanService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.loadBooks();
+    this.loadGenres(); // ✅ LOAD GENRES
   }
 
-  // 📚 Load all books
+  // 📚 LOAD ALL BOOKS
   loadBooks() {
     this.bookService.getAllBooks().subscribe((data: any) => {
-      this.books = data;
+
+      // ⚠️ Handle both normal array & PageResponse
+      this.books = data.content ? data.content : data;
+
+      this.noResults = false;
+
+      this.cdr.markForCheck();
     });
   }
 
-  // 🔍 Search books
+  // 📂 LOAD GENRES (NEW)
+  loadGenres() {
+    this.bookService.getGenres().subscribe((res: any) => {
+      this.genres = res;
+      this.cdr.markForCheck();
+    });
+  }
+
+  // 🔍 SEARCH + FILTER
   searchBooks() {
-    this.bookService.searchBooks(this.searchText).subscribe((data: any) => {
-      this.books = data;
-    });
+    this.bookService
+      .searchBooks(this.searchText, this.selectedGenre!)
+      .subscribe((res: any) => {
+
+        this.books = res.content;
+
+        // ✅ show message only when user searched
+        this.noResults = this.books.length === 0 && this.searchText.trim() !== '';
+
+        this.cdr.markForCheck();
+      });
   }
 
+  // 📚 BORROW
+  borrowBook(book: any) {
+    this.loanService.setBook(book);
+    alert(`"${book.title}" sent to Issue Page for confirmation 📩`);
+  }
 
-
-borrowBook(book: any) {
-  this.loanService.setBook(book);
-  alert(`"${book.title}" sent to Issue Page for confirmation 📩`);
-}
-
-  // ❤️ Wishlist
+  // ❤️ WISHLIST
   addToWishlist(bookId: number) {
-    console.log('Adding book ID:', bookId);
-
     this.http.post(`${this.baseUrl}/${bookId}`, {}).subscribe({
       next: () => {
         alert('Added to wishlist ✅');
+        this.cdr.markForCheck();
       },
       error: (err) => console.error(err)
     });
   }
 
-  // 👁️ View Book
+  // 👁️ VIEW BOOK
   viewBook(bookId: number) {
     this.router.navigate(['/book', bookId]);
   }
-
 }

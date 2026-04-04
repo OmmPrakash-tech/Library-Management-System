@@ -1,74 +1,69 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BookControlService } from '../book-control.service';
 import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-book-control',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './book-control.html',
-  styleUrls: ['./book-control.css']
+  styleUrls: ['./book-control.css'],
+  
 })
 export class BookControl implements OnInit {
 
   books: any[] = [];
   selectedBook: any = null;
 
-  constructor(private router: Router, private bookService: BookControlService) {}
+  constructor(
+    private router: Router,
+    private bookService: BookControlService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    this.loadBooks(); // ✅ AUTO LOAD
+    this.loadBooks();
   }
 
-  // 📌 Load all books
   loadBooks() {
     this.bookService.getAllBooks().subscribe(res => {
       this.books = res;
+      this.cdr.markForCheck();
     });
   }
 
-  // 📌 Add book (you can connect form later)
-onAddBook() {
-  this.router.navigate(['/add-book']); // 🔥 NAVIGATION
-}
+  onAddBook() {
+    this.router.navigate(['/add-book']);
+  }
 
-  // 📌 View books (reload)
   onViewBooks() {
     this.loadBooks();
   }
 
-  // 📌 Manage books
-onManageBooks() {
-  this.router.navigate(['/manage-books']);
-}
+  onManageBooks() {
+    this.router.navigate(['/manage-books']);
+  }
 
-// 📌 Soft delete
-deleteBook(id: number) {
-  this.bookService.softDeleteBook(id).subscribe(() => {
-    this.loadBooks();
-  });
-}
+  hardDeleteBook(id: number) {
+    this.bookService.hardDeleteBook(id).subscribe(() => {
+      this.loadBooks();
+      this.cdr.markForCheck();
+    });
+  }
 
-// 📌 Hard delete
-hardDeleteBook(id: number) {
-  this.bookService.hardDeleteBook(id).subscribe(() => {
-    this.loadBooks();
-  });
-}
-
-  // 📌 Get by ISBN
   findByIsbn(isbn: string) {
     this.bookService.getBookByIsbn(isbn).subscribe(res => {
       this.selectedBook = res;
+      this.cdr.markForCheck();
     });
   }
 
   viewBook(id: number) {
-  this.router.navigate(['/view-book', id]); // 🔥 navigate with id
-}
+    this.router.navigate(['/view-book', id]);
+  }
 
-  // 📌 Stats
   loadStats() {
     this.bookService.getBookStats().subscribe(res => {
       console.log("Stats:", res);

@@ -21,4 +21,6 @@ public interface BookReviewService {
 RatingSummaryDTO getRatingSummary(Long bookId);
 
     BookReviewDTO getReviewById(Long reviewId);
+
+    PageResponse<BookReviewDTO> getAllReviews(int page, int size);
 }

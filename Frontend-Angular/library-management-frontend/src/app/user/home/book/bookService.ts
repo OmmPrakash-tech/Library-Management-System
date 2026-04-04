@@ -8,16 +8,36 @@ import { Observable } from 'rxjs';
 export class BookService {
 
   private baseUrl = 'http://localhost:5050/api/books';
+  private genreUrl = 'http://localhost:5050/api/genres'; // ✅ NEW
 
   constructor(private http: HttpClient) {}
 
-  // GET all books
+  // 📚 GET ALL BOOKS
   getAllBooks(): Observable<any> {
     return this.http.get(this.baseUrl);
   }
 
-  // SEARCH books
-  searchBooks(keyword: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/search`, { keyword });
+  // 📂 GET ALL GENRES
+  getGenres(): Observable<any> {
+    return this.http.get(this.genreUrl);
+  }
+
+  // 🔍 SEARCH BOOKS (WITH FILTER)
+  searchBooks(keyword: string, genreId?: number): Observable<any> {
+
+    const body: any = {
+      searchTerm: keyword && keyword.trim() !== '' ? keyword : null, // ✅ FIX
+      page: 0,
+      size: 10,
+      sortBy: 'createdAt',
+      sortDirection: 'DESC'
+    };
+
+    // ✅ only send genre if selected
+    if (genreId !== null && genreId !== undefined) {
+      body.genreId = genreId;
+    }
+
+    return this.http.post(`${this.baseUrl}/search`, body);
   }
 }

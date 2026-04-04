@@ -1,26 +1,28 @@
 <div class="view-container">
 
-  <!-- 🔄 REFRESH BUTTON (TOP RIGHT) -->
+  <!-- 🔄 REFRESH BUTTON -->
   <button class="refresh-btn global-refresh" (click)="refreshBook()">
     🔄 Refresh
   </button>
 
   <div class="view-card" *ngIf="book">
 
-    <!-- BACK BUTTON -->
+    <!-- 🔙 BACK -->
     <button class="back-btn" (click)="goBack()">⬅ Back</button>
 
     <div class="content">
 
-      <!-- IMAGE -->
+      <!-- 📷 IMAGE -->
       <div class="image-section">
         <img 
           [src]="'https://picsum.photos/400/250?random=' + book?.id" 
+          alt="Book Image"
         />
       </div>
 
-      <!-- DETAILS -->
+      <!-- 📖 DETAILS -->
       <div class="details-section">
+
         <h1 class="title">{{ book?.title }}</h1>
 
         <p><b>Author:</b> {{ book?.author }}</p>
@@ -29,28 +31,44 @@
         <p><b>Publisher:</b> {{ book?.publisher }}</p>
         <p><b>Language:</b> {{ book?.language }}</p>
         <p><b>Pages:</b> {{ book?.pages }}</p>
+
+        <!-- 📦 COPIES -->
+        <p><b>Total Copies:</b> {{ book?.totalCopies }}</p>
+        <p><b>Available Copies:</b> {{ book?.availableCopies }}</p>
+
+        <!-- 📊 STATUS -->
+        <p class="status">
+          <b>Status:</b>
+          <span *ngIf="book?.availableCopies > 0" class="available">
+            Available
+          </span>
+          <span *ngIf="book?.availableCopies === 0" class="out">
+            Out of Stock
+          </span>
+        </p>
+
+        <!-- 📊 PROGRESS BAR -->
+        <div class="progress-container">
+          <div 
+            class="progress-bar"
+            [style.width.%]="(book?.availableCopies / book?.totalCopies) * 100">
+          </div>
+        </div>
+
+        <!-- 💰 PRICE -->
         <p><b>Price:</b> ₹{{ book?.price }}</p>
 
+        <!-- 📝 DESCRIPTION -->
         <p class="description">{{ book?.description }}</p>
 
-
+        <!-- 🔘 ACTION BUTTONS -->
         <div class="action-buttons">
-
-  <button class="soft-btn" (click)="deleteBook()">
-    🗑 Soft Delete
-  </button>
-
-  <button class="hard-btn" (click)="hardDeleteBook()">
-    ❌ Hard Delete
-  </button>
-
-</div>
-
+          <button class="hard-btn" (click)="hardDeleteBook()">
+            ❌ Delete
+          </button>
+        </div>
 
       </div>
-
     </div>
-
   </div>
-
 </div>

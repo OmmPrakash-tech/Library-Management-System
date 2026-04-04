@@ -16,20 +16,28 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     boolean existsByIsbn(String isbn);
 
-    @Query("SELECT b FROM Book b WHERE " +
-           "(:searchTerm IS NULL OR " +
-           "LOWER(b.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(b.author) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(b.isbn) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
-           "AND (:genreId IS NULL OR b.genre.id = :genreId) " +
-           "AND (:availableOnly IS NULL OR :availableOnly = false OR b.availableCopies > 0) " +
-           "AND b.active = true")
-    Page<Book> searchBooksWithFilters(
-            @Param("searchTerm") String searchTerm,
-            @Param("genreId") Long genreId,
-            @Param("availableOnly") Boolean availableOnly,
-            Pageable pageable
-    );
+   @Query("""
+SELECT b FROM Book b 
+WHERE 
+(:searchTerm IS NULL OR :searchTerm = '' OR
+ LOWER(b.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+ LOWER(b.author) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR
+ LOWER(b.isbn) LIKE LOWER(CONCAT('%', :searchTerm, '%')))
+ 
+AND (:genreId IS NULL OR b.genre.id = :genreId)
+
+AND (:availableOnly IS NULL OR 
+     (:availableOnly = true AND b.availableCopies > 0) OR 
+     (:availableOnly = false))
+
+AND b.active = true
+""")
+Page<Book> searchBooksWithFilters(
+        @Param("searchTerm") String searchTerm,
+        @Param("genreId") Long genreId,
+        @Param("availableOnly") Boolean availableOnly,
+        Pageable pageable
+);
 
     long countByActiveTrue();
 

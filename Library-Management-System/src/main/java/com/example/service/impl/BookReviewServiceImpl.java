@@ -117,14 +117,12 @@ public BookReviewDTO updateReview(Long reviewId, UpdateReviewRequest request) {
     @Transactional
     public void deleteReview(Long reviewId) {
 
-        User user = userService.getCurrentUser();
+      
 
         BookReview review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BookException("Review not found"));
 
-        if (!review.getUser().getId().equals(user.getId())) {
-            throw new BookException("Not your review");
-        }
+       
 
         reviewRepository.delete(review);
     }
@@ -220,4 +218,33 @@ public PageResponse<BookReviewDTO> getReviewsByUser(Long userId, int page, int s
 
     return convert(reviews);
 }
+
+
+@Override
+public PageResponse<BookReviewDTO> getAllReviews(int page, int size) {
+
+    // 🔒 safety check
+    if (size > 50) size = 50;
+
+    Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+    Page<BookReview> reviewPage = reviewRepository.findAll(pageable);
+
+    List<BookReviewDTO> dtoList = reviewPage.getContent()
+            .stream()
+            .map(review -> mapper.toDTO(review, review.getUser().getId()))
+            .toList();
+
+    return PageResponse.<BookReviewDTO>builder()
+            .content(dtoList)
+            .pageNumber(reviewPage.getNumber())
+            .pageSize(reviewPage.getSize())
+            .totalElements(reviewPage.getTotalElements())
+            .totalPages(reviewPage.getTotalPages())
+            .last(reviewPage.isLast())
+            .first(reviewPage.isFirst())
+            .build();
+}
+
+
 }

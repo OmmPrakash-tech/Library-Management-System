@@ -1,0 +1,88 @@
+.review-container {
+  padding: 20px;
+  background: #020617;
+  min-height: 100vh;
+  color: #e2e8f0;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.refresh-btn {
+  background: #38bdf8;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  color: gray;
+  margin-top: 50px;
+}
+
+/* CARD */
+.review-card {
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+/* TOP */
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rating {
+  color: #facc15;
+}
+
+/* TITLE */
+.review-title {
+  color: #38bdf8;
+  margin: 5px 0;
+}
+
+/* COMMENT */
+.comment {
+  margin: 10px 0;
+}
+
+/* BOOK INFO */
+.book-info {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* BOTTOM */
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 10px;
+  color: #94a3b8;
+}
+
+/* DELETE */
+.delete-btn {
+  margin-top: 10px;
+  background: #ef4444;
+  border: none;
+  padding: 6px 10px;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+}

@@ -1,10 +1,13 @@
 <div class="view-container" *ngIf="book">
 
+  <!-- 📷 IMAGE -->
   <div class="image-section">
     <img [src]="book.coverImageUrl || 'https://via.placeholder.com/400'" alt="Book">
   </div>
 
+  <!-- 📖 DETAILS -->
   <div class="details-section">
+
     <h1>{{ book.title }}</h1>
 
     <p><b>Author:</b> {{ book.author }}</p>
@@ -13,14 +16,42 @@
     <p><b>Publisher:</b> {{ book.publisher }}</p>
     <p><b>Language:</b> {{ book.language }}</p>
     <p><b>Pages:</b> {{ book.pages }}</p>
+
+    <!-- 📦 COPIES -->
+    <p><b>Total Copies:</b> {{ book.totalCopies }}</p>
+    <p><b>Available Copies:</b> {{ book.availableCopies }}</p>
+
+    <!-- 📊 STATUS -->
+    <p class="status">
+      <b>Status:</b>
+      <span *ngIf="book.availableCopies > 0" class="available">
+        Available
+      </span>
+      <span *ngIf="book.availableCopies === 0" class="out">
+        Out of Stock
+      </span>
+    </p>
+
+    <!-- 📊 PROGRESS BAR -->
+    <div class="progress-container">
+      <div 
+        class="progress-bar"
+        [style.width.%]="(book.availableCopies / book.totalCopies) * 100">
+      </div>
+    </div>
+
+    <!-- 💰 PRICE -->
     <p><b>Price:</b> ₹{{ book.price }}</p>
 
+    <!-- 📝 DESCRIPTION -->
     <p class="desc">{{ book.description }}</p>
 
     <!-- 🔥 ACTION BUTTONS -->
     <div class="actions">
 
-      <button class="borrow-btn" (click)="borrowBook()">
+      <button class="borrow-btn" 
+              [disabled]="book.availableCopies === 0"
+              (click)="borrowBook()">
         📚 Borrow
       </button>
 
@@ -35,4 +66,34 @@
     </div>
 
   </div>
+</div>
+
+<!-- ⭐ REVIEWS SECTION (BOTTOM) -->
+<div class="reviews-section" *ngIf="book">
+
+  <h2>⭐ Customer Reviews</h2>
+
+  <!-- ❌ No reviews -->
+  <div *ngIf="reviews.length === 0" class="no-reviews">
+    No reviews yet
+  </div>
+
+  <!-- ✅ Review list -->
+  <div *ngFor="let r of reviews" class="review-card">
+
+    <div class="review-top">
+      <span class="user">👤 {{ r.userName }}</span>
+      <span class="rating">⭐ {{ r.rating }}/5</span>
+    </div>
+
+    <h4 class="review-title">{{ r.title }}</h4>
+
+    <p class="review-text">{{ r.reviewText }}</p>
+
+    <div class="review-date">
+      📅 {{ r.createdAt | date:'medium' }}
+    </div>
+
+  </div>
+
 </div>
