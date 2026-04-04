@@ -22,9 +22,6 @@ public class CreateFineRequest {
     @NotNull(message = "Fine type is mandatory")
     private FineType type;
 
-    @NotNull(message = "Fine amount is mandatory")
-    @Positive(message = "Fine amount must be positive")
-    private Long amount;
 
     @Size(max = 500, message = "Reason cannot exceed 500 characters")
     private String reason;

@@ -1,5 +1,6 @@
 package com.example.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,9 +39,10 @@ public class Fine {
     @JoinColumn(nullable = false)
     private User user;
 
+    // ✅ FIXED
     @Column(nullable = false)
-@Builder.Default
-private Long paidAmount = 0L;
+    @Builder.Default
+    private BigDecimal paidAmount = BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -49,7 +51,7 @@ private Long paidAmount = 0L;
     private FineType type;
 
     @Column(nullable = false)
-    private Long amount;
+    private BigDecimal amount;
 
     private FineStatus status;
 
@@ -79,52 +81,54 @@ private Long paidAmount = 0L;
     @Column(name = "transaction_id", length = 100)
     private String transactionId;
 
-    @Column(nullable = false, updatable = false)
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
     @UpdateTimestamp
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-   public void applyPayment(Long paymentAmount) {
+    // ✅ FIXED METHOD
+    public void applyPayment(BigDecimal paymentAmount) {
 
-    if (paymentAmount == null || paymentAmount <= 0) {
-        throw new IllegalArgumentException("Payment amount must be positive");
+        // ✅ validation
+        if (paymentAmount == null || paymentAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Payment amount must be positive");
+        }
+
+        if (this.status == FineStatus.WAIVED) {
+            throw new IllegalStateException("Cannot pay a waived fine");
+        }
+
+        // ✅ correct addition
+        BigDecimal newPaidAmount = this.paidAmount.add(paymentAmount);
+
+        // ✅ prevent overpayment
+        if (newPaidAmount.compareTo(this.amount) > 0) {
+            throw new IllegalArgumentException("Payment exceeds fine amount");
+        }
+
+        this.paidAmount = newPaidAmount;
+
+        // ✅ correct comparison
+        if (this.paidAmount.compareTo(this.amount) == 0) {
+            this.status = FineStatus.PAID;
+            this.paidAt = LocalDateTime.now();
+        } else {
+            this.status = FineStatus.PARTIALLY_PAID;
+        }
     }
 
-    if (this.status == FineStatus.WAIVED) {
-        throw new IllegalStateException("Cannot pay a waived fine");
+    public void waive(User admin, String reason) {
+
+        if (this.status == FineStatus.PAID) {
+            throw new IllegalStateException("Cannot waive a paid fine");
+        }
+
+        this.status = FineStatus.WAIVED;
+        this.waivedBy = admin;
+        this.waivedAt = LocalDateTime.now();
+        this.waiverReason = reason;
     }
-
-    long newPaidAmount = this.paidAmount + paymentAmount;
-
-    if (newPaidAmount > this.amount) {
-        throw new IllegalArgumentException("Payment exceeds fine amount");
-    }
-
-    this.paidAmount = newPaidAmount;
-
-    if (this.paidAmount.equals(this.amount)) {
-        this.status = FineStatus.PAID;
-        this.paidAt = LocalDateTime.now();
-    } else {
-        this.status = FineStatus.PARTIALLY_PAID;
-    }
-}
-
-public void waive(User admin, String reason) {
-
-    if (this.status == FineStatus.PAID) {
-        throw new IllegalStateException("Cannot waive a paid fine");
-    }
-
-    this.status = FineStatus.WAIVED;
-    this.waivedBy = admin;
-    this.waivedAt = LocalDateTime.now();
-    this.waiverReason = reason;
-}
-
-
-
 }

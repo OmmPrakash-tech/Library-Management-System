@@ -38,7 +38,7 @@ public interface FineRepository extends JpaRepository<Fine, Long> {
 
     long countByStatus(FineStatus status);
 
-    boolean existsByBookLoanId(Long bookLoanId);
+   // boolean existsByBookLoanId(Long bookLoanId);
 
     @Query("""
     SELECT f FROM Fine f
@@ -52,4 +52,6 @@ List<Fine> findMyFinesWithFilters(
         @Param("status") FineStatus status,
         @Param("type") FineType type
 );
+
+boolean existsByBookLoanIdAndType(Long bookLoanId, FineType type);
 }

@@ -2,16 +2,17 @@
 body, .page {
   margin: 0;
   padding: 20px;
-  background: #020617;
+  background: radial-gradient(circle at top, #020617, #000000);
   font-family: 'Segoe UI', sans-serif;
   color: #e2e8f0;
 }
 
 /* 🔷 HEADER */
 .header h1 {
-  font-size: 28px;
+  font-size: 30px;
   color: #38bdf8;
   margin-bottom: 5px;
+  letter-spacing: 0.5px;
 }
 
 .header p {
@@ -21,11 +22,18 @@ body, .page {
 
 /* 🧊 CARD */
 .card {
-  background: #0f172a;
+  background: rgba(15, 23, 42, 0.9);
   padding: 20px;
-  border-radius: 14px;
+  border-radius: 16px;
   margin-bottom: 25px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
 }
 
 /* ✨ CREATE FORM */
@@ -44,13 +52,13 @@ body, .page {
   background: #020617;
   color: #e2e8f0;
   outline: none;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .form input:focus,
 .form select:focus {
   border-color: #38bdf8;
-  box-shadow: 0 0 5px #38bdf8;
+  box-shadow: 0 0 8px rgba(56,189,248,0.6);
 }
 
 /* ➕ BUTTON */
@@ -62,22 +70,23 @@ body, .page {
   cursor: pointer;
   color: white;
   font-weight: 600;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .form button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(34,197,94,0.4);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(34,197,94,0.5);
 }
 
 /* 📊 TABLE */
 table {
   width: 100%;
   border-collapse: collapse;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
+/* 🌈 HEADER GRADIENT */
 thead {
   background: linear-gradient(135deg, #6a11cb, #2575fc);
 }
@@ -85,17 +94,21 @@ thead {
 th {
   padding: 14px;
   color: white;
+  font-weight: 600;
+  letter-spacing: 0.4px;
 }
 
+/* 📄 ROWS */
 td {
   padding: 14px;
   text-align: center;
   color: #e2e8f0;
 }
 
-/* ✅ FIXED ROW COLORS */
+/* ROW COLORS */
 tbody tr {
   background: #020617;
+  transition: all 0.25s ease;
 }
 
 tbody tr:nth-child(even) {
@@ -105,14 +118,17 @@ tbody tr:nth-child(even) {
 /* ✨ Hover */
 tbody tr:hover {
   background: #1e293b;
+  transform: scale(1.01);
 }
 
 /* 🎯 STATUS BADGES */
 .status {
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 6px 14px;
+  border-radius: 999px;
   font-size: 12px;
   font-weight: bold;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 8px rgba(255,255,255,0.1);
 }
 
 .pending {
@@ -135,35 +151,78 @@ tbody tr:hover {
   color: white;
 }
 
-/* 🎮 ACTION BUTTONS */
+
+/* 🎮 ACTION CONTAINER */
+.actions {
+  display: flex;
+  gap: 12px; /* ✅ proper spacing */
+  justify-content: center;
+  align-items: center;
+}
+
+/* 🎯 FORCE BUTTON LOOK LIKE STATUS BADGE */
 .actions button {
-  margin: 2px;
-  padding: 6px 10px;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 34px; /* ✅ SAME HEIGHT AS STATUS */
+  padding: 0 16px; /* ✅ horizontal padding only */
+
+  font-size: 12px;
+  font-weight: 600;
+
+  border-radius: 999px; /* ✅ FULL PILL */
   border: none;
+
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.25s ease;
+
+  min-width: 95px; /* ✅ equal width */
 }
 
-/* 👁 VIEW */
-.actions button:first-child {
-  background: #e2e8f0;
-  color: black;
-}
-
-.actions button:first-child:hover {
-  background: #cbd5f5;
-}
-
-/* ❌ WAIVE */
-.waive {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+/* 👁 VIEW BUTTON */
+.view-btn {
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
+
+  box-shadow: 0 4px 12px rgba(56,189,248,0.4);
 }
 
-.waive:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 10px rgba(239,68,68,0.4);
+/* ❌ WAIVE BUTTON */
+.waive {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+
+  box-shadow: 0 4px 12px rgba(239,68,68,0.4);
+}
+
+/* 🔥 HOVER */
+.actions button:hover {
+  transform: translateY(-2px);
+}
+
+/* 👇 CLICK EFFECT */
+.actions button:active {
+  transform: scale(0.95);
+}
+
+/* 🚫 DISABLED */
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ✨ ICON STYLE */
+.view-btn .icon {
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.view-btn:hover .icon {
+  transform: scale(1.2);
 }
 
 /* 🚫 NO DATA */
@@ -181,61 +240,31 @@ tbody tr:hover {
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
 }
 
 .modal-content {
   background: #0f172a;
-  padding: 20px;
-  width: 320px;
+  padding: 22px;
+  width: 340px;
   margin: 120px auto;
-  border-radius: 12px;
+  border-radius: 14px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .modal-content button {
   margin-top: 10px;
-  background: #38bdf8;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* 👁 VIEW BUTTON */
-.view-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
   background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-  color: white;
-
   border: none;
-  border-radius: 8px;
-
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 500;
-
+  padding: 8px 14px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
-
-  box-shadow: 0 3px 10px rgba(56, 189, 248, 0.3);
+  color: white;
+  transition: 0.3s;
 }
 
-/* 🔥 Hover Effect */
-.view-btn:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 15px rgba(56, 189, 248, 0.5);
-}
-
-/* ✨ Icon animation */
-.view-btn .icon {
-  font-size: 14px;
-  transition: transform 0.3s;
-}
-
-.view-btn:hover .icon {
-  transform: scale(1.2);
+.modal-content button:hover {
+  transform: scale(1.05);
 }

@@ -2,6 +2,7 @@ package com.example.model;
 
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -107,10 +108,8 @@ public class BookLoan {
     }
 
     public boolean isOverdue() {
-        return status == BookLoanStatus.CHECKED_OUT
-                && dueDate != null
-                && LocalDate.now().isAfter(dueDate);
-    }
+    return dueDate != null && LocalDate.now().isAfter(dueDate);
+}
 
     public int getOverdueDays() {
         if (!isOverdue()) return 0;
@@ -149,7 +148,29 @@ public class BookLoan {
         this.dueDate = this.checkoutDate.plusDays(days);
     }
 
-    public double calculateFine(double finePerDay) {
-        return getOverdueDays() * finePerDay;
-    }
+    @Column(nullable = false)
+private boolean damaged = false;
+
+@Column(nullable = false)
+private boolean lost = false;
+
+@Column(nullable = false)
+private boolean subscriptionExpired = false;
+
+@Column(nullable = false)
+private BigDecimal fineAmount = BigDecimal.ZERO;
+
+public boolean isDamaged() {
+    return damaged;
+}
+
+public boolean isLost() {
+    return lost;
+}
+
+public boolean isSubscriptionExpired() {
+    return subscriptionExpired;
+}
+
+
 }

@@ -1,12 +1,15 @@
 package com.example.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +35,7 @@ public class FineController {
 
     private final FineService fineService;
 
+    // ✅ Create fine (ADMIN CONTROLLED)
     @PostMapping
     public ResponseEntity<FineDTO> createFine(
             @Valid @RequestBody CreateFineRequest request) {
@@ -39,6 +43,7 @@ public class FineController {
         return ResponseEntity.ok(fineService.createFine(request));
     }
 
+    // ✅ Initiate payment (Razorpay)
     @PostMapping("/{id}/pay")
     public ResponseEntity<PaymentInitiateResponse> payFine(
             @PathVariable Long id) {
@@ -46,10 +51,11 @@ public class FineController {
         return ResponseEntity.ok(fineService.initiatePayment(id));
     }
 
+    // ✅ Confirm payment (after Razorpay success)
     @PostMapping("/{id}/confirm-payment")
     public ResponseEntity<FineDTO> confirmPayment(
             @PathVariable Long id,
-            @RequestParam Long amount,
+            @RequestParam BigDecimal amount,   // ✅ FIXED
             @RequestParam String transactionId) {
 
         return ResponseEntity.ok(
@@ -57,6 +63,7 @@ public class FineController {
         );
     }
 
+    // ✅ Waive fine (ADMIN)
     @PostMapping("/{id}/waive")
     public ResponseEntity<FineDTO> waiveFine(
             @PathVariable Long id,
@@ -65,12 +72,14 @@ public class FineController {
         return ResponseEntity.ok(fineService.waiveFine(id, request));
     }
 
+    // ✅ Get single fine
     @GetMapping("/{id}")
     public ResponseEntity<FineDTO> getFineById(@PathVariable Long id) {
 
         return ResponseEntity.ok(fineService.getFineById(id));
     }
 
+    // ✅ Get logged-in user's fines
     @GetMapping("/my")
     public ResponseEntity<List<FineDTO>> getMyFines(
             @RequestParam(required = false) FineStatus status,
@@ -79,6 +88,7 @@ public class FineController {
         return ResponseEntity.ok(fineService.getMyFines(status, type));
     }
 
+    // ✅ Admin: get all fines (with filters + pagination)
     @GetMapping
     public ResponseEntity<PageResponse<FineDTO>> getAllFines(
             @RequestParam(required = false) FineStatus status,

@@ -1,5 +1,7 @@
 package com.example.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,8 @@ import com.example.service.FineService;
 import com.example.service.PaymentService;
 import com.example.service.UserService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 public class FineServiceImpl implements FineService {
 
@@ -53,26 +57,48 @@ public class FineServiceImpl implements FineService {
         this.paymentService = paymentService;
     }
 
- @Override
+@Override
 public FineDTO createFine(CreateFineRequest request) {
 
     BookLoan bookLoan = bookLoanRepository.findById(request.getBookLoanId())
             .orElseThrow(() -> new RuntimeException("Book loan not found"));
 
-    // Prevent duplicate fine
-    if (fineRepository.existsByBookLoanId(request.getBookLoanId())) {
-        throw new IllegalStateException("Fine already exists for this book loan");
+    // ✅ Validate type (admin must select)
+    if (request.getType() == null) {
+        throw new IllegalArgumentException("Fine type is required");
+    }
+
+    // ❌ Prevent duplicate SAME TYPE only (not all fines)
+    if (fineRepository.existsByBookLoanIdAndType(
+            request.getBookLoanId(), request.getType())) {
+
+        throw new IllegalStateException(
+                "Fine of type " + request.getType() + " already exists for this loan"
+        );
+    }
+
+    // ❌ Optional: restrict invalid manual types
+    if (request.getType() == FineType.PROCESSING) {
+        throw new IllegalArgumentException("Processing fee cannot be created manually");
     }
 
     String reason = request.getReason() != null ? request.getReason().trim() : null;
     String note = request.getNote() != null ? request.getNote().trim() : null;
 
+    // 🔥 AUTO CALCULATE (core logic)
+    BigDecimal amount = calculateFineByType(bookLoan, request.getType());
+
+    // ❗ Safety check
+    if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+        throw new IllegalStateException("Calculated fine amount is invalid");
+    }
+
     Fine fine = Fine.builder()
             .bookLoan(bookLoan)
             .user(bookLoan.getUser())
             .type(request.getType())
-            .amount(request.getAmount())
-            .paidAmount(0L)
+            .amount(amount)
+            .paidAmount(BigDecimal.ZERO)
             .status(FineStatus.PENDING)
             .reason(reason)
             .note(note)
@@ -89,6 +115,7 @@ public PaymentInitiateResponse payFine(Long fineId) {
     Fine fine = fineRepository.findById(fineId)
             .orElseThrow(() -> new RuntimeException("Fine not found"));
 
+    // ✅ Status validation
     if (fine.getStatus() == FineStatus.PAID) {
         throw new IllegalStateException("Fine already paid");
     }
@@ -99,22 +126,29 @@ public PaymentInitiateResponse payFine(Long fineId) {
 
     User user = userService.getCurrentUser();
 
-    // Optional: ownership check
+    // ✅ Ownership check
     if (!fine.getUser().getId().equals(user.getId())) {
         throw new IllegalStateException("You are not allowed to pay this fine");
     }
 
-    long remainingAmount = fine.getAmount() - fine.getPaidAmount();
+    // ✅ Calculate remaining amount (BigDecimal)
+    BigDecimal remainingAmount =
+            fine.getAmount().subtract(fine.getPaidAmount());
 
-    if (remainingAmount <= 0) {
+    if (remainingAmount.compareTo(BigDecimal.ZERO) <= 0) {
         throw new IllegalStateException("No remaining amount to pay");
     }
+
+    // ✅ Convert ₹ → paise (Razorpay requirement)
+    long amountInPaise = remainingAmount
+            .multiply(BigDecimal.valueOf(100))
+            .longValue();
 
     PaymentInitiateRequest request = PaymentInitiateRequest.builder()
             .fineId(fine.getId())
             .paymentType(PaymentType.FINE)
             .gateway(PaymentGateway.RAZORPAY)
-            .amount(remainingAmount)
+            .amount(amountInPaise) // ✅ Razorpay expects paise
             .description("Payment for fine ID: " + fine.getId())
             .build();
 
@@ -122,19 +156,30 @@ public PaymentInitiateResponse payFine(Long fineId) {
 }
 
     
-    public void markFineAsPaid(Long fineId, Long amount, String transactionId) {
+   
+public void markFineAsPaid(Long fineId, BigDecimal amount, String transactionId) {
 
-        Fine fine = fineRepository.findById(fineId)
-                .orElseThrow(() -> new RuntimeException("Fine not found with id: " + fineId));
+    Fine fine = fineRepository.findById(fineId)
+            .orElseThrow(() -> new RuntimeException("Fine not found with id: " + fineId));
 
-        fine.applyPayment(amount);
-
-        fine.setTransactionId(transactionId);
-        fine.setStatus(FineStatus.PAID);
-        fine.setUpdatedAt(LocalDateTime.now());
-
-        fineRepository.save(fine);
+    // ✅ Validate state
+    if (fine.getStatus() == FineStatus.WAIVED) {
+        throw new IllegalStateException("Cannot pay a waived fine");
     }
+
+    if (fine.getStatus() == FineStatus.PAID) {
+        throw new IllegalStateException("Fine already fully paid");
+    }
+
+    // ✅ Apply payment (this updates paidAmount + status internally)
+    fine.applyPayment(amount);
+
+    // ✅ Set transaction details
+    fine.setTransactionId(transactionId);
+    fine.setUpdatedAt(LocalDateTime.now());
+
+    fineRepository.save(fine);
+}
 
 @Override
 public FineDTO waiveFine(Long fineId, WaiveFineRequest request) {
@@ -228,7 +273,7 @@ public PaymentInitiateResponse initiatePayment(Long fineId) {
     Fine fine = fineRepository.findById(fineId)
             .orElseThrow(() -> new RuntimeException("Fine not found"));
 
-    // Status validation
+    // ✅ Status validation
     if (fine.getStatus() == FineStatus.PAID) {
         throw new IllegalStateException("Fine already paid");
     }
@@ -239,14 +284,16 @@ public PaymentInitiateResponse initiatePayment(Long fineId) {
 
     User user = userService.getCurrentUser();
 
-    // Ownership check (important)
+    // ✅ Ownership check
     if (!fine.getUser().getId().equals(user.getId())) {
         throw new IllegalStateException("You are not allowed to pay this fine");
     }
 
-    long remainingAmount = fine.getAmount() - fine.getPaidAmount();
+    // ✅ BigDecimal calculation
+    BigDecimal remainingAmount =
+            fine.getAmount().subtract(fine.getPaidAmount());
 
-    if (remainingAmount <= 0) {
+    if (remainingAmount.compareTo(BigDecimal.ZERO) <= 0) {
         throw new IllegalStateException("No remaining amount to pay");
     }
 
@@ -254,7 +301,7 @@ public PaymentInitiateResponse initiatePayment(Long fineId) {
             .fineId(fine.getId())
             .paymentType(PaymentType.FINE)
             .gateway(PaymentGateway.RAZORPAY)
-            .amount(remainingAmount)
+            .amount(remainingAmount.longValue()) // ⚠️ convert if needed
             .description("Payment for fine ID: " + fine.getId())
             .build();
 
@@ -262,12 +309,12 @@ public PaymentInitiateResponse initiatePayment(Long fineId) {
 }
 
 @Override
-public FineDTO applyPayment(Long fineId, Long amount, String transactionId) {
+public FineDTO applyPayment(Long fineId, BigDecimal amount, String transactionId) {
 
     Fine fine = fineRepository.findById(fineId)
             .orElseThrow(() -> new RuntimeException("Fine not found"));
 
-    // Validate fine state
+    // ✅ Validate fine state
     if (fine.getStatus() == FineStatus.WAIVED) {
         throw new IllegalStateException("Cannot pay a waived fine");
     }
@@ -276,21 +323,23 @@ public FineDTO applyPayment(Long fineId, Long amount, String transactionId) {
         throw new IllegalStateException("Fine is already fully paid");
     }
 
-    // Validate amount
-    if (amount == null || amount <= 0) {
+    // ✅ Validate amount
+    if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
         throw new IllegalArgumentException("Payment amount must be positive");
     }
 
-    long remainingAmount = fine.getAmount() - fine.getPaidAmount();
+    // ✅ Calculate remaining = total - paid
+    BigDecimal remainingAmount = fine.getAmount().subtract(fine.getPaidAmount());
 
-    if (amount > remainingAmount) {
+    // ❗ Prevent overpayment
+    if (amount.compareTo(remainingAmount) > 0) {
         throw new IllegalArgumentException("Payment exceeds remaining fine amount");
     }
 
-    // Apply payment using entity logic
+    // ✅ Apply payment (entity method already uses BigDecimal)
     fine.applyPayment(amount);
 
-    // Set transaction details
+    // ✅ Set transaction details
     fine.setTransactionId(transactionId);
     fine.setProcessedBy(userService.getCurrentUser());
 
@@ -308,5 +357,124 @@ public FineDTO getFineById(Long fineId) {
             .orElseThrow(() -> new RuntimeException("Fine not found"));
 
     return fineMapper.toDTO(fine);
+}
+
+public BigDecimal calculateFineByType(BookLoan loan, FineType type) {
+
+    BigDecimal price = loan.getBook().getPrice();
+    boolean subExpired = loan.isSubscriptionExpired();
+    boolean overdue = loan.isOverdue();
+
+    long days = loan.getOverdueDays();
+    long blocks = days / 3;
+
+    BigDecimal fine = BigDecimal.ZERO;
+
+    switch (type) {
+
+        case LOSS:
+            return subExpired
+                    ? price.multiply(BigDecimal.valueOf(10))
+                    : price.multiply(BigDecimal.valueOf(5));
+
+        case DAMAGE:
+            return subExpired
+                    ? price.multiply(BigDecimal.valueOf(2))
+                        .divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP)
+                    : price.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
+
+        case OVERDUE:
+            return BigDecimal.valueOf(
+                    subExpired ? blocks * 10 : blocks * 5
+            );
+
+        case PROCESSING:
+            return BigDecimal.valueOf(20); // optional
+
+        default:
+            throw new RuntimeException("Invalid fine type");
+    }
+}
+
+@Override
+public BigDecimal calculateFine(BookLoan loan) {
+
+    BigDecimal fine = BigDecimal.ZERO;
+
+    boolean overdue = loan.isOverdue();
+    boolean damaged = loan.isDamaged();
+    boolean lost = loan.isLost();
+    boolean subExpired = loan.isSubscriptionExpired();
+
+    BigDecimal price = loan.getBook().getPrice();
+
+    long overdueDays = loan.getOverdueDays();
+    long blocks = overdueDays / 3; // every 3 days
+
+    // 🔥 LOSS (highest priority)
+    if (lost) {
+        return subExpired
+                ? price.multiply(BigDecimal.valueOf(10))
+                : price.multiply(BigDecimal.valueOf(5));
+    }
+
+    // 🔥 DAMAGE
+    if (damaged) {
+        BigDecimal damageFine;
+
+        if (subExpired) {
+            damageFine = price.multiply(BigDecimal.valueOf(2))
+                    .divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
+        } else {
+            damageFine = price.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
+        }
+
+        fine = fine.add(damageFine);
+    }
+
+    // 🔥 OVERDUE
+    if (overdue) {
+        BigDecimal overdueFine = BigDecimal.valueOf(
+                subExpired ? blocks * 10 : blocks * 5
+        );
+
+        fine = fine.add(overdueFine);
+    }
+
+    return fine;
+}
+
+    @Override
+public void updateFineForLoan(Long loanId) {
+
+    BookLoan loan = bookLoanRepository.findById(loanId)
+            .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+    BigDecimal fine = calculateFine(loan);
+
+    loan.setFineAmount(fine);
+    bookLoanRepository.save(loan);
+}
+
+  @Override
+public void updateAllFines() {
+
+    List<BookLoan> loans = bookLoanRepository.findAll();
+
+    for (BookLoan loan : loans) {
+        BigDecimal fine = calculateFine(loan);
+        loan.setFineAmount(fine);
+    }
+
+    bookLoanRepository.saveAll(loans);
+}
+
+    @Override
+public BigDecimal getFineForLoan(Long loanId) {
+
+    BookLoan loan = bookLoanRepository.findById(loanId)
+            .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+    return calculateFine(loan);
 }
 }

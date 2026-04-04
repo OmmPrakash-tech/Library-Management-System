@@ -1,10 +1,12 @@
 package com.example.payload.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.domain.FineStatus;
 import com.example.domain.FineType;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -35,12 +37,10 @@ public class FineDTO {
     @NotNull(message = "Fine type is mandatory")
     private FineType type;
 
-    @NotNull(message = "Fine amount is mandatory")
-    @Positive(message = "Fine amount must be greater than zero")
-    private Long amount;
+    
 
-    private Long paidAmount;
-    private Long amountOutstanding;
+    private BigDecimal paidAmount;
+    private BigDecimal amountOutstanding;
 
     private FineStatus status;
 

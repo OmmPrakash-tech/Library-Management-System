@@ -1,5 +1,7 @@
 package com.example.mapper;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Component;
 
 import com.example.domain.FineStatus;
@@ -18,7 +20,7 @@ public class FineMapper {
         FineDTO dto = new FineDTO();
         dto.setId(fine.getId());
 
-        // Book loan information
+        // ================= BOOK LOAN =================
         if (fine.getBookLoan() != null) {
             dto.setBookLoanId(fine.getBookLoan().getId());
 
@@ -28,23 +30,34 @@ public class FineMapper {
             }
         }
 
-        // User information
+        // ================= USER =================
         if (fine.getUser() != null) {
             dto.setUserId(fine.getUser().getId());
             dto.setUserName(fine.getUser().getFullName());
             dto.setUserEmail(fine.getUser().getEmail());
         }
 
-        dto.setType(fine.getType());
-        dto.setAmount(fine.getAmount());
-        dto.setPaidAmount(fine.getPaidAmount());
-        dto.setAmountOutstanding(fine.getAmount() - fine.getPaidAmount());
+        // ================= AMOUNT (SAFE BIGDECIMAL) =================
+        BigDecimal amount = fine.getAmount() != null
+                ? fine.getAmount()
+                : BigDecimal.ZERO;
 
+        BigDecimal paidAmount = fine.getPaidAmount() != null
+                ? fine.getPaidAmount()
+                : BigDecimal.ZERO;
+
+        dto.setType(fine.getType());
+        dto.setPaidAmount(paidAmount);
+
+        // ✅ FIXED (BigDecimal subtraction)
+        dto.setAmountOutstanding(amount.subtract(paidAmount));
+
+        // ================= STATUS =================
         dto.setStatus(fine.getStatus());
         dto.setReason(fine.getReason());
         dto.setNote(fine.getNote());
 
-        // Waiver information
+        // ================= WAIVER =================
         if (fine.getWaivedBy() != null) {
             dto.setWaivedByUserId(fine.getWaivedBy().getId());
             dto.setWaivedByUserName(fine.getWaivedBy().getFullName());
@@ -53,7 +66,7 @@ public class FineMapper {
         dto.setWaivedAt(fine.getWaivedAt());
         dto.setWaiverReason(fine.getWaiverReason());
 
-        // Payment information
+        // ================= PAYMENT =================
         dto.setPaidAt(fine.getPaidAt());
 
         if (fine.getProcessedBy() != null) {
@@ -63,13 +76,14 @@ public class FineMapper {
 
         dto.setTransactionId(fine.getTransactionId());
 
+        // ================= AUDIT =================
         dto.setCreatedAt(fine.getCreatedAt());
         dto.setUpdatedAt(fine.getUpdatedAt());
 
-        // Helper
+        // ================= HELPER =================
         dto.setPayable(
-            fine.getStatus() == FineStatus.PENDING ||
-            fine.getStatus() == FineStatus.PARTIALLY_PAID
+                fine.getStatus() != FineStatus.PAID &&
+                fine.getStatus() != FineStatus.WAIVED
         );
 
         return dto;

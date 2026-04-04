@@ -16,14 +16,13 @@ export class FineControllerPageComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   // ✅ FIXED FIELD NAMES
-  newFine = {
-    bookLoanId: '',
-    note: '',
-    type: '',
-    amount: ''
-  };
+   newFine = {
+  bookLoanId: '',
+  note: '',
+  type: ''
+};
 
-  types = ['OVERDUE', 'DAMAGE', 'LOSS', 'PROCESSING'];
+types = ['OVERDUE', 'DAMAGE', 'LOSS'];
 
   fines: any[] = [];
   selectedFine: any = null;
@@ -60,37 +59,47 @@ export class FineControllerPageComponent implements OnInit {
   }
 
   // 🔹 Create fine
-  createFine() {
-    const payload = {
-      bookLoanId: Number(this.newFine.bookLoanId), // ✅ FIXED
-      type: this.newFine.type,
-      amount: Number(this.newFine.amount),
-      reason: "Manual fine",
-      note: this.newFine.note // ✅ FIXED
-    };
 
-    this.http.post('http://localhost:5050/api/fines', payload, {
-      headers: this.getAuthHeaders()
-    }).subscribe({
-      next: () => {
-        this.loadFines();
 
-        // ✅ RESET CORRECTLY
-        this.newFine = {
-          bookLoanId: '',
-          note: '',
-          type: '',
-          amount: ''
-        };
-      },
-      error: (err) => console.error("Create Error:", err)
-    });
+createFine() {
+  if (!this.newFine.bookLoanId || !this.newFine.type) {
+    alert("Please fill all required fields");
+    return;
   }
+
+  const payload = {
+    bookLoanId: Number(this.newFine.bookLoanId),
+    type: this.newFine.type,
+    note: this.newFine.note
+  };
+
+  this.http.post('http://localhost:5050/api/fines', payload, {
+    headers: this.getAuthHeaders()
+  }).subscribe({
+    next: () => {
+      this.loadFines();
+
+      this.newFine = {
+        bookLoanId: '',
+        note: '',
+        type: ''
+      };
+    },
+    error: (err) => console.error("Create Error:", err)
+  });
+}
 
   // 🔹 View fine
   viewFine(fine: any) {
     this.selectedFine = fine;
   }
+
+  getTotalFine(): number {
+  return this.fines.reduce(
+    (sum, f) => sum + (f.amountOutstanding || 0),
+    0
+  );
+}
 
   // 🔹 Waive fine
   waiveFine(id: number) {

@@ -11,33 +11,43 @@
     <h2>Create Fine</h2>
 
     <div class="form">
-      <!-- ✅ FIXED: use bookLoanId instead of userId -->
+
+      <!-- Book Loan ID -->
       <input 
         type="number" 
         placeholder="Book Loan ID" 
         [(ngModel)]="newFine.bookLoanId"
       >
 
-      <!-- ✅ FIXED: use note instead of bookTitle -->
+      <!-- Note -->
       <input 
         type="text" 
         placeholder="Note" 
         [(ngModel)]="newFine.note"
       >
 
+      <!-- Type -->
       <select [(ngModel)]="newFine.type">
         <option value="">Select Type</option>
         <option *ngFor="let t of types" [value]="t">{{ t }}</option>
       </select>
 
-      <input 
-        type="number" 
-        placeholder="Amount" 
-        [(ngModel)]="newFine.amount"
-      >
+      <!-- Create Button -->
+      <button 
+        [disabled]="!newFine.bookLoanId || !newFine.type"
+        (click)="createFine()">
+        ➕ Create Fine
+      </button>
 
-      <button (click)="createFine()">➕ Create Fine</button>
     </div>
+  </div>
+
+  <!-- TOTAL OUTSTANDING -->
+  <div class="card" *ngIf="fines.length > 0">
+    <h3>
+      💰 Total Outstanding: 
+      ₹{{ getTotalFine() | number:'1.2-2' }}
+    </h3>
   </div>
 
   <!-- TABLE -->
@@ -47,13 +57,14 @@
     <table>
       <thead>
         <tr>
-          <th>Loan ID</th> <!-- ✅ ADDED -->
+          <th>Loan ID</th>
           <th>User</th>
           <th>Email</th>
           <th>Book</th>
           <th>Type</th>
           <th>Amount</th>
           <th>Paid</th>
+          <th>Remaining</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -62,45 +73,49 @@
       <tbody>
         <tr *ngFor="let fine of fines">
 
-          <!-- ✅ SHOW BOOK LOAN ID -->
           <td>{{ fine.bookLoanId }}</td>
-
           <td>{{ fine.userName }}</td>
           <td>{{ fine.userEmail }}</td>
           <td>{{ fine.bookTitle }}</td>
           <td>{{ fine.type }}</td>
-          <td>₹{{ fine.amount }}</td>
-          <td>₹{{ fine.paidAmount }}</td>
 
+          <!-- Money (formatted) -->
+          <td>₹{{ fine.amount | number:'1.2-2' }}</td>
+          <td>₹{{ fine.paidAmount | number:'1.2-2' }}</td>
+          <td>₹{{ fine.amountOutstanding | number:'1.2-2' }}</td>
+
+          <!-- Status -->
           <td>
-            <span class="status" [ngClass]="fine.status.toLowerCase()">
+            <span 
+              class="status" 
+              [ngClass]="fine.status ? fine.status.toLowerCase() : ''">
               {{ fine.status }}
             </span>
           </td>
 
-          <td>
+          <!-- Actions -->
+         <td>
+  <div class="actions">
 
-            <!-- ✅ VIEW BUTTON -->
-            <button class="view-btn" (click)="viewFine(fine)">
-              <span class="icon">👁</span>
-              <span>View</span>
-            </button>
+    <button class="view-btn" (click)="viewFine(fine)">
+      👁 View
+    </button>
 
-            <!-- ✅ WAIVE BUTTON FIXED -->
-            <button 
-              *ngIf="fine.status !== 'PAID' && fine.status !== 'WAIVED'"
-              class="waive"
-              (click)="waiveFine(fine.id)">
-              ❌ Waive
-            </button>
+    <button 
+      *ngIf="fine.status !== 'PAID' && fine.status !== 'WAIVED'"
+      class="waive"
+      (click)="waiveFine(fine.id)">
+      ❌ Waive
+    </button>
 
-          </td>
+  </div>
+</td>
 
         </tr>
 
-        <!-- EMPTY STATE -->
+        <!-- EMPTY -->
         <tr *ngIf="fines.length === 0">
-          <td colspan="9" class="no-data">No fines available</td>
+          <td colspan="10" class="no-data">No fines available</td>
         </tr>
 
       </tbody>
@@ -113,17 +128,18 @@
 
       <h2>Fine Details</h2>
 
-      <!-- ✅ IMPORTANT DETAILS -->
       <p><b>Book Loan ID:</b> {{ selectedFine.bookLoanId }}</p>
       <p><b>User:</b> {{ selectedFine.userName }}</p>
       <p><b>Email:</b> {{ selectedFine.userEmail }}</p>
       <p><b>Book:</b> {{ selectedFine.bookTitle }}</p>
       <p><b>Type:</b> {{ selectedFine.type }}</p>
-      <p><b>Amount:</b> ₹{{ selectedFine.amount }}</p>
-      <p><b>Paid:</b> ₹{{ selectedFine.paidAmount }}</p>
+
+      <p><b>Amount:</b> ₹{{ selectedFine.amount | number:'1.2-2' }}</p>
+      <p><b>Paid:</b> ₹{{ selectedFine.paidAmount | number:'1.2-2' }}</p>
+      <p><b>Remaining:</b> ₹{{ selectedFine.amountOutstanding | number:'1.2-2' }}</p>
+
       <p><b>Status:</b> {{ selectedFine.status }}</p>
 
-      <!-- OPTIONAL -->
       <p *ngIf="selectedFine.waiverReason">
         <b>Waiver Reason:</b> {{ selectedFine.waiverReason }}
       </p>

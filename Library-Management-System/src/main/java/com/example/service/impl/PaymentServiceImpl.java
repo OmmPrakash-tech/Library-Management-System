@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -86,22 +87,32 @@ public PaymentInitiateResponse initiatePayment(PaymentInitiateRequest request) {
         }
 
         case FINE:
-        case LOST_BOOK_PENALTY:
-        case DAMAGED_BOOK_PENALTY: {
+case LOST_BOOK_PENALTY:
+case DAMAGED_BOOK_PENALTY: {
 
-            if (request.getFineId() == null) {
-                throw new RuntimeException("Fine ID is required");
-            }
+    if (request.getFineId() == null) {
+        throw new RuntimeException("Fine ID is required");
+    }
 
-            Fine fine = fineRepository
-                    .findById(request.getFineId())
-                    .orElseThrow(() -> new RuntimeException("Fine not found"));
+    Fine fine = fineRepository
+            .findById(request.getFineId())
+            .orElseThrow(() -> new RuntimeException("Fine not found"));
 
-            payment.setFine(fine);
-            payment.setAmount(request.getAmount()); // ✅ from fineService
-            payment.setDescription("Fine Payment - ID: " + fine.getId());
-            break;
-        }
+    payment.setFine(fine);
+
+    // ✅ FIXED CONVERSION
+    BigDecimal amountInRupees = BigDecimal.valueOf(request.getAmount());
+
+    // ✅ Convert to paise
+    long amountInPaise = amountInRupees
+            .multiply(BigDecimal.valueOf(100))
+            .longValue();
+
+    payment.setAmount(amountInPaise); // store in paise
+    payment.setDescription("Fine Payment - ID: " + fine.getId());
+
+    break;
+}
 
         default:
             throw new RuntimeException("Unsupported payment type");

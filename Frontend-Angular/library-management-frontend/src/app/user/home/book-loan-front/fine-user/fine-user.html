@@ -14,47 +14,67 @@
 
   <!-- ✅ Table -->
   <table *ngIf="!loading && fines.length > 0">
-    <thead>
-      <tr>
-        <th>Book</th>
-        <th>Type</th>
-        <th>Total</th>
-        <th>Paid</th>
-        <th>Outstanding</th>
-        <th>Status</th>
-        <th>Reason</th>
-        <th>Note</th>
-        <th>Date</th>
-      </tr>
-    </thead>
+  <thead>
+    <tr>
+      <th>Book</th>
+      <th>Type</th>
+      <th>Total</th>
+      <th>Paid</th>
+      <th>Outstanding</th>
+      <th>Status</th>
+      <th>Reason</th>
+      <th>Note</th>
+      <th>Date</th>
+      <th>Action</th> <!-- ✅ NEW -->
+    </tr>
+  </thead>
 
-    <tbody>
-      <tr *ngFor="let fine of fines">
-        <td>
-          <strong>{{ fine.bookTitle }}</strong><br>
-          <small>{{ fine.bookIsbn }}</small>
-        </td>
+  <tbody>
+    <tr *ngFor="let fine of fines">
+      <td>
+        <strong>{{ fine.bookTitle }}</strong><br>
+        <small>{{ fine.bookIsbn }}</small>
+      </td>
 
-        <td>{{ fine.type }}</td>
-        <td>₹{{ fine.amount }}</td>
-        <td>₹{{ fine.paidAmount }}</td>
-        <td>₹{{ fine.amountOutstanding }}</td>
+      <td>{{ fine.type }}</td>
+      <td>₹{{ fine.amount | number:'1.2-2' }}</td>
+      <td>₹{{ fine.paidAmount | number:'1.2-2' }}</td>
+      <td>₹{{ fine.amountOutstanding | number:'1.2-2' }}</td>
 
-        <td>
-          <span [ngClass]="getStatusClass(fine.status)">
-            {{ fine.status }}
-          </span>
-        </td>
+      <td>
+        <span [ngClass]="getStatusClass(fine.status)">
+          {{ fine.status }}
+        </span>
+      </td>
 
-        <td>{{ fine.reason }}</td>
-        <td>{{ fine.note }}</td>
+      <td>{{ fine.reason }}</td>
+      <td>{{ fine.note }}</td>
 
-        <td>
-          {{ fine.createdAt | date:'short' }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <td>
+        {{ fine.createdAt | date:'short' }}
+      </td>
+
+      <!-- ✅ PAY BUTTON -->
+      <td>
+        <button 
+          class="pay-btn"
+          *ngIf="fine.status === 'PENDING' || fine.status === 'PARTIALLY_PAID'"
+          (click)="payFine(fine.id)">
+          💳 Pay
+        </button>
+
+        <span *ngIf="fine.status === 'PAID'" class="paid-text">
+          ✔ Paid
+        </span>
+
+        <span *ngIf="fine.status === 'WAIVED'" class="waived-text">
+          ❌ Waived
+        </span>
+      </td>
+
+    </tr>
+  </tbody>
+</table>
 
   <!-- 🚫 No Data -->
   <div *ngIf="!loading && fines.length === 0" class="no-data">
