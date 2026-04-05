@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.mapper.UserMapper;
 import com.example.model.User;
+import com.example.payload.dto.UpdateUserDTO;
 import com.example.payload.dto.UserDTO;
 import com.example.repository.UserRepository;
 import com.example.service.UserService;
@@ -63,35 +64,36 @@ public void deleteUser(Long id) {
 }
 
 @Override
-public UserDTO updateUser(Long id, UserDTO userDTO) {
+public UserDTO updateUser(Long id, UpdateUserDTO dto) {
 
-    // 1. Fetch existing user
     User user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("User not found with given id"));
 
-    // 2. Update fields (only allowed ones)
-    user.setFullName(userDTO.getFullName());
-    user.setPhone(userDTO.getPhone());
+    // 🔥 USE SAFE UPDATES (NO NULL OVERRIDE)
 
-    // Optional updates (only if provided)
-    if (userDTO.getEmail() != null) {
-        user.setEmail(userDTO.getEmail());
+    if (dto.getFullName() != null) {
+        user.setFullName(dto.getFullName());
     }
 
-    if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-        user.setPassword(userDTO.getPassword()); // (later you can encode it 🔐)
+    if (dto.getPhone() != null) {
+        user.setPhone(dto.getPhone());
     }
 
-    if (userDTO.getRole() != null) {
-        user.setRole(userDTO.getRole());
+    if (dto.getEmail() != null) {
+        user.setEmail(dto.getEmail());
     }
 
-    // 3. Save updated user
+    if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+        user.setPassword(dto.getPassword());
+    }
+
+
+    if (dto.getProfileImage() != null && !dto.getProfileImage().isEmpty()) {
+        user.setProfileImage(dto.getProfileImage());
+    }
+
     User updatedUser = userRepository.save(user);
 
-    // 4. Convert to DTO and return
     return userMapper.toDTO(updatedUser);
 }
-
-
 }

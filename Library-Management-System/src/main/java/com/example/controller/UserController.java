@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.mapper.UserMapper;
 import com.example.model.User;
+import com.example.payload.dto.UpdateUserDTO;
 import com.example.payload.dto.UserDTO;
 import com.example.repository.UserRepository;
 import com.example.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -61,9 +63,9 @@ public ResponseEntity<String> deleteUser(@PathVariable Long id) {
 @PutMapping("/update/{id}")
 public ResponseEntity<UserDTO> updateUser(
         @PathVariable Long id,
-        @RequestBody UserDTO userDTO) {
+        @RequestBody UpdateUserDTO dto) {
 
-    UserDTO updatedUser = userService.updateUser(id, userDTO);
+    UserDTO updatedUser = userService.updateUser(id, dto);
 
     return ResponseEntity.ok(updatedUser);
 }

@@ -17,6 +17,7 @@ import com.example.exception.UserException;
 import com.example.mapper.UserMapper;
 import com.example.model.PasswordResetToken;
 import com.example.model.User;
+import com.example.payload.dto.SignupDTO;
 import com.example.payload.dto.UserDTO;
 import com.example.payload.response.AuthResponse;
 import com.example.repository.PasswordResetTokenRepository;
@@ -65,44 +66,49 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // SIGNUP
-    @Override
-    public AuthResponse signup(UserDTO req) {
+   @Override
+public AuthResponse signup(SignupDTO req) {
 
-        if (userRepository.existsByEmail(req.getEmail())) {
-            throw new UserException("Email already registered");
-        }
-
-        User createdUser = new User();
-
-        createdUser.setEmail(req.getEmail());
-        createdUser.setPassword(passwordEncoder.encode(req.getPassword()));
-        createdUser.setPhone(req.getPhone());
-        createdUser.setFullName(req.getFullName());
-        createdUser.setLastLogin(LocalDateTime.now());
-        createdUser.setRole(UserRole.ROLE_USER);
-
-        User savedUser = userRepository.save(createdUser);
-
-      Authentication auth = authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(
-                req.getEmail(),
-                req.getPassword()
-        )
-);
-
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        String jwt = jwtProvider.generateToken(auth);
-
-        AuthResponse response = new AuthResponse();
-        response.setJwt(jwt);
-        response.setTitle("Welcome " + savedUser.getFullName());
-        response.setMessage("Register success");
-        response.setUser(userMapper.toDTO(savedUser));
-
-        return response;
+    // ✅ CHECK EMAIL
+    if (userRepository.existsByEmail(req.getEmail())) {
+        throw new UserException("Email already registered");
     }
 
+    // ✅ MAP DTO → ENTITY
+    User user = userMapper.toEntity(req);
+
+    // 🔐 ENCODE PASSWORD
+    user.setPassword(passwordEncoder.encode(req.getPassword()));
+
+    // DEFAULT VALUES
+    user.setLastLogin(LocalDateTime.now());
+    user.setRole(UserRole.ROLE_USER);
+
+    // SAVE
+    User savedUser = userRepository.save(user);
+
+    // 🔐 AUTHENTICATE
+    Authentication auth = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(
+            req.getEmail(),
+            req.getPassword()
+        )
+    );
+
+    SecurityContextHolder.getContext().setAuthentication(auth);
+
+    // 🔑 GENERATE JWT
+    String jwt = jwtProvider.generateToken(auth);
+
+    // ✅ RESPONSE
+    AuthResponse response = new AuthResponse();
+    response.setJwt(jwt);
+    response.setTitle("Welcome " + savedUser.getFullName());
+    response.setMessage("Register success");
+    response.setUser(userMapper.toDTO(savedUser));
+
+    return response;
+}
     // CREATE PASSWORD RESET TOKEN
     @Override
     @Transactional

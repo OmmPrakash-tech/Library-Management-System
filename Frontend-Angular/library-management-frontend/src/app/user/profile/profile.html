@@ -1,57 +1,98 @@
 <div class="profile-container">
 
-  <!-- Top Right Button -->
+  <!-- 🔝 TOP BAR (REMOVED EDIT BUTTON) -->
   <div class="top-bar">
-    <button class="edit-btn" (click)="toggleEdit()">
-      {{ isEditMode ? 'Cancel' : 'Edit Profile' }}
-    </button>
+    <!-- You can keep this empty or remove completely -->
   </div>
 
-  <!-- Profile Image -->
-  <div class="profile-image" (click)="openModal()">
-    <img [src]="imageUrl" alt="Profile Image" />
+  <!-- 👤 PROFILE IMAGE -->
+  <div class="profile-image" (click)="isEditMode && openModal()">
+
+    <!-- ✅ SHOW USER IMAGE -->
+    <img *ngIf="imageUrl; else defaultImg" [src]="imageUrl" alt="Profile Image" />
+
+    <!-- ✅ DEFAULT IMAGE -->
+    <ng-template #defaultImg>
+      <img src="assets/default-user.png" alt="Default Image">
+    </ng-template>
+
+    <!-- ✏️ EDIT OVERLAY -->
+    <span *ngIf="isEditMode" class="edit-overlay">
+      Change
+    </span>
+
   </div>
 
-  <!-- USER INFO -->
+  <!-- 📄 USER INFO -->
   <div class="profile-info">
 
-    <!-- VIEW MODE -->
+    <!-- 👀 VIEW MODE -->
     <div *ngIf="!isEditMode">
       <h3 class="username">{{ userName }}</h3>
       <p class="email">{{ email }}</p>
     </div>
 
-    <!-- EDIT MODE -->
+    <!-- ✏️ EDIT MODE -->
     <div *ngIf="isEditMode" class="edit-section">
-      <input [(ngModel)]="userName" placeholder="Enter name" />
-      <input [(ngModel)]="email" placeholder="Enter email" />
-      <button class="save-btn" (click)="saveProfile()">Save</button>
+
+      <input 
+        [(ngModel)]="userName" 
+        placeholder="Enter name" 
+      />
+
+      <input 
+        [(ngModel)]="email" 
+        placeholder="Enter email" 
+      />
+
+      <button class="save-btn" (click)="saveProfile()">
+        Save
+      </button>
+
     </div>
 
   </div>
 
-  <!-- Hidden File Input -->
-  <input type="file" #fileInput (change)="onFileSelected($event)" hidden />
+  <!-- 📁 HIDDEN FILE INPUT -->
+  <input 
+    type="file" 
+    #fileInput 
+    (change)="onFileSelected($event)" 
+    hidden 
+  />
 
-  <!-- Modal -->
+  <!-- 🪟 IMAGE MODAL -->
   <div class="modal" *ngIf="showModal">
+
     <div class="modal-content">
 
       <h3>Select Profile Image</h3>
 
-      <button (click)="fileInput.click()">Upload from System</button>
+      <!-- 📂 Upload -->
+      <button (click)="fileInput.click()">
+        Upload from System
+      </button>
 
+      <!-- 🔗 URL -->
       <div class="url-section">
-        <input type="text" [(ngModel)]="imageLink" placeholder="Paste image URL" />
+        <input 
+          type="text" 
+          [(ngModel)]="imageLink" 
+          placeholder="Paste image URL" 
+        />
         <button (click)="useImageLink()">Use</button>
       </div>
 
-      <button class="close-btn" (click)="closeModal()">Close</button>
+      <!-- ❌ CLOSE -->
+      <button class="close-btn" (click)="closeModal()">
+        Close
+      </button>
 
     </div>
+
   </div>
 
-  <!-- Bottom Box -->
+  <!-- 🔽 BOTTOM SECTION -->
   <div class="profile-box">
     <button class="visit-btn" (click)="goToProfilePage()">
       Visit your profile

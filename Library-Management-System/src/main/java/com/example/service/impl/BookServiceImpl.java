@@ -10,12 +10,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.domain.BookLoanStatus;
 import com.example.exception.BookException;
 import com.example.mapper.BookMapper;
 import com.example.model.Book;
 import com.example.payload.dto.BookDTO;
 import com.example.payload.request.BookSearchRequest;
 import com.example.payload.response.PageResponse;
+import com.example.repository.BookLoanRepository;
 import com.example.repository.BookRepository;
 import com.example.service.BookService;
 
@@ -27,6 +29,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
+    private final BookLoanRepository bookLoanRepository;
 
     @Override
     public List<BookDTO> getAllBooks() {
@@ -153,6 +156,16 @@ public class BookServiceImpl implements BookService {
     public long getTotalAvailableBooks() {
         return bookRepository.countAvailableBooks();
     }
+
+    @Override
+public long getTotalIssuedBooks() {
+    return bookLoanRepository.countByStatus(BookLoanStatus.CHECKED_OUT);
+}
+
+@Override
+public long getTotalOverdueBooks() {
+    return bookLoanRepository.countOverdueBooks();
+}
 
     private Pageable createPageable(
             int page,

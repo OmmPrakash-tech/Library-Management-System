@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UserService } from './userService'; // ✅ adjust if needed
+import { UserService, User } from './userService';
 import { Router } from '@angular/router';
 
 @Component({
@@ -24,79 +24,95 @@ export class Profile implements OnInit {
 
   constructor(
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadProfile();
   }
 
-  // ✅ Load profile
-  loadProfile() {
+  // ================= LOAD PROFILE =================
+  loadProfile(): void {
     this.userService.getProfile().subscribe({
-      next: (data: any) => {
-        console.log("Profile Data:", data);
-
-        this.userId = data.id;
+      next: (data: User) => {
+        this.userId = data.id || 0;
         this.userName = data.fullName || '';
         this.email = data.email || '';
-        this.imageUrl = data.profileImage || 'https://via.placeholder.com/150';
+        this.imageUrl = data.profileImage || '';
+
+        this.cdr.detectChanges(); // 🔥 fix UI sync
       },
-      error: (err: any) => console.error(err)
+      error: (err) => console.error('Profile load error:', err)
     });
   }
 
-  // ✏️ Toggle edit mode
-  toggleEdit() {
+  // ================= TOGGLE EDIT =================
+  toggleEdit(): void {
     this.isEditMode = !this.isEditMode;
   }
 
-  // 💾 Save profile
-  saveProfile() {
-    const payload = {
+  // ================= SAVE PROFILE =================
+  saveProfile(): void {
+
+    // 🔥 USE PARTIAL TYPE (FIX ERROR)
+    const payload: Partial<User> = {
       fullName: this.userName,
-      // ⚠️ Only send email if backend allows update
       email: this.email,
       profileImage: this.imageUrl
     };
 
-    this.userService.updateProfile(this.userId, payload).subscribe({
+    this.userService.updateProfile(this.userId, payload as User).subscribe({
       next: () => {
         alert('Profile Updated ✅');
+
         this.isEditMode = false;
+
+        // 🔥 reload fresh data
+        this.loadProfile();
       },
-      error: (err: any) => console.error(err)
+      error: (err) => console.error('Update error:', err)
     });
   }
 
-  // 🚀 Navigate
-  goToProfilePage() {
+  // ================= NAVIGATION =================
+  goToProfilePage(): void {
     this.router.navigate(['/user/profile-view']);
   }
 
-  // 📂 Modal control
-  openModal() {
+  // ================= MODAL =================
+  openModal(): void {
+    if (!this.isEditMode) return; // 🔥 restrict edit
     this.showModal = true;
   }
 
-  closeModal() {
+  closeModal(): void {
     this.showModal = false;
   }
 
-  // 📁 Upload image (preview only)
-  onFileSelected(event: any) {
+  // ================= FILE UPLOAD =================
+  onFileSelected(event: any): void {
     const file = event.target.files[0];
-    if (file) {
-      this.imageUrl = URL.createObjectURL(file);
-      this.closeModal();
-    }
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.imageUrl = reader.result as string; // 🔥 base64
+      this.cdr.detectChanges();
+    };
+
+    reader.readAsDataURL(file);
+
+    this.closeModal();
   }
 
-  // 🔗 Use image URL
-  useImageLink() {
-    if (this.imageLink?.trim()) {
-      this.imageUrl = this.imageLink;
-      this.closeModal();
-    }
+  // ================= IMAGE URL =================
+  useImageLink(): void {
+    if (!this.imageLink?.trim()) return;
+
+    this.imageUrl = this.imageLink.trim();
+    this.closeModal();
   }
 }

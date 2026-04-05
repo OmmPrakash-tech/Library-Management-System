@@ -1,8 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../profile/userService';
-
 
 @Component({
   selector: 'app-edit-profile',
@@ -11,38 +10,42 @@ import { UserService } from '../../profile/userService';
   templateUrl: './edit.html',
   styleUrls: ['./edit.css']
 })
-export class EditComponent {
+export class EditComponent implements OnChanges {
 
-  @Input() user: any; // incoming user data
-  @Output() close = new EventEmitter();
-  @Output() updated = new EventEmitter();
+  @Input() user: any;
+  @Output() close = new EventEmitter<void>();
+  @Output() updated = new EventEmitter<any>();
 
   formData = {
     fullName: '',
     phone: '',
-    password: ''
+    password: '',
+    profileImage: '' // 🔥 NEW
   };
 
   isSaving = false;
 
   constructor(private userService: UserService) {}
 
-  ngOnInit() {
-    if (this.user) {
-      this.formData.fullName = this.user.fullName;
-      this.formData.phone = this.user.phone;
+  // 🔥 HANDLE INPUT CHANGES (BETTER THAN ngOnInit)
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['user'] && this.user) {
+      this.formData.fullName = this.user.fullName || '';
+      this.formData.phone = this.user.phone || '';
+      this.formData.profileImage = this.user.profileImage || '';
     }
   }
 
+  // ================= SAVE =================
   save() {
     this.isSaving = true;
 
     const payload: any = {
       fullName: this.formData.fullName,
-      phone: this.formData.phone
+      phone: this.formData.phone,
+      profileImage: this.formData.profileImage // 🔥 include image
     };
 
-    // only send password if entered
     if (this.formData.password) {
       payload.password = this.formData.password;
     }
@@ -58,6 +61,26 @@ export class EditComponent {
         this.isSaving = false;
       }
     });
+  }
+
+  // ================= IMAGE URL =================
+  setImageUrl(url: string) {
+    this.formData.profileImage = url;
+  }
+
+  // ================= FILE UPLOAD =================
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.formData.profileImage = reader.result as string; // 🔥 base64
+      };
+
+      reader.readAsDataURL(file);
+    }
   }
 
   cancel() {

@@ -113,15 +113,21 @@ public class BookController {
     }
 
     // Book statistics
-    @GetMapping("/stats")
-    public ResponseEntity<BookStatsResponse> getBookStats() {
+   @GetMapping("/stats")
+public ResponseEntity<BookStatsResponse> getBookStats() {
 
-        long totalActive = bookService.getTotalActiveBooks();
-        long totalAvailable = bookService.getTotalAvailableBooks();
+    long totalActive = bookService.getTotalActiveBooks();
+    long totalAvailable = bookService.getTotalAvailableBooks();
+    long totalIssued = bookService.getTotalIssuedBooks();
+    long totalOverdue = bookService.getTotalOverdueBooks();
 
-        BookStatsResponse stats =
-                new BookStatsResponse(totalActive, totalAvailable);
+    BookStatsResponse stats = new BookStatsResponse(
+            totalActive,
+            totalAvailable,
+            totalIssued,
+            totalOverdue
+    );
 
-        return ResponseEntity.ok(stats);
-    }
+    return ResponseEntity.ok(stats);
+}
 }

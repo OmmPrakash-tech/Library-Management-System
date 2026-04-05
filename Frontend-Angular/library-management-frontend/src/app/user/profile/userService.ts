@@ -1,5 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+// 🔥 USER MODEL (ADD THIS)
+export interface User {
+  id: number;
+  email: string;
+  fullName: string;
+  phone?: string;
+  role?: string;
+  profileImage?: string; // 🔥 IMPORTANT
+}
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +21,13 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  // ✅ GET profile
-  getProfile() {
-    return this.http.get(`${this.baseUrl}/profile`);
+  // ================= GET PROFILE =================
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/profile`);
   }
 
-  // ✅ UPDATE profile
-  updateProfile(id: number, payload: any) {
-    return this.http.put(`${this.baseUrl}/update/${id}`, payload);
+  // ================= UPDATE PROFILE =================
+  updateProfile(id: number, payload: User): Observable<User> {
+    return this.http.put<User>(`${this.baseUrl}/update/${id}`, payload);
   }
 }

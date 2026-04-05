@@ -1,0 +1,30 @@
+<div class="reviews-container">
+
+  <h2>⭐ My Reviews</h2>
+
+  <div *ngFor="let r of reviews" class="review-card">
+
+    <h3>{{ r.bookTitle }}</h3>
+    <p>{{ r.comment }}</p>
+
+    <button class="edit-btn" (click)="editReview(r.id)">
+      ✏️ Edit
+    </button>
+
+  </div>
+
+  <!-- EDIT SECTION -->
+  <div *ngIf="editReviewId" class="edit-box">
+
+    <h3>Edit Review</h3>
+
+    <textarea [(ngModel)]="editData.comment"></textarea>
+
+    <div class="actions">
+      <button class="save-btn" (click)="updateReview()">Save</button>
+      <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+    </div>
+
+  </div>
+
+</div>

@@ -117,4 +117,9 @@ Page<BookLoan> findAllLoans(
 
 List<BookLoan> findByStatus(BookLoanStatus status);
 
+ long countByStatus(BookLoanStatus status);
+
+   @Query("SELECT COUNT(b) FROM BookLoan b WHERE b.dueDate < CURRENT_DATE AND b.status = com.example.domain.BookLoanStatus.CHECKED_OUT")
+long countOverdueBooks();
+
 }

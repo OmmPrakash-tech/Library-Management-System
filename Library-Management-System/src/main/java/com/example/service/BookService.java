@@ -29,4 +29,8 @@ public interface BookService {
     long getTotalActiveBooks();
 
     long getTotalAvailableBooks();
+
+    long getTotalIssuedBooks();
+
+    long getTotalOverdueBooks();
 }

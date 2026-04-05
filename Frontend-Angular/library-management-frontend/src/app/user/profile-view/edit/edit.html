@@ -4,29 +4,46 @@
 
     <h2>Edit Profile</h2>
 
-    <!-- Full Name -->
+    <!-- NAME -->
     <div class="form-group">
       <label>Full Name</label>
-      <input type="text" [(ngModel)]="formData.fullName" />
+      <input [(ngModel)]="formData.fullName" />
     </div>
 
-    <!-- Phone -->
+    <!-- PHONE -->
     <div class="form-group">
       <label>Phone</label>
-      <input type="text" [(ngModel)]="formData.phone" />
+      <input [(ngModel)]="formData.phone" />
     </div>
 
-    <!-- Password -->
+    <!-- PASSWORD -->
     <div class="form-group">
       <label>New Password (optional)</label>
       <input type="password" [(ngModel)]="formData.password" />
     </div>
 
-    <!-- Buttons -->
+    <!-- IMAGE URL -->
+    <div class="form-group">
+      <label>Paste Image URL</label>
+      <input [(ngModel)]="formData.profileImage" />
+    </div>
+
+    <!-- FILE UPLOAD -->
+    <div class="form-group">
+      <label>Upload Image</label>
+      <input type="file" (change)="onFileSelected($event)" />
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview" *ngIf="formData.profileImage">
+      <img [src]="formData.profileImage" />
+    </div>
+
+    <!-- ACTION BUTTONS -->
     <div class="actions">
-      <button class="cancel-btn" (click)="cancel()">Cancel</button>
+      <button class="cancel-btn" (click)="cancel()">❌ Cancel</button>
       <button class="save-btn" (click)="save()" [disabled]="isSaving">
-        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        💾 Save
       </button>
     </div>
 

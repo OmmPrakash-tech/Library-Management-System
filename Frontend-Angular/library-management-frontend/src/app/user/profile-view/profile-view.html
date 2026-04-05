@@ -1,58 +1,101 @@
 <div class="profile-page">
 
-  <!-- REFRESH BUTTON -->
+  <!-- 🔄 REFRESH -->
   <div class="top-bar">
-    <button class="refresh-btn" (click)="refreshProfile()" [disabled]="isRefreshing">
-      🔄 Refresh <span *ngIf="isRefreshing">...</span>
+    <button 
+      class="refresh-btn" 
+      (click)="refreshProfile()" 
+      [disabled]="isRefreshing">
+      
+      🔄 Refresh 
+      <span *ngIf="isRefreshing">...</span>
     </button>
   </div>
 
-  <!-- LOADING -->
+  <!-- 🚀 LOADING -->
   <div *ngIf="isLoading; else profileBlock" class="loading-text">
     🚀 Loading your profile...
   </div>
 
-  <!-- PROFILE -->
+  <!-- ✅ PROFILE -->
   <ng-template #profileBlock>
+
     <div class="profile-container">
 
-      <!-- LEFT -->
+      <!-- 👤 LEFT (IMAGE) -->
       <div class="left">
+
+        <!-- ✅ SAFE IMAGE RENDER -->
         <img 
-          [src]="user?.profileImage || 'https://via.placeholder.com/150'" 
+          *ngIf="user?.profileImage; else defaultImg"
+          [src]="user.profileImage"
           alt="Profile Image"
         />
+
+        <!-- DEFAULT IMAGE -->
+        <ng-template #defaultImg>
+          <img 
+            src="https://via.placeholder.com/150"
+            alt="Default Image"
+          />
+        </ng-template>
+
       </div>
 
-      <!-- RIGHT -->
+      <!-- 📄 RIGHT -->
       <div class="right">
 
-        <!-- TOP RIGHT EDIT BUTTON -->
+        <!-- ✏️ EDIT BUTTON -->
         <div class="card-header">
-          <button class="edit-btn" (click)="showEdit = true">
+          <button 
+            class="edit-btn" 
+            (click)="showEdit = true">
             ✏️ Edit Profile
           </button>
         </div>
 
-        <!-- USER NAME -->
-        <h2>{{ user?.fullName }}</h2>
+        <!-- 👤 NAME -->
+        <h2>{{ user?.fullName || 'User' }}</h2>
 
-        <!-- USER INFO -->
+        <!-- 📊 INFO -->
         <div class="info">
+
           <p><span>ID:</span> {{ user?.id }}</p>
-          <p><span>Email:</span> {{ user?.email }}</p>
-          <p><span>Role:</span> {{ user?.role }}</p>
-          <p><span>Phone:</span> {{ user?.phone }}</p>
-          <p><span>Auth Provider:</span> {{ user?.authProvider }}</p>
-          <p><span>Google ID:</span> {{ user?.googleId || 'N/A' }}</p>
+
+          <p>
+            <span>Email:</span> 
+            {{ user?.email || 'Not available' }}
+          </p>
+
+          <p>
+            <span>Role:</span> 
+            {{ user?.role }}
+          </p>
+
+          <p>
+            <span>Phone:</span> 
+            {{ user?.phone || 'N/A' }}
+          </p>
+
+          <p>
+            <span>Auth Provider:</span> 
+            {{ user?.authProvider }}
+          </p>
+
+          <p>
+            <span>Google ID:</span> 
+            {{ user?.googleId || 'N/A' }}
+          </p>
+
         </div>
 
       </div>
 
     </div>
+
   </ng-template>
 
-  <!-- ✅ EDIT MODAL (VERY IMPORTANT - KEEP AT BOTTOM) -->
+  <!-- ✏️ EDIT MODAL -->
   <app-edit-profile
     *ngIf="showEdit"
     [user]="user"

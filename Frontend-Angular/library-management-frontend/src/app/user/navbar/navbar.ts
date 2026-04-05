@@ -11,16 +11,15 @@ export class Navbar {
 
   constructor(private router: Router){}
 
-  signOut(){
+signOut(): void {
+  const confirmLogout = confirm("Are you sure you want to sign out?");
+  if (!confirmLogout) return;
 
-    // remove stored token
-    localStorage.removeItem("token");
+  localStorage.clear();
+  this.router.navigate(['/login']);
+}
 
-    // optional: clear all storage
-    localStorage.clear();
-
-    // redirect to login page
-    this.router.navigate(['/login']);
-  }
-
+goToMyReviews(): void {
+  this.router.navigate(['/my-reviews']);
+}
 }

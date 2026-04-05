@@ -1,14 +1,69 @@
 <div class="performance-container">
 
+  <!-- 🔝 HEADER -->
   <div class="performance-header">
-    <h2>Your performance</h2>
-    <button class="details-btn">Show details</button>
+    <h2>Your Performance 📊</h2>
   </div>
 
   <div class="performance-body">
-    <p>
-      Here you see your all improvements your target goal your weekly activity and many more
-    </p>
+
+    <!-- 👤 USER PERFORMANCE -->
+    <h3 class="section-title">👤 Your Activity</h3>
+
+    <div class="stats">
+      <div class="card">
+        <h3>Total Books</h3>
+        <p>{{ stats?.totalBooks || 0 }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Books Read</h3>
+        <p>{{ stats?.readBooks || 0 }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Currently Reading</h3>
+        <p>{{ stats?.currentBooks || 0 }}</p>
+      </div>
+
+      <div class="card highlight">
+        <h3>Progress</h3>
+        <p>{{ stats?.progress || 0 }}%</p>
+      </div>
+    </div>
+
+    <!-- 🏫 LIBRARY -->
+    <h3 class="section-title">🏫 Library Overview</h3>
+
+    <div class="stats">
+      <div class="card">
+        <h3>Total Books</h3>
+        <p>{{ libraryStats?.totalActive || 0 }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Available</h3>
+        <p>{{ libraryStats?.totalAvailable || 0 }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Issued</h3>
+        <p>{{ libraryStats?.totalIssued || 0 }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Overdue</h3>
+        <p>{{ libraryStats?.totalOverdue || 0 }}</p>
+      </div>
+    </div>
+
+    <!-- 📊 CHART -->
+    <h3 class="section-title">📊 Reading Insights</h3>
+
+    <div class="charts">
+      <canvas id="barChart"></canvas>
+    </div>
+
   </div>
 
 </div>

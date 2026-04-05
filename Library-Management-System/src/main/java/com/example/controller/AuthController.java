@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.exception.UserException;
+import com.example.payload.dto.SignupDTO;
 import com.example.payload.dto.UserDTO;
 import com.example.payload.request.ForgotPasswordRequest;
 import com.example.payload.request.LoginRequest;
@@ -28,15 +29,15 @@ public class AuthController {
     private final AuthService authService;
 
     // SIGNUP
-    @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signupHandler(
-            @RequestBody @Valid UserDTO req
-    ) throws UserException {
+  @PostMapping("/signup")
+public ResponseEntity<AuthResponse> signupHandler(
+        @RequestBody @Valid SignupDTO req
+) throws UserException {
 
-        AuthResponse res = authService.signup(req);
+    AuthResponse res = authService.signup(req);
 
-        return ResponseEntity.ok(res);
-    }
+    return ResponseEntity.ok(res);
+}
 
     // LOGIN
     @PostMapping("/login")

@@ -86,18 +86,24 @@ getActiveSubscription() {
 
       console.log("ACTIVE RESPONSE:", res);
 
-      // ✅ NO SUBSCRIPTION
       if (!res) {
         this.hasActiveSubscription = false;
-        this.activeSubscription = null;
         this.noSubscriptionMessage = 'No active subscription';
-      }
-
-      // ✅ HAS SUBSCRIPTION
+      } 
       else {
-        this.hasActiveSubscription = true;
-        this.activeSubscription = res;
-        this.noSubscriptionMessage = '';
+        const today = new Date();
+        const endDate = new Date(res.end);
+
+        // ✅ CHECK EXPIRY
+        if (endDate >= today) {
+          this.hasActiveSubscription = true;
+          this.activeSubscription = res;
+        } else {
+          // ❌ EXPIRED
+          this.hasActiveSubscription = false;
+          this.activeSubscription = null;
+          this.noSubscriptionMessage = 'Subscription expired';
+        }
       }
 
       this.cdr.detectChanges();

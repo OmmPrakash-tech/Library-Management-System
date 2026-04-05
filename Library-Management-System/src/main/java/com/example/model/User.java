@@ -63,8 +63,8 @@ public class User {
     @Column(unique = true)
     private String googleId;
 
-    @Column(length = 500)
-    private String profileImage;
+  @Column(name = "profile_image", columnDefinition = "LONGTEXT")
+private String profileImage;
 
     private LocalDateTime lastLogin;
 

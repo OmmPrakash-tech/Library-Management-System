@@ -1,53 +1,98 @@
-/* NAVBAR */
+/* =======================
+   NAVBAR
+======================= */
+.navbar {
+  height: 70px;
+  width: 100%;
 
-.navbar{
-  height:70px;
-  width:100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  padding:0 50px;
+  padding: 0 50px;
 
   /* PREMIUM GREEN GRADIENT */
-  background:linear-gradient(90deg,#0f5132,#198754,#2ecc71);
+  background: linear-gradient(90deg, #0f5132, #198754, #2ecc71);
 
-  color:white;
+  color: white;
 
-  box-shadow:0 4px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 
-  position:sticky;
-  top:0;
-  z-index:1000;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-/* LOGO */
-
-.logo{
-  font-size:22px;
-  font-weight:600;
-  letter-spacing:0.5px;
+/* =======================
+   LOGO
+======================= */
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-/* SIGN OUT BUTTON */
-
-.signout{
-  padding:8px 18px;
-
-  border:none;
-  border-radius:6px;
-
-  background:white;
-  color:#0f5132;
-
-  font-weight:500;
-
-  cursor:pointer;
-
-  transition:0.3s;
+/* =======================
+   ACTIONS CONTAINER
+======================= */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.signout:hover{
-  background:#e6f7ee;
+/* =======================
+   MY REVIEWS BUTTON
+======================= */
+.reviews-btn {
+  padding: 8px 18px;
+
+  border: none;
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+.reviews-btn:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Active Route */
+.active-btn {
+  background: linear-gradient(45deg, #00e5ff, #00c853);
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+}
+
+/* =======================
+   SIGN OUT BUTTON
+======================= */
+.signout {
+  padding: 8px 18px;
+
+  border: none;
+  border-radius: 20px;
+
+  background: white;
+  color: #0f5132;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+.signout:hover {
+  background: #e6f7ee;
+  transform: scale(1.05);
 }
