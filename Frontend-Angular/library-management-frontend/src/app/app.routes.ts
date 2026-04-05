@@ -49,6 +49,7 @@ import { FineUserComponent } from './user/home/book-loan-front/fine-user/fine-us
 import { BookLoanControlComponent } from './Admin/book-loan/book-loan-control/book-loan-control';
 import { ReviewComponent } from './Admin/navbar/review/review';
 import { MyReviews } from './user/navbar/my-reviews/my-reviews';
+import { LibraryInfoComponent } from './user/hero/library-info/library-info';
 
 export const routes: Routes = [
 
@@ -186,5 +187,8 @@ export const routes: Routes = [
   {
     path: 'my-reviews',
     component: MyReviews
-  }
+  },
+
+  { path: 'library-info', component: LibraryInfoComponent }
+
 ];

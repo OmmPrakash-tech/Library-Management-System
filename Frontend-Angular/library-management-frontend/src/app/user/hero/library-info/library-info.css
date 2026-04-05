@@ -1,0 +1,132 @@
+/* 🌿 GLOBAL PAGE BACKGROUND */
+.info-page {
+  padding: 40px 20px;
+  font-family: 'Segoe UI', sans-serif;
+
+  /* White + Light Green Gradient */
+  background: linear-gradient(to right, #ffffff, #f0fdf4);
+  color: #1e293b;
+}
+
+/* 🔷 HERO SECTION */
+.info-hero {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.info-hero h1 {
+  font-size: 42px;
+  color: #166534; /* deep green */
+  margin-bottom: 15px;
+}
+
+.info-hero p {
+  font-size: 18px;
+  color: #475569;
+  max-width: 700px;
+  margin: auto;
+}
+
+/* 📦 SECTION COMMON */
+section {
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+section h2 {
+  font-size: 28px;
+  color: #15803d;
+  margin-bottom: 25px;
+}
+
+/* 🧩 FEATURE GRID */
+.features-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  padding: 0 20px;
+}
+
+/* 📄 FEATURE CARD */
+.feature-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+
+  /* soft green shadow */
+  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.1);
+
+  text-align: left;
+  transition: 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(34, 197, 94, 0.2);
+}
+
+.feature-card h3 {
+  color: #166534;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 📋 LIST SECTIONS */
+.rules-section ul,
+.payment-section ul,
+.fine-section ul {
+  list-style: none;
+  padding: 0;
+  max-width: 700px;
+  margin: auto;
+  text-align: left;
+}
+
+.rules-section li,
+.payment-section li,
+.fine-section li {
+  background: #ffffff;
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-radius: 10px;
+
+  /* light green border */
+  border-left: 5px solid #22c55e;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+}
+
+/* 💳 TEXT SECTIONS */
+.payment-section p,
+.progress-section p,
+.final-section p,
+.fine-section p {
+  max-width: 700px;
+  margin: 10px auto;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* 📊 FINAL SECTION */
+.final-section {
+  background: #dcfce7;
+  padding: 30px;
+  border-radius: 15px;
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 768px) {
+  .info-hero h1 {
+    font-size: 30px;
+  }
+
+  section h2 {
+    font-size: 22px;
+  }
+}

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
@@ -8,4 +9,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './hero.html',
   styleUrls: ['./hero.css']
 })
-export class Hero {}
+
+
+export class Hero {
+
+  constructor(private router: Router) {}
+
+  goToLibrary() {
+  this.router.navigate(['/library-info']);
+}
+}
