@@ -81,7 +81,15 @@ getActiveSubscription() {
   this.noSubscriptionMessage = '';
   this.hasActiveSubscription = false;
 
-  this.http.get(this.activeApi).subscribe({
+  const token = localStorage.getItem('token');
+  console.log("TOKEN:", token);
+
+  this.http.get(this.activeApi, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).subscribe({
+
     next: (res: any) => {
 
       console.log("ACTIVE RESPONSE:", res);
@@ -92,14 +100,14 @@ getActiveSubscription() {
       } 
       else {
         const today = new Date();
-        const endDate = new Date(res.end);
 
-        // ✅ CHECK EXPIRY
+        // 🔥 IMPORTANT FIX (check your field name)
+        const endDate = new Date(res.endDate || res.end_date || res.end);
+
         if (endDate >= today) {
           this.hasActiveSubscription = true;
           this.activeSubscription = res;
         } else {
-          // ❌ EXPIRED
           this.hasActiveSubscription = false;
           this.activeSubscription = null;
           this.noSubscriptionMessage = 'Subscription expired';

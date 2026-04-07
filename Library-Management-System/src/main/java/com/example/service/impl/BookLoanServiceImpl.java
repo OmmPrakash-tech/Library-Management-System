@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -72,6 +73,10 @@ public BookLoanDTO checkoutBook(Long userId, CheckoutRequest request) {
     // ================= SUBSCRIPTION =================
     SubscriptionDTO subscription = subscriptionService.getUsersActiveSubscription();
 
+if (subscription == null) {
+    throw new BookException("No active subscription found");
+}
+
     // ================= BUSINESS VALIDATIONS =================
 
     // Prevent duplicate active loan
@@ -108,17 +113,18 @@ public BookLoanDTO checkoutBook(Long userId, CheckoutRequest request) {
     // ================= CREATE LOAN =================
     LocalDate today = LocalDate.now();
 
-    BookLoan loan = BookLoan.builder()
-            .user(user)
-            .book(book)
-            .type(BookLoanType.CHECKOUT)
-            .status(BookLoanStatus.CHECKED_OUT)
-            .checkoutDate(today)
-            .dueDate(today.plusDays(request.getCheckoutDays()))
-            .renewalCount(0)
-            .maxRenewals(2)
-            .notes(request.getNotes())
-            .build();
+   BookLoan loan = BookLoan.builder()
+    .user(user)
+    .book(book)
+    .type(BookLoanType.CHECKOUT)
+    .status(BookLoanStatus.CHECKED_OUT)
+    .checkoutDate(today)
+    .dueDate(today.plusDays(request.getCheckoutDays()))
+    .renewalCount(0)
+    .maxRenewals(2)
+    .fineAmount(BigDecimal.ZERO) // ✅ FIX HERE
+    .notes(request.getNotes())
+    .build();
 
     // ================= UPDATE BOOK STOCK =================
     book.setAvailableCopies(book.getAvailableCopies() - 1);

@@ -72,15 +72,13 @@ export class IssueComponent implements OnInit {
 
         console.log("ACTIVE SUB:", res);
 
-        if (res.success === false) {
-          this.hasActiveSubscription = false;
-          this.activeSubscription = null;
-        } else if (res && res.planId) {
-          this.hasActiveSubscription = true;
-          this.activeSubscription = res;
-        } else {
-          this.hasActiveSubscription = false;
-        }
+        if (res) {
+  this.hasActiveSubscription = true;
+  this.activeSubscription = res;
+} else {
+  this.hasActiveSubscription = false;
+  this.activeSubscription = null;
+}
       },
       error: () => {
         this.hasActiveSubscription = false;
@@ -159,9 +157,14 @@ export class IssueComponent implements OnInit {
         this.closeModal();
       },
       error: (err) => {
-        console.error(err);
-        alert("❌ Failed to issue book may be you've reached your max book limit");
-      }
+  console.error("ERROR:", err);
+
+  if (err.error?.message) {
+    alert("❌ " + err.error.message); // ✅ show real backend message
+  } else {
+    alert("❌ Something went wrong");
+  }
+}
     });
   }
 

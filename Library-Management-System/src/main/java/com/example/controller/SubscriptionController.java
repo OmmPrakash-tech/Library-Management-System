@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -128,10 +129,13 @@ public ResponseEntity<?> getActiveSubscription() {
     User user = userService.getCurrentUser();
 
     Optional<Subscription> sub =
-            subscriptionRepository.findByUserAndIsActiveTrue(user);
+            subscriptionRepository.findActiveSubscriptionByUserId(
+                    user.getId(),
+                    LocalDate.now()
+            );
 
     if (sub.isEmpty()) {
-        return ResponseEntity.ok(null); // ✅ instead of error
+        return ResponseEntity.ok(null);
     }
 
     return ResponseEntity.ok(subscriptionMapper.toDTO(sub.get()));
