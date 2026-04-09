@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins="https://library-management-system-3d9t.onrender.com")
 @RequiredArgsConstructor
 public class AuthController {
 

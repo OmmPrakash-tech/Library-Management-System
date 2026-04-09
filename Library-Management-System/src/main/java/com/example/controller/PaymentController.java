@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins="https://library-management-system-3d9t.onrender.com")
 @RequiredArgsConstructor
 @RequestMapping("/api/payments")
 public class PaymentController {

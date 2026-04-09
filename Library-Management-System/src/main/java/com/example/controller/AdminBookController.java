@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/books")
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins="https://library-management-system-3d9t.onrender.com")
 public class AdminBookController {
 
     private final BookService bookService;

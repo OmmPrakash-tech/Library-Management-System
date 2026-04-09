@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins="https://library-management-system-3d9t.onrender.com")
 @RequestMapping("/api/subscriptions")
 public class SubscriptionController {
 
