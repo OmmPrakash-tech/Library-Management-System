@@ -28,7 +28,7 @@ export class PaymentComponent implements OnInit {
       planId: this.plan.id
     };
 
-    this.http.post<any>('http://library-backend-docker.onrender.com/api/subscriptions/subscribe', body)
+    this.http.post<any>('https://library-backend-docker.onrender.com/api/subscriptions/subscribe', body)
       .subscribe(res => {
 
         console.log("Payment Order:", res);
@@ -78,7 +78,7 @@ export class PaymentComponent implements OnInit {
       razorpaySignature: response.razorpay_signature
     };
 
-    this.http.post('http://library-backend-docker.onrender.com/api/payments/verify', verifyData)
+    this.http.post('https://library-backend-docker.onrender.com/api/payments/verify', verifyData)
       .subscribe({
         next: (res) => {
           console.log("VERIFY SUCCESS:", res);

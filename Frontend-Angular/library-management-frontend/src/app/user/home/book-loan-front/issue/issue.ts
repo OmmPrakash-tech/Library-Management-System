@@ -23,8 +23,8 @@ export class IssueComponent implements OnInit {
   activeSubscription: any = null;
   hasActiveSubscription: boolean = false;
 
-  private baseUrl = 'http://library-backend-docker.onrender.com/api/book-loans';
-  private subscriptionApi = 'http://library-backend-docker.onrender.com/api/subscriptions/user/active';
+  private baseUrl = 'https://library-backend-docker.onrender.com/api/book-loans';
+  private subscriptionApi = 'https://library-backend-docker.onrender.com/api/subscriptions/user/active';
 
   constructor(
     private loanService: BookLoanService,

@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PaymentService {
 
-  private baseUrl = 'http://library-backend-docker.onrender.com/api';
+  private baseUrl = 'https://library-backend-docker.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 

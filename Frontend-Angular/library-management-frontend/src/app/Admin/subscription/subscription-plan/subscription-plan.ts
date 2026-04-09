@@ -47,7 +47,7 @@ export class SubscriptionPlanComponent implements OnInit {
 
   // ✅ LOAD PLANS
   loadPlans() {
-    this.http.get<any>('http://library-backend-docker.onrender.com/api/subscription-plans', {
+    this.http.get<any>('https://library-backend-docker.onrender.com/api/subscription-plans', {
       headers: this.getHeaders()
     }).subscribe({
       next: (res) => {
@@ -64,7 +64,7 @@ export class SubscriptionPlanComponent implements OnInit {
 
     if (this.isEditMode && this.selectedId) {
       this.http.put(
-        `http://library-backend-docker.onrender.com/api/subscription-plans/admin/${this.selectedId}`,
+        `https://library-backend-docker.onrender.com/api/subscription-plans/admin/${this.selectedId}`,
         this.form,
         { headers }
       ).subscribe(() => {
@@ -73,7 +73,7 @@ export class SubscriptionPlanComponent implements OnInit {
       });
     } else {
       this.http.post(
-        'http://library-backend-docker.onrender.com/api/subscription-plans/admin',
+        'https://library-backend-docker.onrender.com/api/subscription-plans/admin',
         this.form,
         { headers }
       ).subscribe(() => {
@@ -95,7 +95,7 @@ export class SubscriptionPlanComponent implements OnInit {
     if (!confirm('Delete this plan?')) return;
 
     this.http.delete(
-      `http://library-backend-docker.onrender.com/api/subscription-plans/admin/${id}`,
+      `https://library-backend-docker.onrender.com/api/subscription-plans/admin/${id}`,
       { headers: this.getHeaders() }
     ).subscribe(() => {
       this.loadPlans();

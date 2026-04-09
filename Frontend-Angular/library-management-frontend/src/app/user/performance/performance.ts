@@ -17,8 +17,8 @@ export class Performance implements OnInit, AfterViewInit {
   libraryStats: any = {};
   viewReady = false;
 
-  private apiUrl = 'http://library-backend-docker.onrender.com/api/book-loans/my';
-  private statsApi = 'http://library-backend-docker.onrender.com/api/books/stats';
+  private apiUrl = 'https://library-backend-docker.onrender.com/api/book-loans/my';
+  private statsApi = 'https://library-backend-docker.onrender.com/api/books/stats';
 
   constructor(
     private http: HttpClient,

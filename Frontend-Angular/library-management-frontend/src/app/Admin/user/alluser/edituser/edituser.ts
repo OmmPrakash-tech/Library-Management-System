@@ -36,7 +36,7 @@ export class EditUser implements OnInit {
 
   // 🔹 Load single user
   loadUser() {
-    this.http.get<any>(`http://library-backend-docker.onrender.com/api/users/${this.userId}`)
+    this.http.get<any>(`https://library-backend-docker.onrender.com/api/users/${this.userId}`)
       .subscribe(data => {
         this.user = {
           fullName: data.fullName,
@@ -50,7 +50,7 @@ export class EditUser implements OnInit {
 
   // 🔥 Update user
   updateUser() {
-    this.http.put(`http://library-backend-docker.onrender.com/api/users/update/${this.userId}`, this.user)
+    this.http.put(`https://library-backend-docker.onrender.com/api/users/update/${this.userId}`, this.user)
       .subscribe({
         next: () => {
           alert('User updated successfully ✅');

@@ -17,7 +17,7 @@ export interface User {
 })
 export class UserService {
 
-  private baseUrl = 'http://library-backend-docker.onrender.com/api/users';
+  private baseUrl = 'https://library-backend-docker.onrender.com/api/users';
 
   constructor(private http: HttpClient) {}
 

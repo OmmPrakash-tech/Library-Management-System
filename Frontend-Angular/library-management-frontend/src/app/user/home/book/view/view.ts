@@ -39,7 +39,7 @@ private reviewUrl = 'https://library-backend-docker.onrender.com/api/reviews';
 
   // 📘 Load book
   loadBook(id: any) {
-    this.http.get(`http://library-backend-docker.onrender.com/api/books/${id}`)
+    this.http.get(`https://library-backend-docker.onrender.com/api/books/${id}`)
       .subscribe((data: any) => {
         this.book = data;
         this.cdr.markForCheck();

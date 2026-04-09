@@ -46,11 +46,11 @@ export class SubscriptionControllerComponent implements OnInit {
     let url = '';
 
     if (this.filterType === 'ALL') {
-      url = 'http://library-backend-docker.onrender.com/api/subscriptions/all';
+      url = 'https://library-backend-docker.onrender.com/api/subscriptions/all';
     } else if (this.filterType === 'ACTIVE') {
-      url = 'http://library-backend-docker.onrender.com/api/subscriptions/active';
+      url = 'https://library-backend-docker.onrender.com/api/subscriptions/active';
     } else {
-      url = 'http://library-backend-docker.onrender.com/api/subscriptions/admin';
+      url = 'https://library-backend-docker.onrender.com/api/subscriptions/admin';
     }
 
     this.http.get<any>(url, { headers: this.getAuthHeaders() })
@@ -90,7 +90,7 @@ export class SubscriptionControllerComponent implements OnInit {
     }
 
     this.http.post(
-      'http://library-backend-docker.onrender.com/api/subscriptions/subscribenew',
+      'https://library-backend-docker.onrender.com/api/subscriptions/subscribenew',
       this.subscribeData,
       { headers: this.getAuthHeaders() }
     ).subscribe({
@@ -116,7 +116,7 @@ export class SubscriptionControllerComponent implements OnInit {
     }
 
     this.http.post(
-      'http://library-backend-docker.onrender.com/api/subscriptions/activate',
+      'https://library-backend-docker.onrender.com/api/subscriptions/activate',
       null,
       {
         params: {
@@ -148,7 +148,7 @@ cancel(id: number) {
   }
 
   this.http.patch(
-    `http://library-backend-docker.onrender.com/api/subscriptions/${id}/cancel`,
+    `https://library-backend-docker.onrender.com/api/subscriptions/${id}/cancel`,
     {},
     {
       params: params,
@@ -169,7 +169,7 @@ cancel(id: number) {
   // ✅ DEACTIVATE EXPIRED
   deactivateExpired() {
     this.http.post(
-      'http://library-backend-docker.onrender.com/api/subscriptions/admin/deactivate-expired',
+      'https://library-backend-docker.onrender.com/api/subscriptions/admin/deactivate-expired',
       {},
       { headers: this.getAuthHeaders() }
     ).subscribe({

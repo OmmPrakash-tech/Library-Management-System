@@ -41,7 +41,7 @@ editReviewId!: number;
     this.review.bookId = this.bookId;
 
     // 🔥 CHECK IF ALREADY REVIEWED
-    this.http.get<boolean>(`http://library-backend-docker.onrender.com/api/reviews/book/${this.bookId}/exists`)
+    this.http.get<boolean>(`https://library-backend-docker.onrender.com/api/reviews/book/${this.bookId}/exists`)
       .subscribe(res => {
         this.alreadyReviewed = res;
       });
@@ -65,7 +65,7 @@ editReviewId!: number;
       return;
     }
 
-    this.http.post('http://library-backend-docker.onrender.com/api/reviews', this.review)
+    this.http.post('https://library-backend-docker.onrender.com/api/reviews', this.review)
       .subscribe({
         next: () => {
 
@@ -88,7 +88,7 @@ editReviewId!: number;
 
   // ✅ GET MY REVIEWS
   getMyReviews() {
-    this.http.get<any>('http://library-backend-docker.onrender.com/api/reviews/my')
+    this.http.get<any>('https://library-backend-docker.onrender.com/api/reviews/my')
       .subscribe({
         next: (res) => {
 
@@ -137,7 +137,7 @@ editReviewId!: number;
 
   updateReview() {
 
-  this.http.put(`http://library-backend-docker.onrender.com/api/reviews/${this.editReviewId}`, this.review)
+  this.http.put(`https://library-backend-docker.onrender.com/api/reviews/${this.editReviewId}`, this.review)
     .subscribe({
       next: () => {
 

@@ -16,7 +16,7 @@ export class RenewReturnComponent implements OnInit {
   loading: boolean = true;
 
   // ✅ BASE API URL (PORT 5050)
-  private BASE_URL = 'http://library-backend-docker.onrender.com/api/book-loans';
+  private BASE_URL = 'https://library-backend-docker.onrender.com/api/book-loans';
 
   constructor(
     private http: HttpClient,

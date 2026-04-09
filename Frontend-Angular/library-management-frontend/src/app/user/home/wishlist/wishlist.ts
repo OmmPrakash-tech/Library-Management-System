@@ -15,7 +15,7 @@ export class WishlistComponent implements OnInit {
   wishlist: any[] = [];
   count: number = 0;
 
-  private baseUrl = 'http://library-backend-docker.onrender.com/api/wishlist';
+  private baseUrl = 'https://library-backend-docker.onrender.com/api/wishlist';
 
   constructor(
     private http: HttpClient,

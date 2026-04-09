@@ -22,7 +22,7 @@ export class AllUser {
   showUsers() {
     this.loading = true;
 
-    this.http.get<any[]>('http://library-backend-docker.onrender.com/api/users/list')
+    this.http.get<any[]>('https://library-backend-docker.onrender.com/api/users/list')
       .subscribe({
         next: (data) => {
           console.log("API Response:", data);
@@ -41,7 +41,7 @@ deleteUser(id: number) {
 
   if (!confirm('Are you sure?')) return;
 
-  this.http.delete(`http://library-backend-docker.onrender.com/api/users/delete/${id}`, {
+  this.http.delete(`https://library-backend-docker.onrender.com/api/users/delete/${id}`, {
     responseType: 'text' // ✅ FIX HERE
   }).subscribe({
     next: () => {
