@@ -1,9 +1,14 @@
-FROM maven:3.9.6-eclipse-temurin-21
+# Use Java 21 (VERY IMPORTANT for Spring Boot 4)
+FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
+# Copy project
 COPY . .
 
-RUN mvn clean package -DskipTests
+# Build project
+RUN chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 
-CMD ["java", "-jar", "target/*.jar"]
+# Run app
+CMD ["java", "-jar", "target/Library-Management-System-0.0.1-SNAPSHOT.jar"]
