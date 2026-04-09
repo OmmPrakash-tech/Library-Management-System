@@ -54,7 +54,8 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:4200",
-                "https://zoshlibrary.com"
+                "https://zoshlibrary.com",
+                "https://library-management-system-3d9t.onrender.com"
         ));
 
         configuration.setAllowedMethods(List.of(
