@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class GenreService {
 
-  private baseUrl = 'http://localhost:5050/api/genres';
+  private baseUrl = 'http://library-backend-docker.onrender.com/api/genres';
 
   constructor(private http: HttpClient) {}
 

@@ -16,7 +16,7 @@ export class FineUserComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
 
-  private apiUrl = 'http://localhost:5050/api/fines/my';
+  private apiUrl = 'http://library-backend-docker.onrender.com/api/fines/my';
 
   constructor(
     private http: HttpClient,
@@ -72,7 +72,7 @@ export class FineUserComponent implements OnInit {
   payFine(fineId: number) {
 
   this.http.post<any>(
-    `http://localhost:5050/api/fines/${fineId}/pay`,
+    `http://library-backend-docker.onrender.com/api/fines/${fineId}/pay`,
     {},
     { headers: this.getAuthHeaders() }
   ).subscribe({
@@ -114,7 +114,7 @@ confirmPayment(fineId: number, amount: number, transactionId: string) {
   const amountInRupees = amount / 100; // ✅ FIX
 
   this.http.post(
-    `http://localhost:5050/api/fines/${fineId}/confirm-payment`,
+    `http://library-backend-docker.onrender.com/api/fines/${fineId}/confirm-payment`,
     null,
     {
       params: {

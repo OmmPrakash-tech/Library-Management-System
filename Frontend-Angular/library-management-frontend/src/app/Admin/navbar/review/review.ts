@@ -16,7 +16,7 @@ export class ReviewComponent implements OnInit {
   page = 0;
   size = 10;
 
-  BASE_URL = 'http://localhost:5050/api/reviews';
+  BASE_URL = 'http://library-backend-docker.onrender.com/api/reviews';
 
   constructor(
     private http: HttpClient,

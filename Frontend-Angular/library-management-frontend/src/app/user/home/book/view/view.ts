@@ -17,8 +17,8 @@ export class BookViewComponent implements OnInit {
   isWishlisted: boolean = false;
   reviews: any[] = []; // ⭐ NEW
 
-  private baseUrl = 'http://localhost:5050/api/wishlist';
-  private reviewUrl = 'http://localhost:5050/api/reviews';
+private baseUrl = 'https://library-backend-docker.onrender.com/api/wishlist';
+private reviewUrl = 'https://library-backend-docker.onrender.com/api/reviews';
 
   constructor(
     private route: ActivatedRoute,
@@ -39,7 +39,7 @@ export class BookViewComponent implements OnInit {
 
   // 📘 Load book
   loadBook(id: any) {
-    this.http.get(`http://localhost:5050/api/books/${id}`)
+    this.http.get(`http://library-backend-docker.onrender.com/api/books/${id}`)
       .subscribe((data: any) => {
         this.book = data;
         this.cdr.markForCheck();

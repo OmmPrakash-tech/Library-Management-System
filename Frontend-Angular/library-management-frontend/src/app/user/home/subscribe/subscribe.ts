@@ -20,8 +20,8 @@ export class SubscriptionComponent implements OnInit {
   noSubscriptionMessage: string = '';
   hasActiveSubscription: boolean = false; // 🔥 MAIN FLAG
 
-  private apiUrl = 'http://localhost:5050/api/subscription-plans';
-  private activeApi = 'http://localhost:5050/api/subscriptions/user/active';
+  private apiUrl = 'http://library-backend-docker.onrender.com/api/subscription-plans';
+  private activeApi = 'http://library-backend-docker.onrender.com/api/subscriptions/user/active';
 
   constructor(
     private http: HttpClient,

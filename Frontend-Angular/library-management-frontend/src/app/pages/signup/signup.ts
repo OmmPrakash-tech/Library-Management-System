@@ -65,7 +65,7 @@ export class Signup implements OnInit {
     }
 
     // send request
-    this.http.post("http://localhost:5050/api/auth/signup", this.user)
+    this.http.post("http://library-backend-docker.onrender.com/api/auth/signup", this.user)
       .subscribe({
 
         next: (res) => {

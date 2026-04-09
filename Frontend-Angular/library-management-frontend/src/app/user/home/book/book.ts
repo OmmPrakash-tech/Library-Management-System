@@ -24,7 +24,7 @@ export class Book implements OnInit {
 
   noResults: boolean = false;
 
-  private baseUrl = 'http://localhost:5050/api/wishlist';
+  private baseUrl = 'http://library-backend-docker.onrender.com/api/wishlist';
 
   constructor(
     private bookService: BookService,

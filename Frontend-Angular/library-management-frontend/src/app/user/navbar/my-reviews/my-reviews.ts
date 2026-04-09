@@ -16,7 +16,7 @@ export class MyReviews implements OnInit {
   editReviewId: number | null = null;
   editData: any = {};
 
-  private baseUrl = 'http://localhost:5050/api/reviews';
+  private baseUrl = 'http://library-backend-docker.onrender.com/api/reviews';
 
   constructor(private http: HttpClient) {}
 

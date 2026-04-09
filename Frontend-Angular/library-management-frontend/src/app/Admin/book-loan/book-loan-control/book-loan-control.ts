@@ -15,7 +15,7 @@ export class BookLoanControlComponent implements OnInit {
   showRequests: boolean = false;
   loading: boolean = false;
 
-  private BASE_URL = 'http://localhost:5050/api/book-loans';
+  private BASE_URL = 'http://library-backend-docker.onrender.com/api/book-loans';
 
   constructor(
     private http: HttpClient,

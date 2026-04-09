@@ -46,11 +46,11 @@ export class SubscriptionControllerComponent implements OnInit {
     let url = '';
 
     if (this.filterType === 'ALL') {
-      url = 'http://localhost:5050/api/subscriptions/all';
+      url = 'http://library-backend-docker.onrender.com/api/subscriptions/all';
     } else if (this.filterType === 'ACTIVE') {
-      url = 'http://localhost:5050/api/subscriptions/active';
+      url = 'http://library-backend-docker.onrender.com/api/subscriptions/active';
     } else {
-      url = 'http://localhost:5050/api/subscriptions/admin';
+      url = 'http://library-backend-docker.onrender.com/api/subscriptions/admin';
     }
 
     this.http.get<any>(url, { headers: this.getAuthHeaders() })
@@ -90,7 +90,7 @@ export class SubscriptionControllerComponent implements OnInit {
     }
 
     this.http.post(
-      'http://localhost:5050/api/subscriptions/subscribenew',
+      'http://library-backend-docker.onrender.com/api/subscriptions/subscribenew',
       this.subscribeData,
       { headers: this.getAuthHeaders() }
     ).subscribe({
@@ -116,7 +116,7 @@ export class SubscriptionControllerComponent implements OnInit {
     }
 
     this.http.post(
-      'http://localhost:5050/api/subscriptions/activate',
+      'http://library-backend-docker.onrender.com/api/subscriptions/activate',
       null,
       {
         params: {
@@ -148,7 +148,7 @@ cancel(id: number) {
   }
 
   this.http.patch(
-    `http://localhost:5050/api/subscriptions/${id}/cancel`,
+    `http://library-backend-docker.onrender.com/api/subscriptions/${id}/cancel`,
     {},
     {
       params: params,
@@ -169,7 +169,7 @@ cancel(id: number) {
   // ✅ DEACTIVATE EXPIRED
   deactivateExpired() {
     this.http.post(
-      'http://localhost:5050/api/subscriptions/admin/deactivate-expired',
+      'http://library-backend-docker.onrender.com/api/subscriptions/admin/deactivate-expired',
       {},
       { headers: this.getAuthHeaders() }
     ).subscribe({

@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class BookService {
 
-  private baseUrl = 'http://localhost:5050/api/books';
-  private genreUrl = 'http://localhost:5050/api/genres'; // ✅ NEW
+  private baseUrl = 'http://library-backend-docker.onrender.com/api/books';
+  private genreUrl = 'http://library-backend-docker.onrender.com/api/genres'; // ✅ NEW
 
   constructor(private http: HttpClient) {}
 

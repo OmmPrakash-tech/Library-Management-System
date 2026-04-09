@@ -47,7 +47,7 @@ types = ['OVERDUE', 'DAMAGE', 'LOSS'];
 
   // 🔹 Load fines
   loadFines() {
-    this.http.get<any>('http://localhost:5050/api/fines', {
+    this.http.get<any>('http://library-backend-docker.onrender.com/api/fines', {
       headers: this.getAuthHeaders()
     }).subscribe({
       next: (res) => {
@@ -73,7 +73,7 @@ createFine() {
     note: this.newFine.note
   };
 
-  this.http.post('http://localhost:5050/api/fines', payload, {
+  this.http.post('http://library-backend-docker.onrender.com/api/fines', payload, {
     headers: this.getAuthHeaders()
   }).subscribe({
     next: () => {
@@ -107,7 +107,7 @@ createFine() {
       reason: "Admin waived fine"
     };
 
-    this.http.post(`http://localhost:5050/api/fines/${id}/waive`, payload, {
+    this.http.post(`http://library-backend-docker.onrender.com/api/fines/${id}/waive`, payload, {
       headers: this.getAuthHeaders()
     }).subscribe({
       next: () => this.loadFines(),
