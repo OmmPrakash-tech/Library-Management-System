@@ -8,8 +8,10 @@
 
 A full-stack **Library Management System** built using **Spring Boot, Angular, and MySQL**, designed to manage books, users, borrowing, reservations, and subscriptions efficiently.
 
+## 🌐 Live Demo
 
-Live Demo - https://library-management-system-3d9t.onrender.com
+👉  https://library-management-system-3d9t.onrender.com
+
 
 ---
 
